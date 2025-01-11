@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.enums.DrivetrainState;
@@ -49,6 +51,8 @@ public class Drivetrain implements IDrivetrain {
     private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
     private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
 
+    private final int followP = 5;
+
     private DrivetrainState _currentState = DrivetrainState.OPEN_LOOP;
     private DrivetrainState _previousState = DrivetrainState.IDLE;
     private LocationTarget _currentTarget = LocationTarget.NONE;
@@ -86,38 +90,37 @@ public class Drivetrain implements IDrivetrain {
         followChassisSpeeds = newSpeeds;
     }
 
-    // private void setStartingPose(Pose2d startingPose) {
-    // System.out.println("setStartingPose");
-    // this.seedFieldRelative(startingPose);
-    // }
+    private void setStartingPose(Pose2d startingPose) {
+        this.resetPose(startingPose);
+    }
 
-    // private double getAngleToTarget(Translation2d translation) {
-    //     return GeometryUtil.getAngleToTarget(
-    //         translation, this::getPose, _isFollowingFront
-    //     );
-    // }
+    private double getAngleToTarget(Translation2d translation) {
+        return GeometryUtil.getAngleToTarget(
+            translation, this::getPose, _isFollowingFront
+        );
+    }
 
-    // private double getDistanceToTarget(Translation2d translation) {
-    //     return GeometryUtil.getDistanceToTarget(
-    //         translation, this::getPose
-    //     );
-    // }
+    private double getDistanceToTarget(Translation2d translation) {
+        return GeometryUtil.getDistanceToTarget(
+            translation, this::getPose
+        );
+    }
 
-    // public Pose2d getPose()
-    // return this.m_odometry.getEstimatedPosition();
-    // }
+    public Pose2d getPose() {
+        return this.m_odometry.getEstimatedPosition();
+    }
 
-    // public InstantCommand resetGyro() {
-    // return new InstantCommand(() -> m_pigeon2.setYaw(0));
-    // }
+    public InstantCommand resetGyro() {
+        return new InstantCommand(() -> m_pigeon2.setYaw(0));
+    }
 
-    // public double getPoseX() {
-    //     return getPose().getTranslation().getX();
-    // }
+    public double getPoseX() {
+        return getPose().getTranslation().getX();
+    }
 
-    // public double getPoseY() {
-    //     return getPose().getTranslation().getY();
-    // }
+    public double getPoseY() {
+        return getPose().getTranslation().getY();
+    }
 
     private String getCurrentState() {
         return _currentState.name();
@@ -139,21 +142,21 @@ public class Drivetrain implements IDrivetrain {
         return this.periodicIO.WzCmd;
     }
 
-    // private double getDegrees() {
-        // return this.m_pigeon2.getAngle();
-    // }
+    private double getDegrees() {
+        return this.m_pigeon2.getAngle();
+    }
 
     private void updateOdometry() {
-        // m_field.setRobotPose(getPose());
+        m_field.setRobotPose(getPose());
     }
 
     public void periodic() {
-    // if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
-        // DriverStation.getAlliance().ifPresent((allianceColor) ->
-        // {this.setOperatorPerspectiveForward(allianceColor == Alliance.Red ? RedAlliancePerspectiveRotation: BlueAlliancePerspectiveRotation);
-        // hasAppliedOperatorPerspective = true;
-        // });
-    // }
+    if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
+        DriverStation.getAlliance().ifPresent((allianceColor) ->
+        {this.setOperatorPerspectiveForward(allianceColor == Alliance.Red ? RedAlliancePerspectiveRotation: BlueAlliancePerspectiveRotation);
+        hasAppliedOperatorPerspective = true;
+        });
+    }
 
         this.periodicIO.VxCmd = -OneDimensionalLookup.interpLinear(
                 Constants.DrivetrainConstants.XY_Axis_inputBreakpoints,
@@ -168,36 +171,42 @@ public class Drivetrain implements IDrivetrain {
         this.periodicIO.WzCmd = -OneDimensionalLookup.interpLinear(
                 Constants.DrivetrainConstants.RotAxis_inputBreakpoints,
                 Constants.DrivetrainConstants.RotAxis_outputTable, _driverController.getRightX());
+
         switch (_currentTarget) {
-            // TODO: fill out angles
             case CORAL_SOURCE:
-                // if (GeometryUtil.isRedAlliance()) {
-                //     if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
-                //         targetRotation = GeometryUtil.getRotationDifference(this::getPose, ) / 50;
-                //     } else {
-                //         targetRotation = GeometryUtil.getRotationDifference(this::getPose, ) / 50;
-                //     }
-                // } else {
-                //     if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
-                //         targetRotation = GeometryUtil.getRotationDifference(this::getPose, 126) / 50;
-                //     } else {
-                //         targetRotation = GeometryUtil.getRotationDifference(this::getPose, ) / 50;
-                //     }
-                // }
+                if (GeometryUtil.isRedAlliance()) {
+                    if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
+                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 36) / 50;
+                    } else {
+                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 306) / 50;
+                    }
+                } else {
+                    if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
+                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 126) / 50;
+                    } else {
+                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 216) / 50;
+                    }
+                }
             break;
             case ALGEA:
-                // if (GeometryUtil.isRedAlliance()) {
-                //     targetRotation = GeometryUtil.getRotationDifference(this::getPose, ) / 50;
-                // } else {
-                //     targetRotation = GeometryUtil.getRotationDifference(this::getPose, ) / 50;
-                // }
+                if (GeometryUtil.isRedAlliance()) {
+                    targetRotation = GeometryUtil.getRotationDifference(this::getPose, 90) / 50;
+                } else {
+                    targetRotation = GeometryUtil.getRotationDifference(this::getPose, 270) / 50;
+                }
             break;
             default:
                 targetRotation = GeometryUtil.getAngleToTarget(_target, this::getPose, _isFollowingFront) / 50;
             break;
         }
-        xFollow = GeometryUtil.getXDifference(_target, this::getPose) / 4;
-        yFollow = GeometryUtil.getYDifference(_target, this::getPose) / 4;
+        xFollow = GeometryUtil.getXDifference(_target, this::getPose) / followP;
+        yFollow = GeometryUtil.getYDifference(_target, this::getPose) / followP;
+        if (yFollow > 1) {
+            yFollow = 1;
+        } 
+        if (xFollow > 1) {
+            xFollow = 1;
+        }
         if (Math.abs(targetRotation) >= .5) {
             if (targetRotation > 0) {
                 targetRotation = .5;
@@ -208,29 +217,28 @@ public class Drivetrain implements IDrivetrain {
         updateOdometry();
         handleCurrentState().schedule();
     }
-
+    //#region State logic
     private Command handleCurrentState() {
         switch (_currentState) {
-            // case IDLE:
-                // return applyRequest(() -> idle);
-            // case OPEN_LOOP:
-                // return applyRequest(() -> drive.withVelocityX(this.periodicIO.VxCmd *
-                // DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
-                // DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(this.periodicIO.WzCmd *
-                // DrivetrainConstants.MaxAngularRate));
-            // case TARGET_FOLLOW:
-                // return applyRequest(() -> drive.withVelocityX(this.periodicIO.VxCmd *
-                // DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
-                // DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
-                // DrivetrainConstants.MaxAngularRate));
-            // case TRAJECTORY_FOLLOW:
-                // return applyRequest(() -> drive.withVelocityX(xFollow *
-                // DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(yFollow *
-                // DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
-                // DrivetrainConstants.MaxAngularRate));
+            case IDLE:
+                return applyRequest(() -> idle);
+            case OPEN_LOOP:
+                return applyRequest(() -> drive.withVelocityX(this.periodicIO.VxCmd *
+                DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
+                DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(this.periodicIO.WzCmd *
+                DrivetrainConstants.MaxAngularRate));
+            case TARGET_FOLLOW:
+                return applyRequest(() -> drive.withVelocityX(this.periodicIO.VxCmd *
+                DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
+                DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
+                DrivetrainConstants.MaxAngularRate));
+            case TRAJECTORY_FOLLOW:
+                return applyRequest(() -> drive.withVelocityX(xFollow *
+                DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(yFollow *
+                DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
+                DrivetrainConstants.MaxAngularRate));
             default:
-                return new InstantCommand(() -> setWantedState(_currentState));
-                // return applyRequesy(() -> idle);
+                return applyRequest(() -> idle);
         }
     }
 
@@ -251,8 +259,9 @@ public class Drivetrain implements IDrivetrain {
             }
         }, this);
     }
+    ////#endregion
 
-    //#region setTarget
+    //#region setTargetFunctions
     public void setTargetSource(Supplier<Boolean> isRedAlliance) {
         _currentTarget = LocationTarget.CORAL_SOURCE;
         _isFollowingFront = false;

@@ -6,9 +6,6 @@ package frc.robot;
 
 import frc.robot.utilities.*;
 
-import java.lang.reflect.Array;
-import java.util.List;
-
 import edu.wpi.first.math.geometry.Translation2d;
 
 /**
@@ -27,15 +24,15 @@ public final class Constants {
     public static final double kHalfFieldWidth = 4.026;
     public static final double kHalfFieldLength = 8.774;
 
-    public static final Translation2d kBlueSourceTop = new Translation2d();
-    public static final Translation2d kBlueSourceLow = new Translation2d();
+    public static final Translation2d kBlueSourceTop = new Translation2d(1.2, 7);
+    public static final Translation2d kBlueSourceLow = new Translation2d(1.2, 1.1);
 
     public static final Translation2d kRedSourceTop = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceTop);
     public static final Translation2d kRedSourceLow = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceLow);
 
-    public static final Translation2d kBlueAlgea = new Translation2d();
+    public static final Translation2d kBlueAlgea = new Translation2d(6.4, .6);
 
-    public static final Translation2d kRedAlgea = new Translation2d();
+    public static final Translation2d kRedAlgea = new Translation2d(11.5, 7.5);
 
     public static final Translation2d[] kBlueCoralArray = {new Translation2d(4.778, 4.859), new Translation2d(5.079, 4.694), new Translation2d(5.409, 4.213),
        new Translation2d(5.379, 3.852), new Translation2d(5.109, 3.296), new Translation2d(4.823, 3.131), new Translation2d(4.207, 3.131), new Translation2d(3.907, 3.281),
