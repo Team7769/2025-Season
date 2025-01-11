@@ -48,6 +48,8 @@ public class RobotContainer {
   private void configureBindings() {
     _drivetrain.setDefaultCommand(_drivetrain.applyRequest(() -> _drivetrain.idle));
     _driverController.y().onTrue(new InstantCommand(()-> _drivetrain.setTargetSource(GeometryUtil::isRedAlliance)));
+    _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
+    .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
     _driverController.start().onTrue(_drivetrain.resetGyro());
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
