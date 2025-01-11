@@ -61,5 +61,37 @@ public final class Constants {
             0.4, 0.6, .7, 1.0 };
     public static final double kSpeedAt12VoltsMps = 4.73;
     public static final double MaxAngularRate = 1.5 * Math.PI;
+    public static final int kFrontLeftDriveMotorId = 2;
+    public static final int kFrontLeftSteerMotorId = 3;
+    public static final int kFrontLeftEncoderId = 4;
+//     public static final double kFrontLeftEncoderOffset = -0.91259765625;
+//     public static final double kFrontLeftEncoderOffset = 179.087402;
+
+    public static final double kFrontLeftXPosInches = 9;
+    public static final double kFrontLeftYPosInches = 9;
+
+    // Front Right
+    public static final int kFrontRightDriveMotorId = 5;
+    public static final int kFrontRightSteerMotorId = 6;
+    public static final int kFrontRightEncoderId = 7;
+//     public static final double kFrontRightEncoderOffset = -0.5576171875;
+
+    public static final double kFrontRightXPosInches = 9;
+    public static final double kFrontRightYPosInches = -9;
+
+    // Back Left
+    public static final int kBackLeftDriveMotorId = 8;
+    public static final int kBackLeftSteerMotorId = 9;
+    public static final int kBackLeftEncoderId = 10;
+//     public static final double kBackLeftEncoderOffset = -0.664794921875;
+
+    private static final double kBackLeftXPosInches = -9;
+    private static final double kBackLeftYPosInches = 9;
+
+    // Back Right
+    public static final int kBackRightDriveMotorId = 11;
+    public static final int kBackRightSteerMotorId = 12;
+    public static final int kBackRightEncoderId = 13;
+//     public static final double kBackRightEncoderOffset = -0.74267578125;
   }
 }
