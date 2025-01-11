@@ -36,7 +36,7 @@ import frc.robot.utilities.VisionMeasurement;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-public class Drivetrain implements IDrivetrain {
+public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private ChassisSpeeds followChassisSpeeds = new ChassisSpeeds(0, 0, 0);
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
