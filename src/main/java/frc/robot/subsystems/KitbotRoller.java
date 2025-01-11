@@ -52,16 +52,6 @@ private SparkMax _motor;
         }
     }
     @Override
-    public InstantCommand setWantedState(RollerState state){
-        return new InstantCommand(() -> {
-            if (state != _currentState){
-                _previousState = _currentState;
-                _currentState = state;
-            }
-        }, this);
-    
-    }
-    @Override
     public void periodic(){
         handleCurrentState().schedule();
     }
