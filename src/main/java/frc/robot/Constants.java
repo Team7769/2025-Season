@@ -59,5 +59,7 @@ public final class Constants {
             0.5, 0.6, 0.7, 0.85, .9, 1 };
     public static final double[] RotAxis_outputTable = { -1.0, -.7, -0.6, -0.4, -0.3, -0.2, -0.05, 0, 0, 0.05, 0.2, 0.3,
             0.4, 0.6, .7, 1.0 };
+    public static final double kSpeedAt12VoltsMps = 4.73;
+    public static final double MaxAngularRate = 1.5 * Math.PI;
   }
 }
