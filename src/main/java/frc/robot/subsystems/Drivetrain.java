@@ -176,9 +176,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             case CORAL_SOURCE:
                 if (GeometryUtil.isRedAlliance()) {
                     if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
-                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 36) / 50;
+                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 216) / 50;
                     } else {
-                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 306) / 50;
+                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 126) / 50;
                     }
                 } else {
                     if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
