@@ -77,5 +77,25 @@ public class GeometryUtil {
             .fromDegrees(angle)
             .minus(currentPose.get().getRotation())
             .getDegrees();
-    }    
+    }
+
+    /**
+     * Gets the distance across the x-axis to the target translation (point).
+     * @param targetTranslation The target translation (point) on the field.
+     * @param currentPose Supplier for the current pose to evaluate from. This should usually be the pose from the pose estimator.
+     * @return The x, in meters, to the target translation (point).
+     */
+    public static double getXDifference(Translation2d targetTranslation, Supplier<Pose2d> currentPose) {
+        return currentPose.get().getTranslation().getX() - targetTranslation.getX();
+    }
+
+    /**
+     * Gets the distance across the y-axis to the target translation (point).
+     * @param targetTranslation The target translation (point) on the field.
+     * @param currentPose Supplier for the current pose to evaluate from. This should usually be the pose from the pose estimator.
+     * @return The y, in meters, to the target translation (point).
+     */
+    public static double getYDifference(Translation2d targetTranslation, Supplier<Pose2d> currentPose) {
+        return currentPose.get().getTranslation().getY() - targetTranslation.getY();
+    }
 }
