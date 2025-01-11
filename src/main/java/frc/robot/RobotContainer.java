@@ -11,6 +11,9 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.utilities.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.enums.RollerState;
+import frc.robot.subsystems.Cage;
+import frc.robot.subsystems.KitbotRoller;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -27,12 +30,17 @@ public class RobotContainer {
   private final CommandXboxController _driverController;
   private final CommandXboxController _operatorController;
   private final Drivetrain _drivetrain;
+  private final Cage _cage;
+  private final KitbotRoller _roller;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    _cage = new Cage();
+    _roller = new KitbotRoller();
     _driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     _operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
     _drivetrain = new Drivetrain(_driverController);
-
+    // Configure the trigger bindings
     configureBindings();
   }
 
@@ -50,7 +58,7 @@ public class RobotContainer {
     _driverController.y().onTrue(new InstantCommand(()-> _drivetrain.setTargetSource(GeometryUtil::isRedAlliance)));
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.POINT_FOLLOW))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
-
+    _driverController.rightTrigger().onTrue(_roller.setWantedState(RollerState.ROLL)).onFalse(_roller.setWantedState(RollerState.STOP));
     _driverController.start().onTrue(_drivetrain.resetGyro());
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
   }
