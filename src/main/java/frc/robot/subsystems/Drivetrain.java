@@ -111,7 +111,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     }
 
     public InstantCommand resetGyro() {
-        return new InstantCommand(() -> m_pigeon2.setYaw(0));
+        return new InstantCommand(() -> getPigeon2().setYaw(0));
     }
 
     public double getPoseX() {
@@ -143,7 +143,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     }
 
     private double getDegrees() {
-        return this.m_pigeon2.getAngle();
+        return getPigeon2().getRotation2d().getDegrees();
     }
 
     private void updateOdometry() {
