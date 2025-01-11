@@ -85,8 +85,8 @@ public final class Constants {
     public static final int kBackLeftEncoderId = 10;
 //     public static final double kBackLeftEncoderOffset = -0.664794921875;
 
-    private static final double kBackLeftXPosInches = -9;
-    private static final double kBackLeftYPosInches = 9;
+    public static final double kBackLeftXPosInches = -9;
+    public static final double kBackLeftYPosInches = 9;
 
     // Back Right
     public static final int kBackRightDriveMotorId = 11;
