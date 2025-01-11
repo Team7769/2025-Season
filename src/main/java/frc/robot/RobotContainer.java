@@ -46,7 +46,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    _drivetrain.setDefaultCommand(_drivetrain.applyRequest(() -> idle));
+    _drivetrain.setDefaultCommand(_drivetrain.applyRequest(() -> _drivetrain.idle));
     _driverController.y().onTrue(new InstantCommand(()-> _drivetrain.setTargetSource(GeometryUtil::isRedAlliance)));
 
     _driverController.start().onTrue(_drivetrain.resetGyro());
