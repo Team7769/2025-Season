@@ -18,6 +18,9 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -28,8 +31,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
+import frc.robot.TunerConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.FieldConstants;
+import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.utilities.GeometryUtil;
 import frc.robot.utilities.OneDimensionalLookup;
 import frc.robot.utilities.VisionMeasurement;
@@ -40,12 +46,15 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private ChassisSpeeds followChassisSpeeds = new ChassisSpeeds(0, 0, 0);
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    private final SwerveRequest.FieldCentricFacingAngle toPoint = new SwerveRequest.FieldCentricFacingAngle();
     public final SwerveRequest idle = new SwerveRequest.Idle();
     // this is used to drive with chassis speeds see an example of it in
     // setTrajectoryFollowModuleTargets
     public final SwerveRequest.ApplyRobotSpeeds chassisDrive = new SwerveRequest.ApplyRobotSpeeds();
 
-    private final Field2d m_field = new Field2d();
+    StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+    .getStructTopic("Robot Pose", Pose2d.struct).publish();
+
     private final PeriodicIO periodicIO = new PeriodicIO();
     private boolean hasAppliedOperatorPerspective = false;
     private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
@@ -69,10 +78,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     }
 
     private final CommandXboxController _driverController;
-    // private final Vision _vision;
+    private final Vision _vision;
 
-    public Drivetrain(CommandXboxController driveController/* , Vision vision */) {
-        // super(DrivetrainConstants.SwerveConstants, DrivetrainConstants.modules);
+    public Drivetrain(CommandXboxController driveController , Vision vision ) {
+        super(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
 
         // AutoBuilder.configureHolonomic(this::getPose, this::setStartingPose,
         // this::getSpeeds, (speeds) ->
@@ -80,10 +89,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         // Constants.DrivetrainConstants.pathFollowerConfig,
         // GeometryUtil::isRedAlliance, this);
 
-        PathPlannerLogging.setLogActivePathCallback((poses) -> m_field.getObject("path").setPoses(poses));
-
         _driverController = driveController;
-        // _vision = vision;
+        _vision = vision;
     }
 
     private void setChassisSpeeds(ChassisSpeeds newSpeeds) {
@@ -107,11 +114,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     }
 
     public Pose2d getPose() {
-        return this.m_odometry.getEstimatedPosition();
+        return getStateCopy().Pose;
     }
 
     public InstantCommand resetGyro() {
-        return new InstantCommand(() -> getPigeon2().setYaw(0));
+        return new InstantCommand(() -> resetRotation(new Rotation2d()));
     }
 
     public double getPoseX() {
@@ -146,8 +153,19 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         return getPigeon2().getRotation2d().getDegrees();
     }
 
+
     private void updateOdometry() {
-        m_field.setRobotPose(getPose());
+        ArrayList<VisionMeasurement> visionMeasurements = _vision
+            .getVisionMeasurements(
+            getPigeon2().getRotation2d()
+        );
+
+        for (VisionMeasurement visionMeasurement : visionMeasurements) {
+            addVisionMeasurement(
+                visionMeasurement.pose, visionMeasurement.timestamp
+            );
+        }
+        publisher.set(getPose());
     }
 
     public void periodic() {
@@ -156,6 +174,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         {this.setOperatorPerspectiveForward(allianceColor == Alliance.Red ? RedAlliancePerspectiveRotation: BlueAlliancePerspectiveRotation);
         hasAppliedOperatorPerspective = true;
         });
+
+        _vision.updateLimelightPosition(getPigeon2().getRotation2d());
     }
 
         this.periodicIO.VxCmd = -OneDimensionalLookup.interpLinear(
@@ -188,12 +208,14 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                     }
                 }
             break;
-            case ALGEA:
+            case ALGAE:
                 if (GeometryUtil.isRedAlliance()) {
                     targetRotation = GeometryUtil.getRotationDifference(this::getPose, 90) / 50;
                 } else {
                     targetRotation = GeometryUtil.getRotationDifference(this::getPose, 270) / 50;
                 }
+            break;
+            case NONE:
             break;
             default:
                 targetRotation = GeometryUtil.getAngleToTarget(_target, this::getPose, _isFollowingFront) / 50;

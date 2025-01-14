@@ -5,18 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
 import frc.robot.enums.DrivetrainState;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.utilities.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.enums.RollerState;
 import frc.robot.subsystems.Cage;
 import frc.robot.subsystems.KitbotRoller;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -32,6 +30,7 @@ public class RobotContainer {
   private final Drivetrain _drivetrain;
   private final Cage _cage;
   private final KitbotRoller _roller;
+  private final Vision _vision;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -39,7 +38,8 @@ public class RobotContainer {
     _roller = new KitbotRoller();
     _driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     _operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
-    _drivetrain = new Drivetrain(_driverController);
+    _vision = new Vision();
+    _drivetrain = new Drivetrain(_driverController, _vision);
     // Configure the trigger bindings
     configureBindings();
   }
