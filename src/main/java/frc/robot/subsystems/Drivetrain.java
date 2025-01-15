@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -34,6 +35,7 @@ import frc.robot.Constants;
 import frc.robot.TunerConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.FieldConstants;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.utilities.GeometryUtil;
@@ -51,9 +53,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     // this is used to drive with chassis speeds see an example of it in
     // setTrajectoryFollowModuleTargets
     public final SwerveRequest.ApplyRobotSpeeds chassisDrive = new SwerveRequest.ApplyRobotSpeeds();
+    private Pose2d temp = new Pose2d();
 
     StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Robot Pose", Pose2d.struct).publish();
+    private final Field2d m_field;
 
     private final PeriodicIO periodicIO = new PeriodicIO();
     private boolean hasAppliedOperatorPerspective = false;
@@ -91,6 +95,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
         _driverController = driveController;
         _vision = vision;
+        m_field = new Field2d();
+        SmartDashboard.putData("Field", m_field);
     }
 
     private void setChassisSpeeds(ChassisSpeeds newSpeeds) {
@@ -161,23 +167,26 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         );
 
         for (VisionMeasurement visionMeasurement : visionMeasurements) {
-            addVisionMeasurement(
+            this.addVisionMeasurement(
                 visionMeasurement.pose, visionMeasurement.timestamp
             );
         }
         publisher.set(getPose());
+        m_field.setRobotPose(getPose());
+
     }
 
+    @Override
     public void periodic() {
     if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
         DriverStation.getAlliance().ifPresent((allianceColor) ->
         {this.setOperatorPerspectiveForward(allianceColor == Alliance.Red ? RedAlliancePerspectiveRotation: BlueAlliancePerspectiveRotation);
         hasAppliedOperatorPerspective = true;
         });
-
-        _vision.updateLimelightPosition(getPigeon2().getRotation2d());
     }
 
+    _vision.updateLimelightPosition(getPigeon2().getRotation2d());
+    
         this.periodicIO.VxCmd = -OneDimensionalLookup.interpLinear(
                 Constants.DrivetrainConstants.XY_Axis_inputBreakpoints,
                 Constants.DrivetrainConstants.XY_Axis_outputTable, _driverController.getLeftY());
