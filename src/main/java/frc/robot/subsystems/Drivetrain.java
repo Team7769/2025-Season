@@ -48,7 +48,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private ChassisSpeeds followChassisSpeeds = new ChassisSpeeds(0, 0, 0);
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.10).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.10)
+            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.10).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.05)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private final SwerveRequest.FieldCentricFacingAngle toPoint = new SwerveRequest.FieldCentricFacingAngle();
     public final SwerveRequest idle = new SwerveRequest.Idle();
@@ -66,7 +66,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private final Rotation2d BlueAlliancePerspectiveRotation = Rotation2d.fromDegrees(0);
     private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
 
-    private final int followP = 5;
+    private double followP = 4;
 
     private DrivetrainState _currentState = DrivetrainState.OPEN_LOOP;
     private DrivetrainState _previousState = DrivetrainState.IDLE;
@@ -164,6 +164,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         return getPigeon2().getRotation2d().getDegrees();
     }
 
+    private String getCurrentTarget() {
+        return _currentTarget.name();
+    }
+
 
     private void updateOdometry() {
         ArrayList<VisionMeasurement> visionMeasurements = _vision
@@ -218,7 +222,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                     if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
                         targetRotation = GeometryUtil.getRotationDifference(this::getPose, 126) / 50;
                     } else {
-                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 216) / 50;
+                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 230) / 50;
                     }
                 }
             break;
@@ -235,6 +239,14 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 targetRotation = GeometryUtil.getAngleToTarget(_target, this::getPose, _isFollowingFront) / 50;
             break;
         }
+        SmartDashboard.putNumber("XDiff", GeometryUtil.getXDifference(_target, this::getPose));
+        SmartDashboard.putNumber("YDiff", GeometryUtil.getYDifference(_target, this::getPose));
+        SmartDashboard.putString("currentTarget", getCurrentTarget());
+        if (Math.abs(GeometryUtil.getXDifference(_target, this::getPose)) < 1 && Math.abs(GeometryUtil.getYDifference(_target, this::getPose)) < 1) {
+            followP = .9;
+        } else {
+            followP = 4;
+        }
         xFollow = GeometryUtil.getXDifference(_target, this::getPose) / followP;
         yFollow = GeometryUtil.getYDifference(_target, this::getPose) / followP;
         if (yFollow > 1) {
@@ -250,6 +262,12 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 targetRotation = -0.5;
             }
         }
+        
+        SmartDashboard.putNumber("target rotation", targetRotation);
+        SmartDashboard.putNumber("pose x", getPoseX());
+        SmartDashboard.putNumber("pose y", getPoseY());
+        SmartDashboard.putNumber("angle", getDegrees());
+        SmartDashboard.putNumber("followP", followP);
         updateOdometry();
         handleCurrentState().schedule();
     }
@@ -269,8 +287,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
                 DrivetrainConstants.MaxAngularRate));
             case POINT_FOLLOW:
-                return applyRequest(() -> drive.withVelocityX(xFollow *
-                DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(yFollow *
+                return applyRequest(() -> drive.withVelocityX(-xFollow *
+                DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(-yFollow *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
                 DrivetrainConstants.MaxAngularRate));
             default:
@@ -304,7 +322,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
             _target = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceTop : Constants.FieldConstants.kBlueSourceTop;
         } else {
-            _target = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceLow : Constants.FieldConstants.kBlueSourceTop;
+            _target = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceLow : Constants.FieldConstants.kBlueSourceLow;
         }
     }
 
