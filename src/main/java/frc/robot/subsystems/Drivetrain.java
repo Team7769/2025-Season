@@ -42,11 +42,13 @@ import frc.robot.utilities.GeometryUtil;
 import frc.robot.utilities.OneDimensionalLookup;
 import frc.robot.utilities.VisionMeasurement;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private ChassisSpeeds followChassisSpeeds = new ChassisSpeeds(0, 0, 0);
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.10).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.10)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private final SwerveRequest.FieldCentricFacingAngle toPoint = new SwerveRequest.FieldCentricFacingAngle();
     public final SwerveRequest idle = new SwerveRequest.Idle();
@@ -124,7 +126,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     }
 
     public InstantCommand resetGyro() {
-        return new InstantCommand(() -> resetRotation(new Rotation2d()));
+        return new InstantCommand(() -> {
+            getPigeon2().setYaw(0);
+            resetRotation(new Rotation2d());
+        });
     }
 
     public double getPoseX() {
@@ -168,7 +173,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
         for (VisionMeasurement visionMeasurement : visionMeasurements) {
             this.addVisionMeasurement(
-                visionMeasurement.pose, visionMeasurement.timestamp
+                visionMeasurement.pose, Utils.fpgaToCurrentTime(visionMeasurement.timestamp)
             );
         }
         publisher.set(getPose());

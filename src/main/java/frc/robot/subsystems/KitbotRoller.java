@@ -16,7 +16,7 @@ public class KitbotRoller extends StateBasedSubsystem<RollerState>{
 private SparkMax _motor;
 
     public KitbotRoller (){
-        _motor = new SparkMax(14, MotorType.kBrushed);
+        _motor = new SparkMax(15, MotorType.kBrushed);
         SparkMaxConfig config = new SparkMaxConfig();
         config.inverted(false)
             .idleMode(IdleMode.kCoast);
