@@ -30,9 +30,9 @@ public final class Constants {
     public static final Translation2d kRedSourceTop = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceTop);
     public static final Translation2d kRedSourceLow = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceLow);
 
-    public static final Translation2d kBlueAlgea = new Translation2d(6.4, .6);
+    public static final Translation2d kBlueAlgae = new Translation2d(6.4, .6);
 
-    public static final Translation2d kRedAlgea = new Translation2d(11.5, 7.5);
+    public static final Translation2d kRedAlgae = new Translation2d(11.5, 7.5);
 
     public static final Translation2d[] kBlueCoralArray = {new Translation2d(4.778, 4.859), new Translation2d(5.079, 4.694), new Translation2d(5.409, 4.213),
        new Translation2d(5.379, 3.852), new Translation2d(5.109, 3.296), new Translation2d(4.823, 3.131), new Translation2d(4.207, 3.131), new Translation2d(3.907, 3.281),

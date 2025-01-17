@@ -217,12 +217,14 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                     }
                 }
             break;
-            case ALGAE:
+            case PROCESSOR:
                 if (GeometryUtil.isRedAlliance()) {
                     targetRotation = GeometryUtil.getRotationDifference(this::getPose, 90) / 50;
                 } else {
                     targetRotation = GeometryUtil.getRotationDifference(this::getPose, 270) / 50;
                 }
+            break;
+            case REEF:
             break;
             case NONE:
             break;
@@ -295,12 +297,44 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     //#region setTargetFunctions
     public void setTargetSource(Supplier<Boolean> isRedAlliance) {
         _currentTarget = LocationTarget.CORAL_SOURCE;
-        _isFollowingFront = false;
+        _isFollowingFront = true;
         if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
             _target = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceTop : Constants.FieldConstants.kBlueSourceTop;
         } else {
-            _target = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceLow : Constants.FieldConstants.kBlueSourceTop;
+            _target = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceLow : Constants.FieldConstants.kBlueSourceLow;
         }
+    }
+
+    public void setTargetProcessor(Supplier<Boolean> isRedAlliance)
+    {
+        _currentTarget = LocationTarget.PROCESSOR;
+        _isFollowingFront = false;
+
+        _target = isRedAlliance.get() ? Constants.FieldConstants.kRedAlgae : Constants.FieldConstants.kBlueAlgae;
+        
+    }
+
+    public void setTargetReef(Supplier<Boolean> isRedAlliance)
+    {
+        _currentTarget = LocationTarget.REEF;
+        _isFollowingFront = false;
+
+        Translation2d[] _reefArray = isRedAlliance.get() ? Constants.FieldConstants.kRedCoralArray : Constants.FieldConstants.kBlueCoralArray;
+        Translation2d closestPoint = _reefArray[0];
+        Translation2d currentPose = getPose().getTranslation();
+        for(Translation2d branch : _reefArray)
+        {
+            var branchDistance = branch.getDistance(currentPose);
+            var closestPointDistance = closestPoint.getDistance(currentPose);
+            if(branchDistance < closestPointDistance)
+            {
+                closestPoint = branch;
+            }
+        }
+        _target = closestPoint;
+        SmartDashboard.putNumber("Closest Branch Coordinates X", _target.getX());
+        SmartDashboard.putNumber("Closest Branch Coordinates Y", _target.getY());
+
     }
 
     ////#endregion

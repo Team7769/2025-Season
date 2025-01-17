@@ -4,8 +4,8 @@ import frc.robot.statemachine.IState;
 
 public enum LocationTarget implements IState {
     NONE,
-    CORAL,
-    ALGAE,
+    REEF,
+    PROCESSOR,
     CORAL_SOURCE,
     CAGE
 }
