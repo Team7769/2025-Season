@@ -48,7 +48,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private ChassisSpeeds followChassisSpeeds = new ChassisSpeeds(0, 0, 0);
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.10).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.05)
+            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.05).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.05)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private final SwerveRequest.FieldCentricFacingAngle toPoint = new SwerveRequest.FieldCentricFacingAngle();
     public final SwerveRequest idle = new SwerveRequest.Idle();
@@ -214,13 +214,13 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             case CORAL_SOURCE:
                 if (GeometryUtil.isRedAlliance()) {
                     if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
-                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 216) / 50;
+                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 230) / 50;
                     } else {
-                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 126) / 50;
+                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 124) / 50;
                     }
                 } else {
                     if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
-                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 126) / 50;
+                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 124) / 50;
                     } else {
                         targetRotation = GeometryUtil.getRotationDifference(this::getPose, 230) / 50;
                     }
