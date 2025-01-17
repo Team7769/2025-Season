@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path 1"
+            "pathName": "step 1 example"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path 2"
+            "pathName": "step 2 example"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "step 3 example"
           }
         }
       ]
