@@ -7,5 +7,6 @@ public enum LocationTarget implements IState {
     REEF,
     PROCESSOR,
     CORAL_SOURCE,
-    CAGE
+    CAGE,
+    BARGE
 }
