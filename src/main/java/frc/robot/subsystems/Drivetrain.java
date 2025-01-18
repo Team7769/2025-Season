@@ -232,7 +232,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 Constants.DrivetrainConstants.RotAxis_outputTable, _driverController.getRightX());
 
         switch (_currentTarget) {
-            case ALGAE:
+            case CORAL_SOURCE:
+                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
+                targetSource(GeometryUtil::isRedAlliance);
+            break;
+            case PROCESSOR:
                 if (GeometryUtil.isRedAlliance()) {
                     targetRotation = GeometryUtil.getRotationDifference(this::getPose, 90) / 50;
                 } else {
@@ -242,7 +246,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             case REEF:
                 targetReef(GeometryUtil::isRedAlliance);
                 targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
-                break;
+            break;
+            case NONE:
+            break;
             default:
                 targetRotation = GeometryUtil.getAngleToTarget(_target.getTranslation(), this::getPose, _isFollowingFront) / 50;
             break;
@@ -279,6 +285,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("reefTarget", reefTarget);
         SmartDashboard.putNumber("reefFace", targetReefFace);
         SmartDashboard.putNumber("target angle", _target.getRotation().getDegrees());
+        SmartDashboard.putNumber("Target X", _target.getX());
+        SmartDashboard.putNumber("Target Y", _target.getY());
         updateOdometry();
         handleCurrentState().schedule();
     }
@@ -327,14 +335,50 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     ////#endregion
 
     //#region setTargetFunctions
-    public void setTargetSource(Supplier<Boolean> isRedAlliance) {
-        _currentTarget = LocationTarget.CORAL_SOURCE;
+    public void targetSource(Supplier<Boolean> isRedAlliance) {
+        Pose2d[] _sourcePositionArray;
+        
         _isFollowingFront = false;
         if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
-            _target = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceTop : Constants.FieldConstants.kBlueSourceTop;
+             _sourcePositionArray = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceTop : Constants.FieldConstants.kBlueSourceTop;
         } else {
-            _target = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceLow : Constants.FieldConstants.kBlueSourceLow;
+            _sourcePositionArray = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceBottom : Constants.FieldConstants.kBlueSourceBottom;
         }
+
+        Pose2d closestPoint = new Pose2d();
+        Translation2d currentPose = getPose().getTranslation();
+        for(Pose2d position : _sourcePositionArray)
+        {
+            var positionDistance = position.getTranslation().getDistance(currentPose);
+            var closestPointDistance = closestPoint.getTranslation().getDistance(currentPose);
+            if(positionDistance < closestPointDistance)
+            {
+                closestPoint = position;
+            }
+        }
+        _target = closestPoint;
+        
+        
+
+    }
+
+    public void setTargetProcessor(Supplier<Boolean> isRedAlliance)
+    {
+        _currentTarget = LocationTarget.PROCESSOR;
+        _isFollowingFront = false;
+
+        //_target = isRedAlliance.get() ? Constants.FieldConstants.kRedAlgae : Constants.FieldConstants.kBlueAlgae;
+        
+    }
+
+    public void setTargetBarge(Supplier<Boolean> isRedAlliance)
+    {
+        _currentTarget = LocationTarget.BARGE;
+    }
+
+    public void setTargetCage(Supplier<Boolean> isRedAlliance)
+    {
+        _currentTarget = LocationTarget.CAGE;
     }
 
     public void targetReef(Supplier<Boolean> isRedAlliance) {

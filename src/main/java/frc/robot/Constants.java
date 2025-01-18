@@ -30,23 +30,67 @@ public final class Constants {
     public static final double kHalfFieldWidth = 4.026;
     public static final double kHalfFieldLength = 8.774;
 
-    public static final Pose2d kBlueSourceTop = new Pose2d(1, 7, new Rotation2d(124));
-    public static final Pose2d kBlueSourceLow = new Pose2d(1, .9, new Rotation2d(230));
+    // public static final Translation2d kBlueSourceTop = new Translation2d(1, 7);
+    // public static final Translation2d kBlueSourceLow = new Translation2d(1, .9);
 
-    public static final Pose2d kRedSourceTop = new Pose2d(GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceTop.getTranslation()), new Rotation2d(230));
-    public static final Pose2d kRedSourceLow = new Pose2d(GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceLow.getTranslation()), new Rotation2d(124));
+    // public static final Translation2d kRedSourceTop = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceTop);
+    // public static final Translation2d kRedSourceLow = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceLow);
 
-    public static final Translation2d kBlueAlgea = new Translation2d(6.4, .6);
+    //Coral Source Coordinates:
 
-    public static final Translation2d kRedAlgea = new Translation2d(11.5, 7.5);
+    public static final Rotation2d kSourceRotationTop = new Rotation2d(125.2 * (Math.PI/180));
+    public static final Rotation2d kSourceRotationBottom = new Rotation2d(234.8 * (Math.PI/180));
+
+    //blue side top
+    public static final Pose2d kBlueSourceTop_A = new Pose2d(new Translation2d(0.42, 7.152), kSourceRotationTop);
+    public static final Pose2d kBlueSourceTop_B = new Pose2d(new Translation2d(0.85, 7.45), kSourceRotationTop);
+    public static final Pose2d kBlueSourceTop_C = new Pose2d(new Translation2d(1.28, 7.752), kSourceRotationTop);
+
+    public static final Pose2d[] kBlueSourceTop = {kBlueSourceTop_A, kBlueSourceTop_B, kBlueSourceTop_C};
+
+    //blue side bottom
+    public static final Pose2d kBlueSourceBottom_A = new Pose2d(new Translation2d(0.42, 0.9), kSourceRotationBottom);
+    public static final Pose2d kBlueSourceBottom_B = new Pose2d(new Translation2d(0.85, 0.6), kSourceRotationBottom);
+    public static final Pose2d kBlueSourceBottom_C = new Pose2d(new Translation2d(1.28, 0.3), kSourceRotationBottom);
+
+    public static final Pose2d[] kBlueSourceBottom = {kBlueSourceBottom_A, kBlueSourceBottom_B, kBlueSourceBottom_C};
+
+    //red side top
+    public static final Translation2d kRedSourceTop_A_translation2d = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceTop_A.getTranslation());
+    public static final Pose2d kRedSourceTop_A =  new Pose2d(kRedSourceTop_A_translation2d, kSourceRotationTop);
+
+    public static final Translation2d kRedSourceTop_B_translation2d = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceTop_B.getTranslation());
+    public static final Pose2d kRedSourceTop_B =  new Pose2d(kRedSourceTop_B_translation2d, kSourceRotationTop); 
+
+    public static final Translation2d kRedSourceTop_C_translation2d = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceTop_C.getTranslation());
+    public static final Pose2d kRedSourceTop_C =  new Pose2d(kRedSourceTop_C_translation2d, kSourceRotationTop); 
+
+    public static final Pose2d[] kRedSourceTop = {kRedSourceTop_A, kRedSourceTop_B, kRedSourceTop_C};
+
+    //red side bottom
+    public static final Translation2d kRedSourceBottom_A_translation2d = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceBottom_A.getTranslation());
+    public static final Pose2d kRedSourceBottom_A =  new Pose2d(kRedSourceBottom_A_translation2d, kSourceRotationTop);
+
+    public static final Translation2d kRedSourceBottom_B_translation2d = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceBottom_B.getTranslation());
+    public static final Pose2d kRedSourceBottom_B =  new Pose2d(kRedSourceBottom_B_translation2d, kSourceRotationTop); 
+
+    public static final Translation2d kRedSourceBottom_C_translation2d = GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceBottom_C.getTranslation());
+    public static final Pose2d kRedSourceBottom_C =  new Pose2d(kRedSourceBottom_C_translation2d, kSourceRotationTop); 
+
+    public static final Pose2d[] kRedSourceBottom = {kRedSourceBottom_A, kRedSourceBottom_B, kRedSourceBottom_C};
+
+
+
+    public static final Translation2d kBlueAlgae = new Translation2d(6.4, .6);
+
+    public static final Translation2d kRedAlgae = new Translation2d(11.5, 7.5);
 
     public static final ReefFace[] kBlueReefFaces = {ReefConstants.kBlueReefFace1, ReefConstants.kBlueReefFace2,
        ReefConstants.kBlueReefFace3, ReefConstants.kBlueReefFace4, ReefConstants.kBlueReefFace5, ReefConstants.kBlueReefFace6};
 
     public static final ReefFace[] kRedReefFaces = {ReefConstants.kRedReefFace1, ReefConstants.kRedReefFace2,
       ReefConstants.kRedReefFace3, ReefConstants.kRedReefFace4, ReefConstants.kRedReefFace5, ReefConstants.kRedReefFace6};
-   }
-  
+  }
 
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;

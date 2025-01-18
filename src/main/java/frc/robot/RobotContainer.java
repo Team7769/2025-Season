@@ -56,7 +56,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     _drivetrain.setDefaultCommand(_drivetrain.applyRequest(() -> _drivetrain.idle));
-    _driverController.y().onTrue(new InstantCommand(()-> _drivetrain.setTargetSource(GeometryUtil::isRedAlliance)));
+    _driverController.y().onTrue(_drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE));
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.POINT_FOLLOW))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
     _driverController.rightTrigger().onTrue(_roller.setWantedState(RollerState.ROLL)).onFalse(_roller.setWantedState(RollerState.STOP));
