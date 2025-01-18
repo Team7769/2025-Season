@@ -71,7 +71,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private DrivetrainState _currentState = DrivetrainState.OPEN_LOOP;
     private DrivetrainState _previousState = DrivetrainState.IDLE;
     private LocationTarget _currentTarget = LocationTarget.NONE;
-    private Translation2d _target = new Translation2d();
+    // private Translation2d _target = new Translation2d();
+    private Pose2d _target = new Pose2d();
     private boolean _isFollowingFront = false;
     private double targetRotation;
     private double xFollow;
@@ -212,43 +213,34 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
         switch (_currentTarget) {
             case CORAL_SOURCE:
-                if (GeometryUtil.isRedAlliance()) {
-                    if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
-                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 230) / 50;
-                    } else {
-                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 124) / 50;
-                    }
-                } else {
-                    if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
-                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 124) / 50;
-                    } else {
-                        targetRotation = GeometryUtil.getRotationDifference(this::getPose, 230) / 50;
-                    }
-                }
+                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
+                targetSource(GeometryUtil::isRedAlliance);
             break;
-            case ALGAE:
+            case PROCESSOR:
                 if (GeometryUtil.isRedAlliance()) {
                     targetRotation = GeometryUtil.getRotationDifference(this::getPose, 90) / 50;
                 } else {
                     targetRotation = GeometryUtil.getRotationDifference(this::getPose, 270) / 50;
                 }
             break;
+            case REEF:
+            break;
             case NONE:
             break;
             default:
-                targetRotation = GeometryUtil.getAngleToTarget(_target, this::getPose, _isFollowingFront) / 50;
+                targetRotation = GeometryUtil.getAngleToTarget(_target.getTranslation(), this::getPose, _isFollowingFront) / 50;
             break;
         }
-        SmartDashboard.putNumber("XDiff", GeometryUtil.getXDifference(_target, this::getPose));
-        SmartDashboard.putNumber("YDiff", GeometryUtil.getYDifference(_target, this::getPose));
+        SmartDashboard.putNumber("XDiff", GeometryUtil.getXDifference(_target.getTranslation(), this::getPose));
+        SmartDashboard.putNumber("YDiff", GeometryUtil.getYDifference(_target.getTranslation(), this::getPose));
         SmartDashboard.putString("currentTarget", getCurrentTarget());
-        if (Math.abs(GeometryUtil.getXDifference(_target, this::getPose)) < 1 && Math.abs(GeometryUtil.getYDifference(_target, this::getPose)) < 1) {
+        if (Math.abs(GeometryUtil.getXDifference(_target.getTranslation(), this::getPose)) < 1 && Math.abs(GeometryUtil.getYDifference(_target.getTranslation(), this::getPose)) < 1) {
             followP = .9;
         } else {
             followP = 4;
         }
-        xFollow = GeometryUtil.getXDifference(_target, this::getPose) / followP;
-        yFollow = GeometryUtil.getYDifference(_target, this::getPose) / followP;
+        xFollow = GeometryUtil.getXDifference(_target.getTranslation(), this::getPose) / followP;
+        yFollow = GeometryUtil.getYDifference(_target.getTranslation(), this::getPose) / followP;
         if (yFollow > 1) {
             yFollow = 1;
         } 
@@ -268,6 +260,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("pose y", getPoseY());
         SmartDashboard.putNumber("angle", getDegrees());
         SmartDashboard.putNumber("followP", followP);
+        SmartDashboard.putNumber("Target X", _target.getX());
+        SmartDashboard.putNumber("Target Y", _target.getY());
+        SmartDashboard.putNumber("point rotation", _target.getRotation().getDegrees());
         updateOdometry();
         handleCurrentState().schedule();
     }
@@ -316,14 +311,73 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     ////#endregion
 
     //#region setTargetFunctions
-    public void setTargetSource(Supplier<Boolean> isRedAlliance) {
-        _currentTarget = LocationTarget.CORAL_SOURCE;
+    public void targetSource(Supplier<Boolean> isRedAlliance) {
+        Pose2d[] _sourcePositionArray;
+        
         _isFollowingFront = false;
         if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
-            _target = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceTop : Constants.FieldConstants.kBlueSourceTop;
+             _sourcePositionArray = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceTop : Constants.FieldConstants.kBlueSourceTop;
         } else {
-            _target = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceLow : Constants.FieldConstants.kBlueSourceLow;
+            _sourcePositionArray = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceBottom : Constants.FieldConstants.kBlueSourceBottom;
         }
+
+        Pose2d closestPoint = new Pose2d();
+        Translation2d currentPose = getPose().getTranslation();
+        for(Pose2d position : _sourcePositionArray)
+        {
+            var positionDistance = position.getTranslation().getDistance(currentPose);
+            var closestPointDistance = closestPoint.getTranslation().getDistance(currentPose);
+            if(positionDistance < closestPointDistance)
+            {
+                closestPoint = position;
+            }
+        }
+        _target = closestPoint;
+        
+        
+
+    }
+
+    public void setTargetProcessor(Supplier<Boolean> isRedAlliance)
+    {
+        _currentTarget = LocationTarget.PROCESSOR;
+        _isFollowingFront = false;
+
+        //_target = isRedAlliance.get() ? Constants.FieldConstants.kRedAlgae : Constants.FieldConstants.kBlueAlgae;
+        
+    }
+
+    public void setTargetReef(Supplier<Boolean> isRedAlliance)
+    {
+        // _currentTarget = LocationTarget.REEF;
+        // _isFollowingFront = false;
+
+        // Translation2d[] _reefArray = isRedAlliance.get() ? Constants.FieldConstants.kRedCoralArray : Constants.FieldConstants.kBlueCoralArray;
+        // Translation2d closestPoint = _reefArray[0];
+        // Translation2d currentPose = getPose().getTranslation();
+        // for(Translation2d branch : _reefArray)
+        // {
+        //     var branchDistance = branch.getDistance(currentPose);
+        //     var closestPointDistance = closestPoint.getDistance(currentPose);
+        //     if(branchDistance < closestPointDistance)
+        //     {
+        //         closestPoint = branch;
+        //     }
+        // }
+        // _target = closestPoint;
+        // SmartDashboard.putNumber("Closest Branch Coordinates X", _target.getX());
+        // SmartDashboard.putNumber("Closest Branch Coordinates Y", _target.getY());
+
+    }
+
+    public void setTargetBarge(Supplier<Boolean> isRedAlliance)
+    {
+        _currentTarget = LocationTarget.BARGE;
+    }
+
+    public void setTargetCage(Supplier<Boolean> isRedAlliance)
+    {
+        _currentTarget = LocationTarget.CAGE;
     }
 
     ////#endregion
