@@ -10,7 +10,7 @@ public class ReefFace {
     private Pose2d algae;
     private Rotation2d rotation;
 
-    public ReefFace(Translation2d rightLocation, Translation2d leftLocation, Translation2d algaeLocation, Rotation2d setRotation) {
+    public ReefFace(Translation2d rightLocation, Translation2d algaeLocation, Translation2d leftLocation, Rotation2d setRotation) {
         right = new Pose2d(rightLocation, setRotation);
         left = new Pose2d(leftLocation, setRotation);
         algae = new Pose2d(algaeLocation, setRotation);

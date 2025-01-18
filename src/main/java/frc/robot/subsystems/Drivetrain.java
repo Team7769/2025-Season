@@ -183,7 +183,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     }
 
     public void targetNextReefFace() {
-        if (targetReefFace < 4) {
+        if (targetReefFace < 5) {
             targetReefFace++;
         } else {
             targetReefFace = 0;
