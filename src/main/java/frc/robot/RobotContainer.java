@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.enums.DrivetrainState;
+import frc.robot.enums.LocationTarget;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utilities.*;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -60,7 +61,14 @@ public class RobotContainer {
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
     _driverController.rightTrigger().onTrue(_roller.setWantedState(RollerState.ROLL)).onFalse(_roller.setWantedState(RollerState.STOP));
     _driverController.start().onTrue(_drivetrain.resetGyro());
+
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
+
+    _driverController.povRight().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(0)));
+    _driverController.povUp().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(1)));
+    _driverController.povLeft().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(2)));
+    _driverController.x().onTrue(new InstantCommand(() -> _drivetrain.targetNextReefFace()));
+    _driverController.b().onTrue(_drivetrain.setWantedTarget(LocationTarget.REEF));
   }
 
   /**
