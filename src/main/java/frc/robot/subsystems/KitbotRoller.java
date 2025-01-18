@@ -1,14 +1,10 @@
 package frc.robot.subsystems;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-
-import java.time.Instant;
 
 import com.revrobotics.spark.SparkBase;
 import frc.robot.statemachine.StateBasedSubsystem;
@@ -20,7 +16,7 @@ public class KitbotRoller extends StateBasedSubsystem<RollerState>{
 private SparkMax _motor;
 
     public KitbotRoller (){
-        _motor = new SparkMax(14, MotorType.kBrushed);
+        _motor = new SparkMax(15, MotorType.kBrushed);
         SparkMaxConfig config = new SparkMaxConfig();
         config.inverted(false)
             .idleMode(IdleMode.kCoast);

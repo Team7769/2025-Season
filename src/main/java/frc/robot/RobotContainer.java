@@ -5,13 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
+import frc.robot.enums.DrivetrainState;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.utilities.*;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.enums.RollerState;
 import frc.robot.subsystems.Cage;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.KitbotRoller;
+import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -22,19 +25,21 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final CommandXboxController _driverController;
+  private final CommandXboxController _operatorController;
+  private final Drivetrain _drivetrain;
   private final Cage _cage;
   private final KitbotRoller _roller;
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final Vision _vision;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     _cage = new Cage();
     _roller = new KitbotRoller();
-
+    _driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+    _operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+    _vision = new Vision();
+    _drivetrain = new Drivetrain(_driverController, _vision);
     // Configure the trigger bindings
     configureBindings();
   }
@@ -49,14 +54,13 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-        m_driverController.rightTrigger().onTrue(_roller.setWantedState(RollerState.ROLL)).onFalse(_roller.setWantedState(RollerState.STOP));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    _drivetrain.setDefaultCommand(_drivetrain.applyRequest(() -> _drivetrain.idle));
+    _driverController.y().onTrue(new InstantCommand(()-> _drivetrain.setTargetSource(GeometryUtil::isRedAlliance)));
+    _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.POINT_FOLLOW))
+    .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
+    _driverController.rightTrigger().onTrue(_roller.setWantedState(RollerState.ROLL)).onFalse(_roller.setWantedState(RollerState.STOP));
+    _driverController.start().onTrue(_drivetrain.resetGyro());
+    new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
   }
 
   /**
@@ -65,7 +69,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return new Command() {};
   }
 }

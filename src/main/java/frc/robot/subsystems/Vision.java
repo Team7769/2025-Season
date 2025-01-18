@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,7 +26,7 @@ public class Vision extends SubsystemBase{
     private LinearFilter limelightDistanceFilter = LinearFilter.singlePoleIIR(1/(2* Math.PI * filterDistanceError), 0.02);
 	private LinearFilter limelightAngleFilter = LinearFilter.singlePoleIIR(1/(2*Math.PI * filterAngleError), 0.02);
 
-    Vision()
+    public Vision()
     {
 
     }
@@ -67,6 +69,38 @@ public class Vision extends SubsystemBase{
         else {
             return 0.0;
         }
+    }
+
+    public ArrayList<VisionMeasurement> getVisionMeasurements(
+        Rotation2d rotation
+    )
+    {
+        ArrayList<VisionMeasurement> visionMeasurements = new ArrayList<>();
+
+            LimelightHelpers.SetRobotOrientation(
+                "limelight",
+                rotation.getDegrees(),
+                0, 
+                0, 
+                0, 
+                0,
+                0
+            );
+
+            PoseEstimate limelightPoseEstimate =
+                LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(
+                    "limelight"
+                );
+
+            if (limelightPoseEstimate != null && limelightPoseEstimate.tagCount > 0) {
+                visionMeasurements.add(
+                    new VisionMeasurement(
+                        limelightPoseEstimate.pose,
+                        limelightPoseEstimate.timestampSeconds
+                    )
+                );
+            }
+        return visionMeasurements;
     }
 
 
