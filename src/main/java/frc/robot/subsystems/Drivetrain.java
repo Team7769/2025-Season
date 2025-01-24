@@ -55,7 +55,6 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     // this is used to drive with chassis speeds see an example of it in
     // setTrajectoryFollowModuleTargets
     public final SwerveRequest.ApplyRobotSpeeds chassisDrive = new SwerveRequest.ApplyRobotSpeeds();
-    private Pose2d temp = new Pose2d();
 
     StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Robot Pose", Pose2d.struct).publish();
@@ -67,11 +66,13 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private final Rotation2d RedAlliancePerspectiveRotation = Rotation2d.fromDegrees(180);
 
     private double followP = 4;
+    // 0 = right 1 = algae 2 = left
+    private int reefTarget = 0;
+    private int targetReefFace = 0;
 
     private DrivetrainState _currentState = DrivetrainState.OPEN_LOOP;
     private DrivetrainState _previousState = DrivetrainState.IDLE;
     private LocationTarget _currentTarget = LocationTarget.NONE;
-    // private Translation2d _target = new Translation2d();
     private Pose2d _target = new Pose2d();
     private boolean _isFollowingFront = false;
     private double targetRotation;
@@ -169,6 +170,25 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         return _currentTarget.name();
     }
 
+    public int targetedPole() {
+        return reefTarget;
+    }
+
+    public void setReefTargetSideRight(int target) {
+        reefTarget = target;
+    }
+
+    public void setReefTargetFace(int face) {
+        targetReefFace = face;
+    }
+
+    public void targetNextReefFace() {
+        if (targetReefFace < 5) {
+            targetReefFace++;
+        } else {
+            targetReefFace = 0;
+        }
+    }
 
     private void updateOdometry() {
         ArrayList<VisionMeasurement> visionMeasurements = _vision
@@ -224,6 +244,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 }
             break;
             case REEF:
+                targetReef(GeometryUtil::isRedAlliance);
+                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
             break;
             case NONE:
             break;
@@ -231,16 +253,16 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 targetRotation = GeometryUtil.getAngleToTarget(_target.getTranslation(), this::getPose, _isFollowingFront) / 50;
             break;
         }
-        SmartDashboard.putNumber("XDiff", GeometryUtil.getXDifference(_target.getTranslation(), this::getPose));
-        SmartDashboard.putNumber("YDiff", GeometryUtil.getYDifference(_target.getTranslation(), this::getPose));
+        SmartDashboard.putNumber("XDiff", GeometryUtil.getXDifference(_target, this::getPose));
+        SmartDashboard.putNumber("YDiff", GeometryUtil.getYDifference(_target, this::getPose));
         SmartDashboard.putString("currentTarget", getCurrentTarget());
-        if (Math.abs(GeometryUtil.getXDifference(_target.getTranslation(), this::getPose)) < 1 && Math.abs(GeometryUtil.getYDifference(_target.getTranslation(), this::getPose)) < 1) {
+        if (Math.abs(GeometryUtil.getXDifference(_target, this::getPose)) < 1 && Math.abs(GeometryUtil.getYDifference(_target, this::getPose)) < 1) {
             followP = .9;
         } else {
             followP = 4;
         }
-        xFollow = GeometryUtil.getXDifference(_target.getTranslation(), this::getPose) / followP;
-        yFollow = GeometryUtil.getYDifference(_target.getTranslation(), this::getPose) / followP;
+        xFollow = GeometryUtil.getXDifference(_target, this::getPose) / followP;
+        yFollow = GeometryUtil.getYDifference(_target, this::getPose) / followP;
         if (yFollow > 1) {
             yFollow = 1;
         } 
@@ -260,9 +282,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("pose y", getPoseY());
         SmartDashboard.putNumber("angle", getDegrees());
         SmartDashboard.putNumber("followP", followP);
+        SmartDashboard.putNumber("reefTarget", reefTarget);
+        SmartDashboard.putNumber("reefFace", targetReefFace);
+        SmartDashboard.putNumber("target angle", _target.getRotation().getDegrees());
         SmartDashboard.putNumber("Target X", _target.getX());
         SmartDashboard.putNumber("Target Y", _target.getY());
-        SmartDashboard.putNumber("point rotation", _target.getRotation().getDegrees());
         updateOdometry();
         handleCurrentState().schedule();
     }
@@ -347,29 +371,6 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         
     }
 
-    public void setTargetReef(Supplier<Boolean> isRedAlliance)
-    {
-        // _currentTarget = LocationTarget.REEF;
-        // _isFollowingFront = false;
-
-        // Translation2d[] _reefArray = isRedAlliance.get() ? Constants.FieldConstants.kRedCoralArray : Constants.FieldConstants.kBlueCoralArray;
-        // Translation2d closestPoint = _reefArray[0];
-        // Translation2d currentPose = getPose().getTranslation();
-        // for(Translation2d branch : _reefArray)
-        // {
-        //     var branchDistance = branch.getDistance(currentPose);
-        //     var closestPointDistance = closestPoint.getDistance(currentPose);
-        //     if(branchDistance < closestPointDistance)
-        //     {
-        //         closestPoint = branch;
-        //     }
-        // }
-        // _target = closestPoint;
-        // SmartDashboard.putNumber("Closest Branch Coordinates X", _target.getX());
-        // SmartDashboard.putNumber("Closest Branch Coordinates Y", _target.getY());
-
-    }
-
     public void setTargetBarge(Supplier<Boolean> isRedAlliance)
     {
         _currentTarget = LocationTarget.BARGE;
@@ -378,6 +379,14 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     public void setTargetCage(Supplier<Boolean> isRedAlliance)
     {
         _currentTarget = LocationTarget.CAGE;
+    }
+
+    public void targetReef(Supplier<Boolean> isRedAlliance) {
+        if (isRedAlliance.get()) {
+            _target = FieldConstants.kRedReefFaces[targetReefFace].getAllPoles()[reefTarget];
+        } else {
+            _target = FieldConstants.kBlueReefFaces[targetReefFace].getAllPoles()[reefTarget];
+        }
     }
 
     ////#endregion

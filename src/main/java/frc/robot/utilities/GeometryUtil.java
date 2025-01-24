@@ -85,8 +85,8 @@ public class GeometryUtil {
      * @param currentPose Supplier for the current pose to evaluate from. This should usually be the pose from the pose estimator.
      * @return The x, in meters, to the target translation (point).
      */
-    public static double getXDifference(Translation2d targetTranslation, Supplier<Pose2d> currentPose) {
-        return currentPose.get().getTranslation().getX() - targetTranslation.getX();
+    public static double getXDifference(Pose2d targetPose, Supplier<Pose2d> currentPose) {
+        return currentPose.get().getTranslation().getX() - targetPose.getTranslation().getX();
     }
 
     /**
@@ -95,7 +95,7 @@ public class GeometryUtil {
      * @param currentPose Supplier for the current pose to evaluate from. This should usually be the pose from the pose estimator.
      * @return The y, in meters, to the target translation (point).
      */
-    public static double getYDifference(Translation2d targetTranslation, Supplier<Pose2d> currentPose) {
-        return currentPose.get().getTranslation().getY() - targetTranslation.getY();
+    public static double getYDifference(Pose2d targetPose, Supplier<Pose2d> currentPose) {
+        return currentPose.get().getTranslation().getY() - targetPose.getTranslation().getY();
     }
 }

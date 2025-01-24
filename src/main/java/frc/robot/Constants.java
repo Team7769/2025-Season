@@ -85,16 +85,11 @@ public final class Constants {
 
     public static final Translation2d kRedAlgae = new Translation2d(11.5, 7.5);
 
-    public static final Translation2d[] kBlueCoralArray = {new Translation2d(4.778, 4.859), new Translation2d(5.079, 4.694), new Translation2d(5.409, 4.213),
-       new Translation2d(5.379, 3.852), new Translation2d(5.109, 3.296), new Translation2d(4.823, 3.131), new Translation2d(4.207, 3.131), new Translation2d(3.907, 3.281),
-       new Translation2d(3.576, 3.837), new Translation2d(3.576, 4.198), new Translation2d(3.907, 4.769), new Translation2d(4.252, 4.889)};
+    public static final ReefFace[] kBlueReefFaces = {ReefConstants.kBlueReefFace1, ReefConstants.kBlueReefFace2,
+       ReefConstants.kBlueReefFace3, ReefConstants.kBlueReefFace4, ReefConstants.kBlueReefFace5, ReefConstants.kBlueReefFace6};
 
-    public static final Translation2d[] kRedCoralArray = {GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(4.778, 4.859)), GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(5.079, 4.694)),
-      GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(5.409, 4.213)), GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(5.379, 3.852)), GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(5.109, 3.296)),
-      GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(4.823, 3.131)), GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(4.207, 3.131)), GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(3.907, 3.281)),
-      GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(3.576, 3.837)), GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(3.576, 4.198)), GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(3.907, 4.769)), GeometryUtil.mirrorTranslationForRedAlliance(new Translation2d(4.252, 4.889))};
-
-
+    public static final ReefFace[] kRedReefFaces = {ReefConstants.kRedReefFace1, ReefConstants.kRedReefFace2,
+      ReefConstants.kRedReefFace3, ReefConstants.kRedReefFace4, ReefConstants.kRedReefFace5, ReefConstants.kRedReefFace6};
   }
 
   public static class OperatorConstants {
@@ -147,4 +142,95 @@ public final class Constants {
     public static final int kBackRightEncoderId = 13;
 //     public static final double kBackRightEncoderOffset = -0.74267578125;
   }
+  
+  public static class ReefConstants {
+    //#region blueReef
+    private static final Translation2d kBlueRight1 = new Translation2d(5, 5.2);
+    private static final Translation2d kBlueAlgae1 = new Translation2d(5.15, 5.15);
+    private static final Translation2d kBlueLeft1 = new Translation2d(5.25, 5.1);
+    private static final Rotation2d kBlueRotation1 = new Rotation2d(60 * (Math.PI/180));
+
+    private static final ReefFace kBlueReefFace1 = new ReefFace(kBlueRight1, kBlueAlgae1, kBlueLeft1, kBlueRotation1);
+
+    private static final Translation2d kBlueRight2 = new Translation2d(5.8, 4.15);
+    private static final Translation2d kBlueAlgae2 = new Translation2d(5.8, 4.04);
+    private static final Translation2d kBlueLeft2 = new Translation2d(5.8, 3.85);
+    private static final Rotation2d kBlueRotation2 = new Rotation2d(0);
+      
+    private static final ReefFace kBlueReefFace2 = new ReefFace(kBlueRight2, kBlueAlgae2, kBlueLeft2, kBlueRotation2);
+
+    private static final Translation2d kBlueRight3 = new Translation2d(5.3, 3);
+    private static final Translation2d kBlueAlgae3 = new Translation2d(5.15, 2.9);
+    private static final Translation2d kBlueLeft3 = new Translation2d(5, 2.8);
+    private static final Rotation2d kBlueRotation3 = new Rotation2d(300 * (Math.PI/180));
+
+    private static final ReefFace kBlueReefFace3 = new ReefFace(kBlueRight3, kBlueAlgae3, kBlueLeft3, kBlueRotation3);
+
+    private static final Translation2d kBlueRight4 = new Translation2d(4, 2.8);
+    private static final Translation2d kBlueAlgae4 = new Translation2d(3.85, 2.9);
+    private static final Translation2d kBlueLeft4 = new Translation2d(3.72, 3.07);
+    private static final Rotation2d kBlueRotation4 = new Rotation2d(240 * (Math.PI/180));
+
+    private static final ReefFace kBlueReefFace4 = new ReefFace(kBlueRight4, kBlueAlgae4, kBlueLeft4, kBlueRotation4);
+
+    private static final Translation2d kBlueRight5 = new Translation2d(3.2, 3.85);
+    private static final Translation2d kBlueAlgae5 = new Translation2d(3.2, 4.04);
+    private static final Translation2d kBlueLeft5 = new Translation2d(3.2, 4.2);
+    private static final Rotation2d kBlueRotation5 = new Rotation2d(180 * (Math.PI/180));
+
+    private static final ReefFace kBlueReefFace5 = new ReefFace(kBlueRight5, kBlueAlgae5, kBlueLeft5, kBlueRotation5);
+
+    private static final Translation2d kBlueRight6 = new Translation2d(3.7, 5.05);
+    private static final Translation2d kBlueAlgae6 = new Translation2d(3.85, 5.15);
+    private static final Translation2d kBlueLeft6 = new Translation2d(4.02, 5.25);
+    private static final Rotation2d kBlueRotation6 = new Rotation2d(120 * (Math.PI/180));
+
+    private static final ReefFace kBlueReefFace6 = new ReefFace(kBlueRight6, kBlueAlgae6, kBlueLeft6, kBlueRotation6);
+
+    //#endregion
+    //#region redReef
+    
+    private static final Translation2d kRedRight1 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueRight6);
+    private static final Translation2d kRedAlgae1 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueAlgae6);
+    private static final Translation2d kRedLeft1 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueLeft6);
+    private static final Rotation2d kRedRotation1 = new Rotation2d(240 * (Math.PI/180));
+
+    private static final ReefFace kRedReefFace1 = new ReefFace(kRedRight1, kRedAlgae1, kRedLeft1, kRedRotation1);
+
+    private static final Translation2d kRedRight2 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueRight5);
+    private static final Translation2d kRedAlgae2 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueAlgae5);
+    private static final Translation2d kRedLeft2 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueLeft5);
+    private static final Rotation2d kRedRotation2 = new Rotation2d(180 * (Math.PI/180));
+
+    private static final ReefFace kRedReefFace2 = new ReefFace(kRedRight2, kRedAlgae2, kRedLeft2, kRedRotation2);
+    
+    private static final Translation2d kRedRight3 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueRight4);
+    private static final Translation2d kRedAlgae3 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueAlgae4);
+    private static final Translation2d kRedLeft3 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueLeft4);
+    private static final Rotation2d kRedRotation3 = new Rotation2d(120 * (Math.PI/180));
+
+    private static final ReefFace kRedReefFace3 = new ReefFace(kRedRight3, kRedAlgae3, kRedLeft3, kRedRotation3);
+    
+    private static final Translation2d kRedRight4 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueRight3);
+    private static final Translation2d kRedAlgae4 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueAlgae3);
+    private static final Translation2d kRedLeft4 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueLeft3);
+    private static final Rotation2d kRedRotation4 = new Rotation2d(60 * (Math.PI/180));
+
+    private static final ReefFace kRedReefFace4 = new ReefFace(kRedRight4, kRedAlgae4, kRedLeft4, kRedRotation4);
+    
+    private static final Translation2d kRedRight5 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueRight2);
+    private static final Translation2d kRedAlgae5 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueAlgae2);
+    private static final Translation2d kRedLeft5 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueLeft2);
+    private static final Rotation2d kRedRotation5 = new Rotation2d(0);
+
+    private static final ReefFace kRedReefFace5 = new ReefFace(kRedRight5, kRedAlgae5, kRedLeft5, kRedRotation5);
+    
+    private static final Translation2d kRedRight6 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueRight1);
+    private static final Translation2d kRedAlgae6 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueAlgae1);
+    private static final Translation2d kRedLeft6 = GeometryUtil.mirrorTranslationForRedAlliance(kBlueLeft1);
+    private static final Rotation2d kRedRotation6 = new Rotation2d(300 * (Math.PI/180));
+
+    private static final ReefFace kRedReefFace6 = new ReefFace(kRedRight6, kRedAlgae6, kRedLeft6, kRedRotation6);
+  }
+
 }
