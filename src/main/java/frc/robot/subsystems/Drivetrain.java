@@ -237,11 +237,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 targetSource(GeometryUtil::isRedAlliance);
             break;
             case PROCESSOR:
-                if (GeometryUtil.isRedAlliance()) {
-                    targetRotation = GeometryUtil.getRotationDifference(this::getPose, 90) / 50;
-                } else {
-                    targetRotation = GeometryUtil.getRotationDifference(this::getPose, 270) / 50;
-                }
+                targetProcessor(GeometryUtil::isRedAlliance);
+                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
+            
             break;
             case REEF:
                 targetReef(GeometryUtil::isRedAlliance);
@@ -362,12 +360,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
     }
 
-    public void setTargetProcessor(Supplier<Boolean> isRedAlliance)
+    public void targetProcessor(Supplier<Boolean> isRedAlliance)
     {
-        _currentTarget = LocationTarget.PROCESSOR;
-        _isFollowingFront = false;
+        _isFollowingFront = true;
 
-        //_target = isRedAlliance.get() ? Constants.FieldConstants.kRedAlgae : Constants.FieldConstants.kBlueAlgae;
+        _target = isRedAlliance.get() ? Constants.FieldConstants.kRedProcessor : Constants.FieldConstants.kBlueProcessor;
         
     }
 
@@ -389,5 +386,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         }
     }
 
-    ////#endregion
+    ////#endregion////
+    
 }
+
