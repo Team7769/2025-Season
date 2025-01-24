@@ -52,8 +52,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private final SwerveRequest.FieldCentricFacingAngle toPoint = new SwerveRequest.FieldCentricFacingAngle();
     public final SwerveRequest idle = new SwerveRequest.Idle();
-    // this is used to drive with chassis speeds see an example of it in
-    // setTrajectoryFollowModuleTargets
+    
     public final SwerveRequest.ApplyRobotSpeeds chassisDrive = new SwerveRequest.ApplyRobotSpeeds();
 
     StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
@@ -166,8 +165,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         return getPigeon2().getRotation2d().getDegrees();
     }
 
-    private String getCurrentTarget() {
-        return _currentTarget.name();
+    public LocationTarget getCurrentTarget() {
+        return _currentTarget;
     }
 
     public int targetedPole() {
@@ -189,7 +188,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             targetReefFace = 0;
         }
     }
-
+    
     private void updateOdometry() {
         ArrayList<VisionMeasurement> visionMeasurements = _vision
             .getVisionMeasurements(
@@ -202,10 +201,20 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             );
         }
         publisher.set(getPose());
-        m_field.setRobotPose(getPose());
-
+        m_field.setRobotPose(getPose());        
+        SmartDashboard.putNumber("target rotation", targetRotation);
+        SmartDashboard.putNumber("pose x", getPoseX());
+        SmartDashboard.putNumber("pose y", getPoseY());
+        SmartDashboard.putNumber("angle", getDegrees());
+        SmartDashboard.putNumber("followP", followP);
+        SmartDashboard.putNumber("reefTarget", reefTarget);
+        SmartDashboard.putNumber("reefFace", targetReefFace);
+        SmartDashboard.putNumber("target angle", _target.getRotation().getDegrees());
+        SmartDashboard.putNumber("Target X", _target.getX());
+        SmartDashboard.putNumber("Target Y", _target.getY());
     }
 
+    //#region periodic
     @Override
     public void periodic() {
     if (!hasAppliedOperatorPerspective || DriverStation.isDisabled()) {
@@ -233,13 +242,17 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
         switch (_currentTarget) {
             case CORAL_SOURCE:
-                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
                 targetSource(GeometryUtil::isRedAlliance);
+                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
             break;
             case PROCESSOR:
                 targetProcessor(GeometryUtil::isRedAlliance);
                 targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
             
+            break;
+            case CAGE:
+                targetCage();
+                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
             break;
             case REEF:
                 targetReef(GeometryUtil::isRedAlliance);
@@ -251,22 +264,27 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 targetRotation = GeometryUtil.getAngleToTarget(_target.getTranslation(), this::getPose, _isFollowingFront) / 50;
             break;
         }
+
         SmartDashboard.putNumber("XDiff", GeometryUtil.getXDifference(_target, this::getPose));
         SmartDashboard.putNumber("YDiff", GeometryUtil.getYDifference(_target, this::getPose));
-        SmartDashboard.putString("currentTarget", getCurrentTarget());
+        SmartDashboard.putString("currentTarget", getCurrentTarget().name());
+
         if (Math.abs(GeometryUtil.getXDifference(_target, this::getPose)) < 1 && Math.abs(GeometryUtil.getYDifference(_target, this::getPose)) < 1) {
             followP = .9;
         } else {
             followP = 4;
         }
+
         xFollow = GeometryUtil.getXDifference(_target, this::getPose) / followP;
         yFollow = GeometryUtil.getYDifference(_target, this::getPose) / followP;
+
         if (yFollow > 1) {
             yFollow = 1;
         } 
         if (xFollow > 1) {
             xFollow = 1;
         }
+
         if (Math.abs(targetRotation) >= .5) {
             if (targetRotation > 0) {
                 targetRotation = .5;
@@ -274,20 +292,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 targetRotation = -0.5;
             }
         }
-        
-        SmartDashboard.putNumber("target rotation", targetRotation);
-        SmartDashboard.putNumber("pose x", getPoseX());
-        SmartDashboard.putNumber("pose y", getPoseY());
-        SmartDashboard.putNumber("angle", getDegrees());
-        SmartDashboard.putNumber("followP", followP);
-        SmartDashboard.putNumber("reefTarget", reefTarget);
-        SmartDashboard.putNumber("reefFace", targetReefFace);
-        SmartDashboard.putNumber("target angle", _target.getRotation().getDegrees());
-        SmartDashboard.putNumber("Target X", _target.getX());
-        SmartDashboard.putNumber("Target Y", _target.getY());
         updateOdometry();
         handleCurrentState().schedule();
     }
+
     //#region State logic
     private Command handleCurrentState() {
         switch (_currentState) {
@@ -298,7 +306,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(this.periodicIO.WzCmd *
                 DrivetrainConstants.MaxAngularRate));
-            case TARGET_FOLLOW:
+            case ROTATION_FOLLOW:
                 return applyRequest(() -> drive.withVelocityX(this.periodicIO.VxCmd *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
@@ -355,17 +363,12 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             }
         }
         _target = closestPoint;
-        
-        
-
     }
 
     public void targetProcessor(Supplier<Boolean> isRedAlliance)
     {
         _isFollowingFront = true;
-
         _target = isRedAlliance.get() ? Constants.FieldConstants.kRedProcessor : Constants.FieldConstants.kBlueProcessor;
-        
     }
 
     public void setTargetBarge(Supplier<Boolean> isRedAlliance)
@@ -373,9 +376,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         _currentTarget = LocationTarget.BARGE;
     }
 
-    public void setTargetCage(Supplier<Boolean> isRedAlliance)
+    public void targetCage()
     {
-        _currentTarget = LocationTarget.CAGE;
+        _target = FieldConstants.kCage;
     }
 
     public void targetReef(Supplier<Boolean> isRedAlliance) {

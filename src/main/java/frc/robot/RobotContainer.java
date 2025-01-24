@@ -16,6 +16,7 @@ import frc.robot.subsystems.KitbotRoller;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -57,7 +58,7 @@ public class RobotContainer {
   private void configureBindings() {
     _drivetrain.setDefaultCommand(_drivetrain.applyRequest(() -> _drivetrain.idle));
     _driverController.y().onTrue(_drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE));
-    _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.POINT_FOLLOW))
+    _driverController.leftBumper().onTrue(autoFollow())
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
     _driverController.rightTrigger().onTrue(_roller.setWantedState(RollerState.ROLL)).onFalse(_roller.setWantedState(RollerState.STOP));
     _driverController.start().onTrue(_drivetrain.resetGyro());
@@ -70,6 +71,18 @@ public class RobotContainer {
     _driverController.povLeft().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(2)));
     _driverController.x().onTrue(new InstantCommand(() -> _drivetrain.targetNextReefFace()));
     _driverController.b().onTrue(_drivetrain.setWantedTarget(LocationTarget.REEF));
+  }
+
+  private Command autoFollow() {
+    switch (_drivetrain.getCurrentTarget()) {
+      case CAGE:
+        return _drivetrain.setWantedState(DrivetrainState.ROTATION_FOLLOW);
+      case BARGE:
+      // TODO: set state here
+        return _drivetrain.setWantedState(null);
+      default:
+        return _drivetrain.setWantedState(DrivetrainState.POINT_FOLLOW);
+    }
   }
 
   /**
