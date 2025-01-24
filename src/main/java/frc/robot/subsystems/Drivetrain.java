@@ -165,8 +165,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         return getPigeon2().getRotation2d().getDegrees();
     }
 
-    private String getCurrentTarget() {
-        return _currentTarget.name();
+    public LocationTarget getCurrentTarget() {
+        return _currentTarget;
     }
 
     public int targetedPole() {
@@ -252,6 +252,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                     targetRotation = GeometryUtil.getRotationDifference(this::getPose, 270) / 50;
                 }
             break;
+            case CAGE:
+                targetCage();
+                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
+            break;
             case REEF:
                 targetReef(GeometryUtil::isRedAlliance);
                 targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
@@ -265,7 +269,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
         SmartDashboard.putNumber("XDiff", GeometryUtil.getXDifference(_target, this::getPose));
         SmartDashboard.putNumber("YDiff", GeometryUtil.getYDifference(_target, this::getPose));
-        SmartDashboard.putString("currentTarget", getCurrentTarget());
+        SmartDashboard.putString("currentTarget", getCurrentTarget().name());
 
         if (Math.abs(GeometryUtil.getXDifference(_target, this::getPose)) < 1 && Math.abs(GeometryUtil.getYDifference(_target, this::getPose)) < 1) {
             followP = .9;
@@ -303,11 +307,6 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 return applyRequest(() -> drive.withVelocityX(this.periodicIO.VxCmd *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(this.periodicIO.WzCmd *
-                DrivetrainConstants.MaxAngularRate));
-            case FACE_FOWARD:
-                return applyRequest(() -> drive.withVelocityX(this.periodicIO.VxCmd *
-                DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
-                DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate((GeometryUtil.getRotationDifference(this::getPose, 0) / 50) * 
                 DrivetrainConstants.MaxAngularRate));
             case ROTATION_FOLLOW:
                 return applyRequest(() -> drive.withVelocityX(this.periodicIO.VxCmd *
@@ -379,11 +378,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         _currentTarget = LocationTarget.BARGE;
     }
 
-    // Dont need this if we're just setting
-    // public void targetCage(Supplier<Boolean> isRedAlliance)
-    // {
-        
-    // }
+    public void targetCage()
+    {
+        _target = FieldConstants.kCage;
+    }
 
     public void targetReef(Supplier<Boolean> isRedAlliance) {
         if (isRedAlliance.get()) {
