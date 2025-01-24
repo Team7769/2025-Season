@@ -85,10 +85,10 @@ public final class Constants {
 
 
 
-    public static final Pose2d kBlueProcessor = new Pose2d(new Translation2d(6.356,0.592),new Rotation2d(90*Math.PI));
+    public static final Pose2d kBlueProcessor = new Pose2d(new Translation2d(6.356,0.592),new Rotation2d(90*(Math.PI/180)));
 
     public static final Translation2d kRedProcessor_translation2d = GeometryUtil.mirrorTranslationForRedAlliance(kRedSourceBottom_A_translation2d);
-    public static final Pose2d kRedProcessor = new Pose2d(kRedProcessor_translation2d,new Rotation2d(270*Math.PI));
+    public static final Pose2d kRedProcessor = new Pose2d(kRedProcessor_translation2d,new Rotation2d(270*(Math.PI/180)));
     //new Pose2d(new Translation2d(11.5, 7.5), new Rotation2d(270*Math.PI/180));
 
     public static final ReefFace[] kBlueReefFaces = {ReefConstants.kBlueReefFace1, ReefConstants.kBlueReefFace2,
