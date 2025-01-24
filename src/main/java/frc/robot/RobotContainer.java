@@ -70,7 +70,7 @@ public class RobotContainer {
     _driverController.povLeft().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(2)));
     _driverController.x().onTrue(new InstantCommand(() -> _drivetrain.targetNextReefFace()));
     _driverController.b().onTrue(_drivetrain.setWantedTarget(LocationTarget.REEF));
-    _driverController.a().onTrue(_drivetrain.setWantedState(DrivetrainState.FACE_FOWARD))
+    _driverController.back().onTrue(_drivetrain.setWantedState(DrivetrainState.FACE_FOWARD))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
   }
 
