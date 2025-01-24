@@ -30,6 +30,9 @@ public final class Constants {
     public static final double kHalfFieldWidth = 4.026;
     public static final double kHalfFieldLength = 8.774;
 
+    // cage
+    public static final Pose2d kCage = new Pose2d();
+
     // public static final Translation2d kBlueSourceTop = new Translation2d(1, 7);
     // public static final Translation2d kBlueSourceLow = new Translation2d(1, .9);
 
