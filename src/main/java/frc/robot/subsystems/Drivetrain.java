@@ -242,8 +242,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
         switch (_currentTarget) {
             case CORAL_SOURCE:
-                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
                 targetSource(GeometryUtil::isRedAlliance);
+                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
             break;
             case PROCESSOR:
                 if (GeometryUtil.isRedAlliance()) {
