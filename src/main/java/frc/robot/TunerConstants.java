@@ -10,6 +10,7 @@ import com.ctre.phoenix6.swerve.*;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.*;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.*;
@@ -56,6 +57,7 @@ public class TunerConstants {
     // The stator current at which the wheels start to slip;
     // This needs to be tuned to your individual robot
     private static final Current kSlipCurrent = Amps.of(120.0);
+    public static final Current kCurrentLimit = Amps.of(60);
 
     public static final double kDeadband = 0.15;
     public static final double[] XY_Axis_inputBreakpoints = { -1, -0.9, -0.85, -0.7, -0.6, -0.5, -0.2, -0.12, 0.12, 0.2,
@@ -98,7 +100,7 @@ public class TunerConstants {
     private static final double kDriveGearRatio = 6.746031746031747;
     private static final double kSteerGearRatio = 12.8;
     private static final Distance kWheelRadius = Inches.of(4);
-
+    public static final Distance kWheelRadiusMeters = Meters.of(0.1016);
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
 
@@ -150,6 +152,7 @@ public class TunerConstants {
 
     private static final Distance kFrontLeftXPos = Inches.of(9);
     private static final Distance kFrontLeftYPos = Inches.of(9);
+    public static final Translation2d kFrontLeftOffset = new Translation2d(0.2286, 0.2286);
 
     // Front Right
     private static final int kFrontRightDriveMotorId = 5;
@@ -161,6 +164,7 @@ public class TunerConstants {
 
     private static final Distance kFrontRightXPos = Inches.of(9);
     private static final Distance kFrontRightYPos = Inches.of(-9);
+    public static final Translation2d kFrontRightOffset = new Translation2d(0.2286, -0.2286);
 
     // Back Left
     private static final int kBackLeftDriveMotorId = 8;
@@ -172,6 +176,7 @@ public class TunerConstants {
 
     private static final Distance kBackLeftXPos = Inches.of(-9);
     private static final Distance kBackLeftYPos = Inches.of(9);
+    public static final Translation2d kBackLeftOffset = new Translation2d(-0.2286, 0.2286);
 
     // Back Right
     private static final int kBackRightDriveMotorId = 11;
@@ -183,6 +188,7 @@ public class TunerConstants {
 
     private static final Distance kBackRightXPos = Inches.of(-9);
     private static final Distance kBackRightYPos = Inches.of(-9);
+    public static final Translation2d kBackRightOffset = new Translation2d(-0.2286, -0.2286);
 
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft =
