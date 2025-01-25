@@ -5,6 +5,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import com.revrobotics.spark.SparkBase;
 import frc.robot.statemachine.StateBasedSubsystem;
@@ -50,5 +52,8 @@ private SparkMax _motor;
     @Override
     public void periodic(){
         handleCurrentState().schedule();
+    }
+    public Command score(){
+        return new SequentialCommandGroup(setWantedState(RollerState.ROLL),new WaitCommand(0.5),setWantedState(RollerState.STOP));
     }
 }

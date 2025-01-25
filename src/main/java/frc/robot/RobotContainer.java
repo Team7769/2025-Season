@@ -9,7 +9,14 @@ import frc.robot.enums.DrivetrainState;
 import frc.robot.enums.LocationTarget;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utilities.*;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.enums.RollerState;
 import frc.robot.subsystems.Cage;
 import frc.robot.subsystems.KitbotRoller;
@@ -33,7 +40,7 @@ public class RobotContainer {
   private final Cage _cage;
   private final KitbotRoller _roller;
   private final Vision _vision;
-
+  private final SendableChooser<Command> _autoChooser;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     _cage = new Cage();
@@ -43,7 +50,11 @@ public class RobotContainer {
     _vision = new Vision();
     _drivetrain = new Drivetrain(_driverController, _vision);
     // Configure the trigger bindings
+    NamedCommands.registerCommand("KitBotScore",_roller.score());
     configureBindings();
+    _autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("AutoChooser", _autoChooser);
+
   }
 
   /**

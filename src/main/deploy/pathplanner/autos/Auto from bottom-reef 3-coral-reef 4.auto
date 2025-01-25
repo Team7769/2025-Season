@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "KitBotScore"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Reef 3 to bottom coral"
@@ -29,21 +35,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "From reef 4 to bottom coral"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "From bottom coral to reef 4"
+            "name": "KitBotScore"
           }
         },
         {
@@ -62,6 +56,36 @@
           "type": "path",
           "data": {
             "pathName": "From bottom coral to reef 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "KitBotScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "From reef 4 to bottom coral"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "From bottom coral to reef 4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "KitBotScore"
           }
         }
       ]
