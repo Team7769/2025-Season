@@ -55,7 +55,6 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
-    private ChassisSpeeds followChassisSpeeds = new ChassisSpeeds(0, 0, 0);
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.05).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.05)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -84,7 +83,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private double targetRotation;
     private double xFollow;
     private double yFollow;
-    private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(0.1381), new PIDConstants(19.157, 0, 0.14548));
+    private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(1.75, 0, 0), new PIDConstants(1.5, 0, 0));
     private ModuleConfig moduleConfig = new ModuleConfig(TunerConstants.kWheelRadiusMeters, TunerConstants.kSpeedAt12Volts,
         1, DCMotor.getFalcon500(1), TunerConstants.kCurrentLimit, 1);
     private RobotConfig config = new RobotConfig(38.2832, 38.6771362, moduleConfig, TunerConstants.kFrontLeftOffset,
@@ -106,16 +105,12 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         m_field = new Field2d();
         SmartDashboard.putData("Field", m_field);
         
-        AutoBuilder.configure(this::getPose, this::resetPose, this::getSpeeds, (speed, notUsedFF) -> setChassisSpeeds(speed),
+        AutoBuilder.configure(this::getPose, this::resetPose, this::getSpeeds, (speeds) -> setControl(chassisDrive.withSpeeds(speeds)),
         autoController, config, GeometryUtil::isRedAlliance, this);
     }
 
     private ChassisSpeeds getSpeeds() {
         return this.getState().Speeds;
-    }
-
-    private void setChassisSpeeds(ChassisSpeeds newSpeeds) {
-        followChassisSpeeds = newSpeeds;
     }
 
     private void setStartingPose(Pose2d startingPose) {
@@ -328,8 +323,6 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(-yFollow *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
                 DrivetrainConstants.MaxAngularRate));
-            case CHASSIS_DRIVE:
-                return applyRequest(() -> chassisDrive.withSpeeds(followChassisSpeeds));
             default:
                 return applyRequest(() -> idle);
         }
