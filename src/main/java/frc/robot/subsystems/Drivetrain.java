@@ -244,20 +244,23 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             case CORAL_SOURCE:
                 targetSource(GeometryUtil::isRedAlliance);
                 targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
-            break;
+                break;
             case PROCESSOR:
                 targetProcessor(GeometryUtil::isRedAlliance);
                 targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
-            
-            break;
+                break;
             case CAGE:
                 targetCage();
                 targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
-            break;
+                break;
             case REEF:
                 targetReef(GeometryUtil::isRedAlliance);
                 targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
-            break;
+                break;
+            case BARGE:
+                targetBarge(GeometryUtil::isRedAlliance);
+                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
+
             case NONE:
             break;
             default:
@@ -308,6 +311,12 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 DrivetrainConstants.MaxAngularRate));
             case ROTATION_FOLLOW:
                 return applyRequest(() -> drive.withVelocityX(this.periodicIO.VxCmd *
+                DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
+                DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
+                DrivetrainConstants.MaxAngularRate));
+            case LINE_FOLLOW:
+                //X axis movement is set to a point, Y axis movement is free
+                return applyRequest(() -> drive.withVelocityX(-xFollow *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
                 DrivetrainConstants.MaxAngularRate));
@@ -371,9 +380,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         _target = isRedAlliance.get() ? Constants.FieldConstants.kRedProcessor : Constants.FieldConstants.kBlueProcessor;
     }
 
-    public void setTargetBarge(Supplier<Boolean> isRedAlliance)
+    public void targetBarge(Supplier<Boolean> isRedAlliance)
     {
-        _currentTarget = LocationTarget.BARGE;
+        _target = isRedAlliance.get() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
     }
 
     public void targetCage()

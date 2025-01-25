@@ -7,5 +7,6 @@ public enum DrivetrainState implements IState  {
     OPEN_LOOP,
     TRAJECTORY_FOLLOW,
     POINT_FOLLOW,
+    LINE_FOLLOW,
     ROTATION_FOLLOW
 }

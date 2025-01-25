@@ -71,6 +71,8 @@ public class RobotContainer {
     _driverController.povLeft().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(2)));
     _driverController.x().onTrue(new InstantCommand(() -> _drivetrain.targetNextReefFace()));
     _driverController.b().onTrue(_drivetrain.setWantedTarget(LocationTarget.REEF));
+    _driverController.back().onTrue(_drivetrain.setWantedTarget(LocationTarget.CAGE));
+    _driverController.rightBumper().onTrue(_drivetrain.setWantedTarget(LocationTarget.BARGE));
   }
 
   private Command autoFollow() {
@@ -78,8 +80,7 @@ public class RobotContainer {
       case CAGE:
         return _drivetrain.setWantedState(DrivetrainState.ROTATION_FOLLOW);
       case BARGE:
-      // TODO: set state here
-        return _drivetrain.setWantedState(null);
+        return _drivetrain.setWantedState(DrivetrainState.LINE_FOLLOW);
       default:
         return _drivetrain.setWantedState(DrivetrainState.POINT_FOLLOW);
     }
