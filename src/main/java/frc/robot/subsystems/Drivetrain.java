@@ -246,11 +246,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
             break;
             case PROCESSOR:
-                if (GeometryUtil.isRedAlliance()) {
-                    targetRotation = GeometryUtil.getRotationDifference(this::getPose, 90) / 50;
-                } else {
-                    targetRotation = GeometryUtil.getRotationDifference(this::getPose, 270) / 50;
-                }
+                targetProcessor(GeometryUtil::isRedAlliance);
+                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees()) / 50;
+            
             break;
             case CAGE:
                 targetCage();
@@ -367,10 +365,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         _target = closestPoint;
     }
 
-    public void setTargetProcessor(Supplier<Boolean> isRedAlliance)
+    public void targetProcessor(Supplier<Boolean> isRedAlliance)
     {
-        _currentTarget = LocationTarget.PROCESSOR;
-        _isFollowingFront = false;
+        _isFollowingFront = true;
+        _target = isRedAlliance.get() ? Constants.FieldConstants.kRedProcessor : Constants.FieldConstants.kBlueProcessor;
     }
 
     public void setTargetBarge(Supplier<Boolean> isRedAlliance)
@@ -391,5 +389,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         }
     }
 
-    ////#endregion
+    ////#endregion////
+    
 }
+
