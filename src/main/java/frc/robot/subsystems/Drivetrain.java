@@ -105,7 +105,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         _vision = vision;
         m_field = new Field2d();
         SmartDashboard.putData("Field", m_field);
-        AutoBuilder.configure(this::getPose, this::resetPose, this::getSpeeds, (speed) -> setChassisSpeeds(speed),
+        
+        AutoBuilder.configure(this::getPose, this::resetPose, this::getSpeeds, (speed, notUsedFF) -> setChassisSpeeds(speed),
         autoController, config, GeometryUtil::isRedAlliance, this);
     }
 
