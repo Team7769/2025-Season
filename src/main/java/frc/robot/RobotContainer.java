@@ -54,9 +54,10 @@ public class RobotContainer {
     // Configure the trigger bindings
     NamedCommands.registerCommand("KitBotScore",_roller.score());
     NamedCommands.registerCommand("Initialize", _drivetrain.setWantedState(DrivetrainState.AUTO));
-    configureBindings();
     _autoChooser = AutoBuilder.buildAutoChooser("Test Auto");
     SmartDashboard.putData("AutoChooser", _autoChooser);
+
+    configureBindings();
     SmartDashboard.putData("current command", CommandScheduler.getInstance());
   }
 
@@ -70,7 +71,11 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    CommandScheduler.getInstance().registerSubsystem(_drivetrain);
+    _drivetrain.setDefaultCommand(
+      _drivetrain.applyRequest(() -> 
+        _drivetrain.drive.withVelocityX(0).withVelocityY(0).withRotationalRate(0)
+    ));
+
     _driverController.y().onTrue(_drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE));
     _driverController.leftBumper().onTrue(autoFollow())
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
@@ -78,7 +83,7 @@ public class RobotContainer {
     _driverController.start().onTrue(_drivetrain.resetGyro());
     _driverController.a().onTrue(_drivetrain.setWantedTarget(LocationTarget.PROCESSOR));
 
-    new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
+     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
     _driverController.povRight().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(0)));
     _driverController.povUp().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(1)));

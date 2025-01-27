@@ -56,7 +56,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    public final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.05).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.05)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     public final SwerveRequest idle = new SwerveRequest.Idle();
@@ -84,7 +84,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private double targetRotation;
     private double xFollow;
     private double yFollow;
-    private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(10, 0, 0), new PIDConstants(7, 0, 0));
+    private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(1.75, 0, 0), new PIDConstants(1.5, 0, 0));
     private ModuleConfig moduleConfig = new ModuleConfig(TunerConstants.kWheelRadiusMeters, TunerConstants.kSpeedAt12Volts,
         1, DCMotor.getFalcon500(1), TunerConstants.kCurrentLimit, 1);
     private RobotConfig config = new RobotConfig(38.2832, 38.6771362, moduleConfig, TunerConstants.kFrontLeftOffset,
@@ -104,12 +104,18 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         _driverController = driveController;
         _vision = vision;
         m_field = new Field2d();
+
         SmartDashboard.putData("Field", m_field);
         
-        AutoBuilder.configure(() -> getState().Pose, this::resetPose, () -> getState().Speeds, (speeds, feedforwards) -> setControl(
-            chassisDrive.withSpeeds(speeds)
-            .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons()).withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
-        autoController, config, GeometryUtil::isRedAlliance, this);
+        try {
+            AutoBuilder.configure(() -> getState().Pose, this::resetPose, () -> getState().Speeds, (speeds, feedforwards) -> setControl(
+                chassisDrive.withSpeeds(speeds)
+                .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons()).withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
+            autoController, RobotConfig.fromGUISettings(), GeometryUtil::isRedAlliance, this);
+        }
+        catch (Exception ex) {
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
+        }
     }
 
     private ChassisSpeeds getSpeeds() {
@@ -211,7 +217,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             );
         }
         publisher.set(getPose());
-        m_field.setRobotPose(getPose());        
+        m_field.setRobotPose(getPose());
         SmartDashboard.putNumber("target rotation", targetRotation);
         SmartDashboard.putNumber("pose x", getPoseX());
         SmartDashboard.putNumber("pose y", getPoseY());
@@ -306,7 +312,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         }
         updateOdometry();
         if (_currentState != DrivetrainState.AUTO){
-            handleCurrentState().schedule();
+            //handleCurrentState().schedule();
         }
     }
 
