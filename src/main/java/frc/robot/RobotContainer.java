@@ -55,7 +55,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("KitBotScore",_roller.score());
     NamedCommands.registerCommand("Initialize", _drivetrain.setWantedState(DrivetrainState.AUTO));
     configureBindings();
-    _autoChooser = AutoBuilder.buildAutoChooser();
+    _autoChooser = AutoBuilder.buildAutoChooser("Test Auto");
     SmartDashboard.putData("AutoChooser", _autoChooser);
     SmartDashboard.putData("current command", CommandScheduler.getInstance());
   }
@@ -70,7 +70,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    _drivetrain.setDefaultCommand(_drivetrain.applyRequest(() -> _drivetrain.idle));
+    CommandScheduler.getInstance().registerSubsystem(_drivetrain);
     _driverController.y().onTrue(_drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE));
     _driverController.leftBumper().onTrue(autoFollow())
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));

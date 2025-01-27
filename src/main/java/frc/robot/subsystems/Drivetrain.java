@@ -107,7 +107,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putData("Field", m_field);
         
         AutoBuilder.configure(() -> getState().Pose, this::resetPose, () -> getState().Speeds, (speeds, feedforwards) -> setControl(
-            chassisDrive.withSpeeds(speeds).withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons()).withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
+            chassisDrive.withSpeeds(speeds)
+            .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons()).withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
         autoController, config, GeometryUtil::isRedAlliance, this);
     }
 
@@ -304,7 +305,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             }
         }
         updateOdometry();
-        if (_currentState == DrivetrainState.AUTO){
+        if (_currentState != DrivetrainState.AUTO){
             handleCurrentState().schedule();
         }
     }

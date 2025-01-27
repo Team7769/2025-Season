@@ -5,21 +5,21 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Test Path 1"
+            "name": "Initialize"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path 2"
+            "pathName": "Test Path 1"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }
