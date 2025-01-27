@@ -19,6 +19,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.controllers.PathFollowingController;
+import com.pathplanner.lib.util.PPLibTelemetry;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -83,7 +84,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private double targetRotation;
     private double xFollow;
     private double yFollow;
-    private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(1.75, 0, 0), new PIDConstants(1.5, 0, 0));
+    private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(10, 0, 0), new PIDConstants(7, 0, 0));
     private ModuleConfig moduleConfig = new ModuleConfig(TunerConstants.kWheelRadiusMeters, TunerConstants.kSpeedAt12Volts,
         1, DCMotor.getFalcon500(1), TunerConstants.kCurrentLimit, 1);
     private RobotConfig config = new RobotConfig(38.2832, 38.6771362, moduleConfig, TunerConstants.kFrontLeftOffset,
@@ -105,7 +106,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         m_field = new Field2d();
         SmartDashboard.putData("Field", m_field);
         
-        AutoBuilder.configure(this::getPose, this::resetPose, this::getSpeeds, (speeds) -> setControl(chassisDrive.withSpeeds(speeds)),
+        AutoBuilder.configure(() -> getState().Pose, this::resetPose, () -> getState().Speeds, (speeds, feedforwards) -> setControl(
+            chassisDrive.withSpeeds(speeds).withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons()).withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
         autoController, config, GeometryUtil::isRedAlliance, this);
     }
 
@@ -219,6 +221,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("target angle", _target.getRotation().getDegrees());
         SmartDashboard.putNumber("Target X", _target.getX());
         SmartDashboard.putNumber("Target Y", _target.getY());
+        SmartDashboard.putString("current state", getCurrentState());
+        SmartDashboard.putString("previous state", getPreviousState());
     }
 
     //#region periodic
@@ -231,7 +235,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         });
     }
 
-    _vision.updateLimelightPosition(getPigeon2().getRotation2d());
+     _vision.updateLimelightPosition(getPigeon2().getRotation2d());
     
         this.periodicIO.VxCmd = -OneDimensionalLookup.interpLinear(
                 Constants.DrivetrainConstants.XY_Axis_inputBreakpoints,
@@ -300,7 +304,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             }
         }
         updateOdometry();
-        handleCurrentState().schedule();
+        if (_currentState == DrivetrainState.AUTO){
+            handleCurrentState().schedule();
+        }
     }
 
     //#region State logic
@@ -323,6 +329,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(-yFollow *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
                 DrivetrainConstants.MaxAngularRate));
+            case AUTO:
+                return new InstantCommand();
             default:
                 return applyRequest(() -> idle);
         }

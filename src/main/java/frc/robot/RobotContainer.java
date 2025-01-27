@@ -23,6 +23,7 @@ import frc.robot.subsystems.Cage;
 import frc.robot.subsystems.KitbotRoller;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -52,10 +53,11 @@ public class RobotContainer {
     _drivetrain = new Drivetrain(_driverController, _vision);
     // Configure the trigger bindings
     NamedCommands.registerCommand("KitBotScore",_roller.score());
+    NamedCommands.registerCommand("Initialize", _drivetrain.setWantedState(DrivetrainState.AUTO));
     configureBindings();
     _autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("AutoChooser", _autoChooser);
-
+    SmartDashboard.putData("current command", CommandScheduler.getInstance());
   }
 
   /**
@@ -83,6 +85,7 @@ public class RobotContainer {
     _driverController.povLeft().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(2)));
     _driverController.x().onTrue(new InstantCommand(() -> _drivetrain.targetNextReefFace()));
     _driverController.b().onTrue(_drivetrain.setWantedTarget(LocationTarget.REEF));
+    _driverController.back().onTrue(_drivetrain.setWantedTarget(LocationTarget.CAGE));
   }
 
   private Command autoFollow() {
@@ -93,8 +96,9 @@ public class RobotContainer {
       // TODO: set state here
         return _drivetrain.setWantedState(null);
       default:
-        return _drivetrain.setWantedState(DrivetrainState.POINT_FOLLOW);
-    }
+      break;
+      }
+    return _drivetrain.setWantedState(DrivetrainState.POINT_FOLLOW);
   }
 
   /**

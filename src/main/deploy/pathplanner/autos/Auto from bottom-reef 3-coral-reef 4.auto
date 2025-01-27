@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Initialize"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Bottom start to reef 3"
