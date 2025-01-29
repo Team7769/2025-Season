@@ -12,6 +12,8 @@ import frc.robot.utilities.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.Event;
+import com.pathplanner.lib.events.EventTrigger;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
@@ -52,11 +54,10 @@ public class RobotContainer {
     _vision = new Vision();
     _drivetrain = new Drivetrain(_driverController, _vision);
     // Configure the trigger bindings
-    NamedCommands.registerCommand("KitBotScore",_roller.score());
-    NamedCommands.registerCommand("Initialize", _drivetrain.setWantedState(DrivetrainState.AUTO));
+    new EventTrigger("Initialize").onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO).withTimeout(.05));
+    new EventTrigger("KitBotScore").onTrue(_roller.score());
     _autoChooser = AutoBuilder.buildAutoChooser("Test Auto");
     SmartDashboard.putData("AutoChooser", _autoChooser);
-
     configureBindings();
     SmartDashboard.putData("current command", CommandScheduler.getInstance());
   }
@@ -83,7 +84,8 @@ public class RobotContainer {
     _driverController.start().onTrue(_drivetrain.resetGyro());
     _driverController.a().onTrue(_drivetrain.setWantedTarget(LocationTarget.PROCESSOR));
 
-     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
+    //new Trigger(DriverStation::isAutonomousEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO));
+    new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP).alongWith(_roller.setWantedState(RollerState.STOP)));
 
     _driverController.povRight().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(0)));
     _driverController.povUp().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(1)));

@@ -76,7 +76,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private int reefTarget = 0;
     private int targetReefFace = 0;
 
-    private DrivetrainState _currentState = DrivetrainState.OPEN_LOOP;
+    private DrivetrainState _currentState = DrivetrainState.AUTO;
     private DrivetrainState _previousState = DrivetrainState.IDLE;
     private LocationTarget _currentTarget = LocationTarget.NONE;
     private Pose2d _target = new Pose2d();
@@ -204,33 +204,6 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             targetReefFace = 0;
         }
     }
-    
-    private void updateOdometry() {
-        ArrayList<VisionMeasurement> visionMeasurements = _vision
-            .getVisionMeasurements(
-            getPigeon2().getRotation2d()
-        );
-
-        for (VisionMeasurement visionMeasurement : visionMeasurements) {
-            this.addVisionMeasurement(
-                visionMeasurement.pose, Utils.fpgaToCurrentTime(visionMeasurement.timestamp)
-            );
-        }
-        publisher.set(getPose());
-        m_field.setRobotPose(getPose());
-        SmartDashboard.putNumber("target rotation", targetRotation);
-        SmartDashboard.putNumber("pose x", getPoseX());
-        SmartDashboard.putNumber("pose y", getPoseY());
-        SmartDashboard.putNumber("angle", getDegrees());
-        SmartDashboard.putNumber("followP", followP);
-        SmartDashboard.putNumber("reefTarget", reefTarget);
-        SmartDashboard.putNumber("reefFace", targetReefFace);
-        SmartDashboard.putNumber("target angle", _target.getRotation().getDegrees());
-        SmartDashboard.putNumber("Target X", _target.getX());
-        SmartDashboard.putNumber("Target Y", _target.getY());
-        SmartDashboard.putString("current state", getCurrentState());
-        SmartDashboard.putString("previous state", getPreviousState());
-    }
 
     //#region periodic
     @Override
@@ -258,6 +231,38 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 Constants.DrivetrainConstants.RotAxis_inputBreakpoints,
                 Constants.DrivetrainConstants.RotAxis_outputTable, _driverController.getRightX());
 
+        updateOdometry();
+
+        if (_currentState != DrivetrainState.AUTO){
+            targetPeriodic();
+            handleCurrentState().schedule();
+        }
+    }
+
+    private void updateOdometry() {
+        ArrayList<VisionMeasurement> visionMeasurements = _vision
+            .getVisionMeasurements(
+            getPigeon2().getRotation2d()
+        );
+
+        for (VisionMeasurement visionMeasurement : visionMeasurements) {
+            this.addVisionMeasurement(
+                visionMeasurement.pose, Utils.fpgaToCurrentTime(visionMeasurement.timestamp)
+            );
+        }
+        publisher.set(getPose());
+        m_field.setRobotPose(getPose());
+        SmartDashboard.putNumber("pose x", getPoseX());
+        SmartDashboard.putNumber("pose y", getPoseY());
+        SmartDashboard.putNumber("angle", getDegrees());
+        SmartDashboard.putNumber("followP", followP);
+        SmartDashboard.putNumber("reefTarget", reefTarget);
+        SmartDashboard.putNumber("reefFace", targetReefFace);
+        SmartDashboard.putString("current state", getCurrentState());
+        SmartDashboard.putString("previous state", getPreviousState());
+    }
+
+    private void targetPeriodic() {
         switch (_currentTarget) {
             case CORAL_SOURCE:
                 targetSource(GeometryUtil::isRedAlliance);
@@ -310,10 +315,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 targetRotation = -0.5;
             }
         }
-        updateOdometry();
-        if (_currentState != DrivetrainState.AUTO){
-            //handleCurrentState().schedule();
-        }
+        
+        SmartDashboard.putNumber("target rotation", targetRotation);
+        SmartDashboard.putNumber("target angle", _target.getRotation().getDegrees());
+        SmartDashboard.putNumber("Target X", _target.getX());
+        SmartDashboard.putNumber("Target Y", _target.getY());
     }
 
     //#region State logic
@@ -360,7 +366,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             }
         }, this);
     }
-    ////#endregion
+    //#endregion
 
     //#region setTargetFunctions
     public void targetSource(Supplier<Boolean> isRedAlliance) {
@@ -411,7 +417,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         }
     }
 
-    ////#endregion////
+    //#endregion
     
 }
 
