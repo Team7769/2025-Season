@@ -40,11 +40,14 @@ private SparkMax _motor;
     public void handleCurrentState(){
         switch (_currentState){
             case STOP:
-            stop();
+                stop();
+                break;
             case ROLL:
-            roll();
+                roll();
+                break;
             default:
-            stop();
+                stop();
+                break;
         }
     }
     
