@@ -25,40 +25,36 @@ private SparkMax _motor;
 
         _motor.configure(config, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
-        _currentState = RollerState.AUTO;
+        _currentState = RollerState.STOP;
         _previousState = RollerState.ROLL;
-
     }
-    public Command stop(){
-        return run(() -> _motor.set(0));
-
-
+    
+    public void stop(){
+        _motor.set(0);
     }
-    public Command roll(){
-        return run(() -> _motor.set(0.5));
+
+    public void roll(){
+        _motor.set(0.5);
     }
-    public Command handleCurrentState(){
+
+    public void handleCurrentState(){
         switch (_currentState){
             case STOP:
-            return stop();
-
+            stop();
             case ROLL:
-            return roll();
-
+            roll();
             default:
-            return stop();
+            stop();
         }
     }
     
     @Override
     public void periodic(){
-        if (_currentState != RollerState.AUTO){
-            handleCurrentState().schedule();
-        }
+        handleCurrentState();
     }
 
     public SequentialCommandGroup score(){
         // return new SequentialCommandGroup(setWantedState(RollerState.ROLL), new WaitCommand(0.5), setWantedState(RollerState.STOP));
-        return new SequentialCommandGroup(roll().withTimeout(.1), new WaitCommand(0.5), stop().withTimeout(.1));
+        return new SequentialCommandGroup(setWantedState(RollerState.ROLL).withTimeout(.1), new WaitCommand(0.5), setWantedState(RollerState.STOP).withTimeout(.1));
     }
 }

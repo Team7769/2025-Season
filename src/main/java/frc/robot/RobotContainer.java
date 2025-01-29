@@ -85,7 +85,7 @@ public class RobotContainer {
     _driverController.a().onTrue(_drivetrain.setWantedTarget(LocationTarget.PROCESSOR));
 
     //new Trigger(DriverStation::isAutonomousEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO));
-    new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP).alongWith(_roller.setWantedState(RollerState.STOP)));
+    new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
     _driverController.povRight().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(0)));
     _driverController.povUp().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(1)));
