@@ -9,13 +9,24 @@ import frc.robot.enums.DrivetrainState;
 import frc.robot.enums.LocationTarget;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utilities.*;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.Event;
+import com.pathplanner.lib.events.EventTrigger;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.enums.RollerState;
 import frc.robot.subsystems.Cage;
 import frc.robot.subsystems.KitbotRoller;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -34,7 +45,7 @@ public class RobotContainer {
   private final Cage _cage;
   private final KitbotRoller _roller;
   private final Vision _vision;
-
+  private final SendableChooser<Command> _autoChooser;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     _cage = new Cage();
@@ -44,7 +55,12 @@ public class RobotContainer {
     _vision = new Vision();
     _drivetrain = new Drivetrain(_driverController, _vision);
     // Configure the trigger bindings
+    new EventTrigger("Initialize").onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO).withTimeout(.05));
+    new EventTrigger("KitBotScore").onTrue(_roller.score());
+    _autoChooser = AutoBuilder.buildAutoChooser("Test Auto");
+    SmartDashboard.putData("AutoChooser", _autoChooser);
     configureBindings();
+    SmartDashboard.putData("current command", CommandScheduler.getInstance());
   }
 
   /**
@@ -57,12 +73,17 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    _drivetrain.setDefaultCommand(_drivetrain.applyRequest(() -> _drivetrain.idle));
+    _drivetrain.setDefaultCommand(
+      _drivetrain.applyRequest(() -> 
+        _drivetrain.drive.withVelocityX(0).withVelocityY(0).withRotationalRate(0)
+    ));
+
     _driverController.y().onTrue(_drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE));
     _driverController.rightTrigger().onTrue(_roller.setWantedState(RollerState.ROLL)).onFalse(_roller.setWantedState(RollerState.STOP));
     _driverController.start().onTrue(_drivetrain.resetGyro());
     _driverController.a().onTrue(_drivetrain.setWantedTarget(LocationTarget.PROCESSOR));
 
+    // new Trigger(DriverStation::isAutonomousEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO));
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
     _driverController.povRight().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(0)));
@@ -70,14 +91,12 @@ public class RobotContainer {
     _driverController.povLeft().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(2)));
     _driverController.x().onTrue(new InstantCommand(() -> _drivetrain.targetNextReefFace()));
     _driverController.b().onTrue(_drivetrain.setWantedTarget(LocationTarget.REEF));
-    _driverController.back().onTrue(_drivetrain.setWantedTarget(LocationTarget.CAGE));
-    _driverController.rightBumper().onTrue(_drivetrain.setWantedTarget(LocationTarget.BARGE));
-
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
+    _driverController.back().onTrue(_drivetrain.setWantedTarget(LocationTarget.CAGE));
+    
+    _driverController.rightBumper().onTrue(_drivetrain.setWantedTarget(LocationTarget.BARGE));
   }
-
-  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -85,6 +104,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new Command() {};
+    return _autoChooser.getSelected();
   }
 }

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.564241803278687,
-        "y": 2.292776639344262
+        "x": 1.1508196721311474,
+        "y": 1.022079918032788
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.821004098360655,
-        "y": 2.3167520491803284
+        "x": 2.78885391870649,
+        "y": 1.6677657057040207
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.802049180327868,
-        "y": 2.292776639344262
+        "x": 5.154713114754099,
+        "y": 2.9281249999999988
       },
       "prevControl": {
-        "x": 6.461372950819672,
-        "y": 2.304764344262295
+        "x": 3.682195991466427,
+        "y": 1.9364297945205462
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "KitBotScore",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 4.0,
@@ -42,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.9093804491991427
+    "rotation": -59.931
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -128.29
   },
   "useDefaultConstraints": true
 }

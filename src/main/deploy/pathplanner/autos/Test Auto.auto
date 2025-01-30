@@ -7,19 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path 1"
+            "pathName": "Bottom start to reef 3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path 2"
+            "pathName": "Reef 3 to bottom coral"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "From bottom coral to reef 4"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

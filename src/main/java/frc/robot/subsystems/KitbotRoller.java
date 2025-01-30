@@ -5,6 +5,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 import com.revrobotics.spark.SparkBase;
 import frc.robot.statemachine.StateBasedSubsystem;
@@ -25,30 +27,37 @@ private SparkMax _motor;
 
         _currentState = RollerState.STOP;
         _previousState = RollerState.ROLL;
-
     }
-    public Command stop(){
-        return run(() -> _motor.set(0));
-
-
+    
+    public void stop(){
+        _motor.set(0);
     }
-    public Command roll(){
-        return run(() -> _motor.set(0.5));
+
+    public void roll(){
+        _motor.set(0.5);
     }
-    public Command handleCurrentState(){
+
+    public void handleCurrentState(){
         switch (_currentState){
             case STOP:
-            return stop();
-
+                stop();
+                break;
             case ROLL:
-            return roll();
-
+                roll();
+                break;
             default:
-            return stop();
+                stop();
+                break;
         }
     }
+    
     @Override
     public void periodic(){
-        handleCurrentState().schedule();
+        handleCurrentState();
+    }
+
+    public SequentialCommandGroup score(){
+        // return new SequentialCommandGroup(setWantedState(RollerState.ROLL), new WaitCommand(0.5), setWantedState(RollerState.STOP));
+        return new SequentialCommandGroup(setWantedState(RollerState.ROLL).withTimeout(.1), new WaitCommand(0.5), setWantedState(RollerState.STOP).withTimeout(.1));
     }
 }

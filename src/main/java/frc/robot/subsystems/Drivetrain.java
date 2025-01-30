@@ -10,9 +10,17 @@ import frc.robot.enums.DrivetrainState;
 import frc.robot.enums.FollowType;
 import frc.robot.enums.LocationTarget;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
 import java.util.ArrayList;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.controllers.PathFollowingController;
+import com.pathplanner.lib.util.PPLibTelemetry;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -20,6 +28,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -43,17 +52,15 @@ import frc.robot.utilities.GeometryUtil;
 import frc.robot.utilities.OneDimensionalLookup;
 import frc.robot.utilities.VisionMeasurement;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.jni.SwerveJNI.DriveState;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
-    private ChassisSpeeds followChassisSpeeds = new ChassisSpeeds(0, 0, 0);
-    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    public final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.05).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.05)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-    private final SwerveRequest.FieldCentricFacingAngle toPoint = new SwerveRequest.FieldCentricFacingAngle();
     public final SwerveRequest idle = new SwerveRequest.Idle();
-    
     public final SwerveRequest.ApplyRobotSpeeds chassisDrive = new SwerveRequest.ApplyRobotSpeeds();
 
     StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
@@ -70,7 +77,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private int reefTarget = 0;
     private int targetReefFace = 0;
 
-    private DrivetrainState _currentState = DrivetrainState.OPEN_LOOP;
+    private DrivetrainState _currentState = DrivetrainState.AUTO;
     private DrivetrainState _previousState = DrivetrainState.IDLE;
     private LocationTarget _currentTarget = LocationTarget.NONE;
     private FollowType _followType = FollowType.POINT;
@@ -79,6 +86,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private double targetRotation;
     private double xFollow;
     private double yFollow;
+    private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(1.75, 0, 0), new PIDConstants(1.5, 0, 0));
+    private ModuleConfig moduleConfig = new ModuleConfig(TunerConstants.kWheelRadiusMeters, TunerConstants.kSpeedAt12Volts,
+        1, DCMotor.getFalcon500(1), TunerConstants.kCurrentLimit, 1);
+    private RobotConfig config = new RobotConfig(38.2832, 38.6771362, moduleConfig, TunerConstants.kFrontLeftOffset,
+        TunerConstants.kFrontRightOffset, TunerConstants.kBackLeftOffset, TunerConstants.kBackRightOffset);
 
     private static class PeriodicIO {
         double VxCmd;
@@ -91,21 +103,26 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
     public Drivetrain(CommandXboxController driveController , Vision vision ) {
         super(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
-
-        // AutoBuilder.configureHolonomic(this::getPose, this::setStartingPose,
-        // this::getSpeeds, (speeds) ->
-        // this.setControl(chassisDrive.withSpeeds(speeds)),
-        // Constants.DrivetrainConstants.pathFollowerConfig,
-        // GeometryUtil::isRedAlliance, this);
-
         _driverController = driveController;
         _vision = vision;
         m_field = new Field2d();
+
         SmartDashboard.putData("Field", m_field);
+        
+        try {
+            AutoBuilder.configure(() -> getState().Pose, this::resetPose, () -> getState().Speeds, (speeds, feedforwards) -> setControl(
+                chassisDrive.withSpeeds(speeds)
+                //.withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons()).withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons()
+                ),
+            autoController, RobotConfig.fromGUISettings(), GeometryUtil::isRedAlliance, this);
+        }
+        catch (Exception ex) {
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
+        }
     }
 
-    private void setChassisSpeeds(ChassisSpeeds newSpeeds) {
-        followChassisSpeeds = newSpeeds;
+    private ChassisSpeeds getSpeeds() {
+        return this.getState().Speeds;
     }
 
     private void setStartingPose(Pose2d startingPose) {
@@ -190,32 +207,6 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             targetReefFace = 0;
         }
     }
-    
-    private void updateOdometry() {
-        ArrayList<VisionMeasurement> visionMeasurements = _vision
-            .getVisionMeasurements(
-            getPigeon2().getRotation2d()
-        );
-
-        for (VisionMeasurement visionMeasurement : visionMeasurements) {
-            this.addVisionMeasurement(
-                visionMeasurement.pose, Utils.fpgaToCurrentTime(visionMeasurement.timestamp)
-            );
-        }
-        publisher.set(getPose());
-        m_field.setRobotPose(getPose());        
-        SmartDashboard.putNumber("target rotation", targetRotation);
-        SmartDashboard.putNumber("pose x", getPoseX());
-        SmartDashboard.putNumber("pose y", getPoseY());
-        SmartDashboard.putNumber("angle", getDegrees());
-        SmartDashboard.putNumber("followP", followP);
-        SmartDashboard.putNumber("reefTarget", reefTarget);
-        SmartDashboard.putNumber("reefFace", targetReefFace);
-        SmartDashboard.putNumber("target angle", _target.getRotation().getDegrees());
-        SmartDashboard.putNumber("Target X", _target.getX());
-        SmartDashboard.putNumber("Target Y", _target.getY());
-        SmartDashboard.putString("drivetrain state",_currentState.name());
-    }
 
     //#region periodic
     @Override
@@ -227,7 +218,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         });
     }
 
-    _vision.updateLimelightPosition(getPigeon2().getRotation2d());
+     _vision.updateLimelightPosition(getPigeon2().getRotation2d());
     
         this.periodicIO.VxCmd = -OneDimensionalLookup.interpLinear(
                 Constants.DrivetrainConstants.XY_Axis_inputBreakpoints,
@@ -243,6 +234,39 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 Constants.DrivetrainConstants.RotAxis_inputBreakpoints,
                 Constants.DrivetrainConstants.RotAxis_outputTable, _driverController.getRightX());
 
+        updateOdometry();
+
+        if (_currentState != DrivetrainState.AUTO){
+            targetPeriodic();
+            handleCurrentState().schedule();
+        }
+    }
+
+    private void updateOdometry() {
+        ArrayList<VisionMeasurement> visionMeasurements = _vision
+            .getVisionMeasurements(
+            getPigeon2().getRotation2d()
+        );
+
+        for (VisionMeasurement visionMeasurement : visionMeasurements) {
+            this.addVisionMeasurement(
+                visionMeasurement.pose, Utils.fpgaToCurrentTime(visionMeasurement.timestamp)
+            );
+        }
+        publisher.set(getPose());
+        m_field.setRobotPose(getPose());
+        SmartDashboard.putNumber("pose x", getPoseX());
+        SmartDashboard.putNumber("pose y", getPoseY());
+        SmartDashboard.putNumber("angle", getDegrees());
+        SmartDashboard.putNumber("followP", followP);
+        SmartDashboard.putNumber("reefTarget", reefTarget);
+        SmartDashboard.putNumber("reefFace", targetReefFace);
+        SmartDashboard.putString("current state", getCurrentState());
+        SmartDashboard.putString("previous state", getPreviousState());
+        SmartDashboard.putNumber("speed", getState().Speeds.vxMetersPerSecond);
+    }
+
+    private void targetPeriodic() {
         switch (_currentTarget) {
             case CORAL_SOURCE:
                 targetSource(GeometryUtil::isRedAlliance);
@@ -277,12 +301,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
         if (Math.abs(GeometryUtil.getXDifference(_target, this::getPose)) < 1 && Math.abs(GeometryUtil.getYDifference(_target, this::getPose)) < 1) {
             followP = .9;
-        } 
-        else if (Math.abs(GeometryUtil.getXDifference(_target, this::getPose)) < 1 && _followType == FollowType.LINE)
-        {
+        } else if (Math.abs(GeometryUtil.getXDifference(_target, this::getPose)) < 1 && _followType == FollowType.LINE) {
             followP = .9;
-        }
-         else {
+        } else {
             followP = 4;
         }
 
@@ -303,8 +324,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 targetRotation = -0.5;
             }
         }
-        updateOdometry();
-        handleCurrentState().schedule();
+        
+        SmartDashboard.putNumber("target rotation", targetRotation);
+        SmartDashboard.putNumber("target angle", _target.getRotation().getDegrees());
+        SmartDashboard.putNumber("Target X", _target.getX());
+        SmartDashboard.putNumber("Target Y", _target.getY());
     }
 
     //#region State logic
@@ -341,7 +365,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             }
         }, this);
     }
-    ////#endregion
+    //#endregion
 
     //#region setTargetFunctions
     public void targetSource(Supplier<Boolean> isRedAlliance) {
