@@ -2,7 +2,7 @@ package frc.robot.enums;
 
 import frc.robot.statemachine.IState;
 
-public enum LiftinatorState implements IState {
+public enum ElavatinatorState implements IState {
     MANUAL,
     IDLE,
     HOLD

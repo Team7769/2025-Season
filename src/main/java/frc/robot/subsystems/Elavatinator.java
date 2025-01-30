@@ -7,10 +7,10 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.enums.LiftinatorState;
+import frc.robot.enums.ElavatinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
-public class Liftinator extends StateBasedSubsystem<LiftinatorState>{
+public class Elavatinator extends StateBasedSubsystem<ElavatinatorState>{
     private TalonFX _liftMotorinator;
     private Slot0Configs PIDConfiginator;
     private TrapezoidProfile profileinator;
@@ -18,7 +18,7 @@ public class Liftinator extends StateBasedSubsystem<LiftinatorState>{
     private TrapezoidProfile.State setPointinator;
     private PositionVoltage requestinator;
 
-    public Liftinator() {
+    public Elavatinator() {
         wantedPointinator = new TrapezoidProfile.State();
         setPointinator = new TrapezoidProfile.State();
         profileinator = new TrapezoidProfile(new TrapezoidProfile.Constraints(0, 0));
@@ -32,8 +32,8 @@ public class Liftinator extends StateBasedSubsystem<LiftinatorState>{
         requestinator = new PositionVoltage(0).withSlot(0);
 
         _liftMotorinator = new TalonFX(DrivetrainConstants.kLifinatorMotor);
-        _currentState = LiftinatorState.HOLD;
-        _previousState = LiftinatorState.IDLE;
+        _currentState = ElavatinatorState.HOLD;
+        _previousState = ElavatinatorState.IDLE;
         _liftMotorinator.getConfigurator().apply(PIDConfiginator.withGravityType(GravityTypeValue.Elevator_Static));
     }
 
