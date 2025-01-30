@@ -148,6 +148,9 @@ public final class Constants {
     public static final int kBackRightSteerMotorId = 12;
     public static final int kBackRightEncoderId = 13;
 //     public static final double kBackRightEncoderOffset = -0.74267578125;
+
+    public static final int kLifinatorMotor = 14;
+
   }
   
   public static class ReefConstants {
