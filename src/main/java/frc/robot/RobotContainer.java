@@ -10,6 +10,7 @@ import frc.robot.enums.LocationTarget;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.utilities.*;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.enums.RollerState;
 import frc.robot.subsystems.Cage;
 import frc.robot.subsystems.KitbotRoller;
@@ -58,8 +59,6 @@ public class RobotContainer {
   private void configureBindings() {
     _drivetrain.setDefaultCommand(_drivetrain.applyRequest(() -> _drivetrain.idle));
     _driverController.y().onTrue(_drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE));
-    _driverController.leftBumper().onTrue(autoFollow())
-    .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
     _driverController.rightTrigger().onTrue(_roller.setWantedState(RollerState.ROLL)).onFalse(_roller.setWantedState(RollerState.STOP));
     _driverController.start().onTrue(_drivetrain.resetGyro());
     _driverController.a().onTrue(_drivetrain.setWantedTarget(LocationTarget.PROCESSOR));
@@ -71,19 +70,14 @@ public class RobotContainer {
     _driverController.povLeft().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(2)));
     _driverController.x().onTrue(new InstantCommand(() -> _drivetrain.targetNextReefFace()));
     _driverController.b().onTrue(_drivetrain.setWantedTarget(LocationTarget.REEF));
+    _driverController.back().onTrue(_drivetrain.setWantedTarget(LocationTarget.CAGE));
+    _driverController.rightBumper().onTrue(_drivetrain.setWantedTarget(LocationTarget.BARGE));
+
+    _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
+    .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
   }
 
-  private Command autoFollow() {
-    switch (_drivetrain.getCurrentTarget()) {
-      case CAGE:
-        return _drivetrain.setWantedState(DrivetrainState.ROTATION_FOLLOW);
-      case BARGE:
-      // TODO: set state here
-        return _drivetrain.setWantedState(null);
-      default:
-        return _drivetrain.setWantedState(DrivetrainState.POINT_FOLLOW);
-    }
-  }
+  
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
