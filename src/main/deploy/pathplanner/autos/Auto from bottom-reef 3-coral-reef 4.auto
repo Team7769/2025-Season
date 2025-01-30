@@ -17,15 +17,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "From bottom coral to reef 4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "From reef 4 to bottom coral"
+            "waitTime": 0.5
           }
         },
         {
@@ -38,6 +32,30 @@
           "type": "path",
           "data": {
             "pathName": "From reef 4 to bottom coral"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "From bottom coral to reef 4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "From reef 4 to bottom coral"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {

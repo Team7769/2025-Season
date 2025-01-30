@@ -110,7 +110,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         try {
             AutoBuilder.configure(() -> getState().Pose, this::resetPose, () -> getState().Speeds, (speeds, feedforwards) -> setControl(
                 chassisDrive.withSpeeds(speeds)
-                .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons()).withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())),
+                //.withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons()).withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons()
+                ),
             autoController, RobotConfig.fromGUISettings(), GeometryUtil::isRedAlliance, this);
         }
         catch (Exception ex) {
@@ -260,6 +261,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("reefFace", targetReefFace);
         SmartDashboard.putString("current state", getCurrentState());
         SmartDashboard.putString("previous state", getPreviousState());
+        SmartDashboard.putNumber("speed", getState().Speeds.vxMetersPerSecond);
     }
 
     private void targetPeriodic() {
