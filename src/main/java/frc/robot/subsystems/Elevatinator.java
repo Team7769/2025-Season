@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.enums.ElavatinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
@@ -17,8 +18,10 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     private TrapezoidProfile.State wantedPointinator;
     private TrapezoidProfile.State setPointinator;
     private PositionVoltage requestinator;
+    private double manualPosition;
 
     public Elevatinator() {
+        manualPosition = 0;
         wantedPointinator = new TrapezoidProfile.State();
         setPointinator = new TrapezoidProfile.State();
         profileinator = new TrapezoidProfile(new TrapezoidProfile.Constraints(0, 0));
@@ -50,16 +53,21 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
 
     private void handleCurrentStateinator(){
         switch (_currentState){
-            case IDLE:
+            case HOLD:
+                holdPositioninator();
+            break;
+            case MANUAL:
+                setPositioninator(SmartDashboard.getNumber("Manual Position", 0));
+                holdPositioninator();
             break;
             default:
-                holdPositioninator();
             break;
         }
     }
     
     @Override
     public void periodic(){
+        SmartDashboard.putNumber("Manual Position", manualPosition);
         handleCurrentStateinator();
     }
 }
