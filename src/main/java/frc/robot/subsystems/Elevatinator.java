@@ -10,7 +10,7 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.enums.ElavatinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
-public class Elavatinator extends StateBasedSubsystem<ElavatinatorState>{
+public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     private TalonFX _liftMotorinator;
     private Slot0Configs PIDConfiginator;
     private TrapezoidProfile profileinator;
@@ -18,11 +18,11 @@ public class Elavatinator extends StateBasedSubsystem<ElavatinatorState>{
     private TrapezoidProfile.State setPointinator;
     private PositionVoltage requestinator;
 
-    public Elavatinator() {
+    public Elevatinator() {
         wantedPointinator = new TrapezoidProfile.State();
         setPointinator = new TrapezoidProfile.State();
         profileinator = new TrapezoidProfile(new TrapezoidProfile.Constraints(0, 0));
-        PIDConfiginator = new Slot0Configs();
+        PIDConfiginator = new Slot0Configs().withGravityType(GravityTypeValue.Elevator_Static);
         PIDConfiginator.kG = 0;
         PIDConfiginator.kS = 0;
         PIDConfiginator.kV = 0;
@@ -34,7 +34,7 @@ public class Elavatinator extends StateBasedSubsystem<ElavatinatorState>{
         _liftMotorinator = new TalonFX(DrivetrainConstants.kLifinatorMotor);
         _currentState = ElavatinatorState.HOLD;
         _previousState = ElavatinatorState.IDLE;
-        _liftMotorinator.getConfigurator().apply(PIDConfiginator.withGravityType(GravityTypeValue.Elevator_Static));
+        _liftMotorinator.getConfigurator().apply(PIDConfiginator);
     }
 
     public void setPositioninator(double positioninator) {
