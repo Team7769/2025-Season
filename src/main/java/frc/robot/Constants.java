@@ -240,4 +240,25 @@ public final class Constants {
     private static final ReefFace kRedReefFace6 = new ReefFace(kRedRight6, kRedAlgae6, kRedLeft6, kRedRotation6);
   }
 
+  public static class SubsystemConstants
+  {
+    //Elevatinator constants
+
+    //Ascendinator constants
+
+    //Claw constants
+    public static final int kClawPivotinatorID = 19;
+    public static final int kClawTopRollinatorID = 20;
+    public static final int kClawBottomRollinatorID = 21; 
+
+    public static final int kClawAlgaeDetectinatorID = 22;
+    //TODO: change the detectinator channel
+    public static final int kClawAlgaeDetectinatorChannel = 1;
+    //TODO: change debounce time
+    public static final int kClawAlgaeDebounceTime = 0;
+    
+
+
+  }
+
 }
