@@ -241,7 +241,7 @@ public final class Constants {
     private static final ReefFace kRedReefFace6 = new ReefFace(kRedRight6, kRedAlgae6, kRedLeft6, kRedRotation6);
 
   }
- public static class SubsystemConstants
+ public static class AscendinatorConstants
  {
     
     public static final int kPrimaryinatorAscendinatorID = 16;

@@ -27,9 +27,9 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 
 public class Ascendinator extends StateBasedSubsystem<CageState> {
-    private TalonFX _primaryinatorAscendinator = new TalonFX(Constants.SubsystemConstants.kPrimaryinatorAscendinatorID);
+    private TalonFX _primaryinatorAscendinator = new TalonFX(Constants.AscendinatorConstants.kPrimaryinatorAscendinatorID);
     private TalonFX _secondaryinatorAscendinator = new TalonFX(
-            Constants.SubsystemConstants.kSecondaryinatorAscendinatorID);
+            Constants.AscendinatorConstants.kSecondaryinatorAscendinatorID);
     private TalonFXConfiguration _configinator = new TalonFXConfiguration();
 
     private MotionMagicVoltage _motionMagic = new MotionMagicVoltage(0);
@@ -65,9 +65,9 @@ public class Ascendinator extends StateBasedSubsystem<CageState> {
         _follower = new Follower(16, false);
         _secondaryinatorAscendinator.setControl(_follower);
 
-        _detectinator = new DigitalInput(Constants.SubsystemConstants.kAscendinatorDetectinatorChannel);
+        _detectinator = new DigitalInput(Constants.AscendinatorConstants.kAscendinatorDetectinatorChannel);
 
-        _debounceinator = new Debouncer(Constants.SubsystemConstants.kDebouncinatorTime, DebounceType.kBoth);
+        _debounceinator = new Debouncer(Constants.AscendinatorConstants.kDebouncinatorTime, DebounceType.kBoth);
     }
 
     public void handleCurrentState() {
