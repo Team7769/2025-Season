@@ -248,5 +248,6 @@ public final class Constants {
     public static final int kSecondaryinatorAscendinatorID = 17;
     public static final int kAscendinatorDetectinatorID = 18;
     public static final int kDebouncinatorTime = 0;
+    public static final int kAscendinatorDetectinatorChannel = 1;
  }
 }
