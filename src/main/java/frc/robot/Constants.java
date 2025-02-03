@@ -13,6 +13,7 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -238,6 +239,15 @@ public final class Constants {
     private static final Rotation2d kRedRotation6 = new Rotation2d(300 * (Math.PI/180));
 
     private static final ReefFace kRedReefFace6 = new ReefFace(kRedRight6, kRedAlgae6, kRedLeft6, kRedRotation6);
-  }
 
+  }
+ public static class AscendinatorConstants
+ {
+    
+    public static final int kPrimaryinatorAscendinatorID = 16;
+    public static final int kSecondaryinatorAscendinatorID = 17;
+    public static final int kAscendinatorDetectinatorID = 18;
+    public static final int kDebouncinatorTime = 0;
+    public static final int kAscendinatorDetectinatorChannel = 1;
+ }
 }
