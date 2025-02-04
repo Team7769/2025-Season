@@ -89,15 +89,16 @@ public class RobotContainer {
     _driverController.start().onTrue(_drivetrain.resetGyro());
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
-    _driverController.rightBumper().onTrue(_claw.setWantedState(ClawState.FLOOR_INTAKE)).onFalse(_claw.setWantedState(ClawState.IDLE));
 
     new Trigger (_ascendinator::hasCage).negate().and(_driverController.back()).onTrue(_ascendinator.setWantedState(CageState.DEPLOY));
     new Trigger(_ascendinator::hasCage).and(_driverController.back()).onTrue(_ascendinator.setWantedState(CageState.ASCEND));
+
+    new Trigger(_claw::hasAlgae).negate().and(_driverController.rightBumper()).onTrue(_claw.setWantedState(ClawState.FLOOR_INTAKE)).onFalse(_claw.setWantedState(ClawState.IDLE));
     
     // new Trigger(DriverStation::isAutonomousEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO));
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
-    _operatorController.a().onTrue(_claw.setWantedState(ClawState.DEALGIFY));
+    _operatorController.a().onTrue(_claw.setWantedState(ClawState.DEALGIFY)).onFalse(_claw.setWantedState(ClawState.IDLE));
     _operatorController.y().onTrue(_claw.setWantedState(ClawState.PREP_NET));
     _operatorController.x().onTrue(_claw.setWantedState(ClawState.PREP_PROCESSOR));
 
