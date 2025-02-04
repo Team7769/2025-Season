@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.enums.RollerState;
 import frc.robot.subsystems.Cage;
 import frc.robot.subsystems.KitbotRoller;
+import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -43,12 +44,14 @@ public class RobotContainer {
   private final CommandXboxController _operatorController;
   private final Drivetrain _drivetrain;
   private final Cage _cage;
+  private final Claw _claw;
   private final KitbotRoller _roller;
   private final Vision _vision;
   private final SendableChooser<Command> _autoChooser;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     _cage = new Cage();
+    _claw = new Claw();
     _roller = new KitbotRoller();
     _driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     _operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
