@@ -1,39 +1,41 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AscendinatorConstants;
-import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.enums.ElavatinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
 public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     private TalonFX _liftMotorinator;
     private Slot0Configs PIDConfiginator;
-    private TrapezoidProfile profileinator;
-    private TrapezoidProfile.State wantedPointinator;
-    private TrapezoidProfile.State setPointinator;
-    private PositionVoltage requestinator;
-    private double manualPosition;
+    private MotionMagicVoltage requestinator;
+    private double manualPositioninator;
+    private MotionMagicConfigs motionMagicConfiginator;
+    private TalonFXConfiguration talonFXConfiginator;
 
     public Elevatinator() {
-        manualPosition = 0;
-        wantedPointinator = new TrapezoidProfile.State();
-        setPointinator = new TrapezoidProfile.State();
-        profileinator = new TrapezoidProfile(new TrapezoidProfile.Constraints(0, 0));
-        PIDConfiginator = new Slot0Configs().withGravityType(GravityTypeValue.Elevator_Static);
+        manualPositioninator = 0;
+        talonFXConfiginator = new TalonFXConfiguration();
+        PIDConfiginator = talonFXConfiginator.Slot0;
+        PIDConfiginator.withGravityType(GravityTypeValue.Elevator_Static);
         PIDConfiginator.kG = 0;
         PIDConfiginator.kS = 0;
         PIDConfiginator.kV = 0;
         PIDConfiginator.kP = 0; 
         PIDConfiginator.kI = 0; 
         PIDConfiginator.kD = 0;
-        requestinator = new PositionVoltage(0).withSlot(0);
+        motionMagicConfiginator = talonFXConfiginator.MotionMagic;
+        motionMagicConfiginator.MotionMagicCruiseVelocity = 0; // Target cruise velocity in rps
+        motionMagicConfiginator.MotionMagicAcceleration = 0; // Target acceleration in rps/s 
+        motionMagicConfiginator.MotionMagicJerk = 0; // Target jerk in rps/s/s
+
+        requestinator = new MotionMagicVoltage(0);
 
         _liftMotorinator = new TalonFX(AscendinatorConstants.kLifinatorMotor);
         _currentState = ElavatinatorState.HOLD;
@@ -42,14 +44,11 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     }
 
     public void setPositioninator(double positioninator) {
-        wantedPointinator.position = positioninator;
-        setPointinator = profileinator.calculate(.02, setPointinator, wantedPointinator);
+        manualPositioninator = positioninator;
     }
 
     private void holdPositioninator() {
-        requestinator.Position = setPointinator.position;
-        requestinator.Velocity = setPointinator.velocity;
-        _liftMotorinator.setControl(requestinator);
+        _liftMotorinator.setControl(requestinator.withPosition(manualPositioninator));
     }
 
     private void handleCurrentStateinator(){
@@ -68,7 +67,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("Manual Position", manualPosition);
+        SmartDashboard.putNumber("Manual Position", manualPositioninator);
         handleCurrentStateinator();
     }
 }
