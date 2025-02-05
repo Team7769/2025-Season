@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.AscendinatorConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.enums.ElavatinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
@@ -34,7 +35,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
         PIDConfiginator.kD = 0;
         requestinator = new PositionVoltage(0).withSlot(0);
 
-        _liftMotorinator = new TalonFX(DrivetrainConstants.kLifinatorMotor);
+        _liftMotorinator = new TalonFX(AscendinatorConstants.kLifinatorMotor);
         _currentState = ElavatinatorState.HOLD;
         _previousState = ElavatinatorState.IDLE;
         _liftMotorinator.getConfigurator().apply(PIDConfiginator);
