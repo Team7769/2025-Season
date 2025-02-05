@@ -23,10 +23,11 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     private double manualPositioninator;
     private MotionMagicConfigs motionMagicConfiginator;
     private TalonFXConfiguration talonFXConfiginator;
-    private SysIdRoutine elevatorRoutine;
+    private SysIdRoutine elevatorRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(4), null,
+        state -> SignalLogger.writeString("SysidElevatinator_State", state.toString())), 
+        new Mechanism(output -> _liftMotorinator.setVoltage(output.magnitude()), null, this));
 
     public Elevatinator() {
-        sysidSetup();
         manualPositioninator = 0;
         talonFXConfiginator = new TalonFXConfiguration();
         PIDConfiginator = talonFXConfiginator.Slot0;
@@ -74,11 +75,5 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     public void periodic(){
         SmartDashboard.putNumber("Manual Position", manualPositioninator);
         handleCurrentStateinator();
-    }
-
-    private void sysidSetup() {
-        elevatorRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(4), null,
-            state -> SignalLogger.writeString("SysidElevatinator_State", state.toString())), 
-        new Mechanism(output -> _liftMotorinator.setVoltage(output.magnitude()), null, this));
     }
 }
