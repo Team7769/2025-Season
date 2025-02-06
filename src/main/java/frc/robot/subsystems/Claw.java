@@ -47,7 +47,7 @@ public class Claw extends StateBasedSubsystem<ClawState> {
             Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
             null,        // Use default timeout (10 s)
             // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysIdTranslation_State", state.toString())
+            state -> SignalLogger.writeString("SysId_Claw", state.toString())
         ),
         new SysIdRoutine.Mechanism(
             output -> _pivotinator.setControl(voltage.withOutput(output)),
