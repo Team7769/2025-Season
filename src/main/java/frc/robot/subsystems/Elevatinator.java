@@ -18,43 +18,43 @@ import frc.robot.statemachine.StateBasedSubsystem;
 
 public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     private TalonFX _liftMotorinator;
-    private Slot0Configs PIDConfiginator;
-    private MotionMagicVoltage requestinator;
-    private double manualPositioninator;
-    private MotionMagicConfigs motionMagicConfiginator;
-    private TalonFXConfiguration talonFXConfiginator;
+    private Slot0Configs _PIDConfiginator;
+    private MotionMagicVoltage _requestinator;
+    private double _manualPositioninator;
+    private MotionMagicConfigs _motionMagicConfiginator;
+    private TalonFXConfiguration _talonFXConfiginator;
     private SysIdRoutine elevatorRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(4), null,
         state -> SignalLogger.writeString("SysidElevatinator_State", state.toString())), 
         new Mechanism(output -> _liftMotorinator.setVoltage(output.magnitude()), null, this));
 
     public Elevatinator() {
-        manualPositioninator = 0;
-        talonFXConfiginator = new TalonFXConfiguration();
-        PIDConfiginator = talonFXConfiginator.Slot0;
-        PIDConfiginator.withGravityType(GravityTypeValue.Elevator_Static);
-        PIDConfiginator.kG = 0;
-        PIDConfiginator.kS = 0;
-        PIDConfiginator.kV = 0;
-        PIDConfiginator.kP = 0; 
-        PIDConfiginator.kI = 0; 
-        PIDConfiginator.kD = 0;
-        motionMagicConfiginator = talonFXConfiginator.MotionMagic;
-        motionMagicConfiginator.MotionMagicCruiseVelocity = 0; // Target cruise velocity in rps
-        motionMagicConfiginator.MotionMagicAcceleration = 0; // Target acceleration in rps/s 
-        motionMagicConfiginator.MotionMagicJerk = 0; // Target jerk in rps/s/s
-        requestinator = new MotionMagicVoltage(0);
+        _manualPositioninator = 0;
+        _talonFXConfiginator = new TalonFXConfiguration();
+        _PIDConfiginator = _talonFXConfiginator.Slot0;
+        _PIDConfiginator.withGravityType(GravityTypeValue.Elevator_Static);
+        _PIDConfiginator.kG = 0;
+        _PIDConfiginator.kS = 0;
+        _PIDConfiginator.kV = 0;
+        _PIDConfiginator.kP = 0; 
+        _PIDConfiginator.kI = 0; 
+        _PIDConfiginator.kD = 0;
+        _motionMagicConfiginator = _talonFXConfiginator.MotionMagic;
+        _motionMagicConfiginator.MotionMagicCruiseVelocity = 0; // Target cruise velocity in rps
+        _motionMagicConfiginator.MotionMagicAcceleration = 0; // Target acceleration in rps/s 
+        _motionMagicConfiginator.MotionMagicJerk = 0; // Target jerk in rps/s/s
+        _requestinator = new MotionMagicVoltage(0);
         _liftMotorinator = new TalonFX(AscendinatorConstants.kLifinatorMotor);
         _currentState = ElavatinatorState.HOLD;
         _previousState = ElavatinatorState.IDLE;
-        _liftMotorinator.getConfigurator().apply(PIDConfiginator);
+        _liftMotorinator.getConfigurator().apply(_PIDConfiginator);
     }
 
     public void setPositioninator(double positioninator) {
-        manualPositioninator = positioninator;
+        _manualPositioninator = positioninator;
     }
 
     private void holdPositioninator() {
-        _liftMotorinator.setControl(requestinator.withPosition(manualPositioninator));
+        _liftMotorinator.setControl(_requestinator.withPosition(_manualPositioninator));
     }
 
     private void handleCurrentStateinator(){
@@ -73,7 +73,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     
     @Override
     public void periodic(){
-        SmartDashboard.putNumber("Manual Position", manualPositioninator);
+        SmartDashboard.putNumber("Manual Position", _manualPositioninator);
         handleCurrentStateinator();
     }
 }
