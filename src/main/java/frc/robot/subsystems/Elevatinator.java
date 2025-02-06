@@ -12,7 +12,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
-import frc.robot.Constants.AscendinatorConstants;
+import frc.robot.Constants.ElevatinatorConstants;
 import frc.robot.enums.ElavatinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
@@ -23,7 +23,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     private double _manualPositioninator;
     private MotionMagicConfigs _motionMagicConfiginator;
     private TalonFXConfiguration _talonFXConfiginator;
-    private SysIdRoutine elevatorRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(4), null,
+    public SysIdRoutine elevatorRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(4), null,
         state -> SignalLogger.writeString("SysidElevatinator_State", state.toString())), 
         new Mechanism(output -> _liftMotorinator.setVoltage(output.magnitude()), null, this));
 
@@ -43,7 +43,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
         _motionMagicConfiginator.MotionMagicAcceleration = 0; // Target acceleration in rps/s 
         _motionMagicConfiginator.MotionMagicJerk = 0; // Target jerk in rps/s/s
         _requestinator = new MotionMagicVoltage(0);
-        _liftMotorinator = new TalonFX(AscendinatorConstants.kLifinatorMotor);
+        _liftMotorinator = new TalonFX(ElevatinatorConstants.kLifinatorMotor);
         _currentState = ElavatinatorState.HOLD;
         _previousState = ElavatinatorState.IDLE;
         _liftMotorinator.getConfigurator().apply(_PIDConfiginator);

@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ElevatinatorConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.enums.CageState;
 import frc.robot.enums.ClawState;
 import frc.robot.enums.DrivetrainState;
 import frc.robot.enums.LocationTarget;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Elevatinator;
 import frc.robot.utilities.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -32,8 +34,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -49,6 +53,7 @@ public class RobotContainer {
   private final Ascendinator _ascendinator;
   private final KitbotRoller _roller;
   private final Vision _vision;
+  private final Elevatinator _elevatinator;
   private final SendableChooser<Command> _autoChooser;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -57,6 +62,7 @@ public class RobotContainer {
     _roller = new KitbotRoller();
     _driverController = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     _operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
+    _elevatinator = new Elevatinator();
     _vision = new Vision();
     _drivetrain = new Drivetrain(_driverController, _vision);
     // Configure the trigger bindings
@@ -85,22 +91,25 @@ public class RobotContainer {
 
     
     //_driverController.rightTrigger().onTrue(_roller.setWantedState(RollerState.ROLL)).onFalse(_roller.setWantedState(RollerState.STOP));
-    _driverController.rightTrigger().onTrue(_claw.setWantedState(ClawState.SCORE)).onFalse(_claw.setWantedState(ClawState.IDLE));
+    _driverController.rightTrigger().onTrue(_claw.setWantedState(ClawState.SCORE)).onFalse(goHomeinator());
     _driverController.start().onTrue(_drivetrain.resetGyro());
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
-
+    _driverController.y().onTrue(_elevatinator.elevatorRoutine.quasistatic(Direction.kForward));
+    _driverController.b().onTrue(_elevatinator.elevatorRoutine.quasistatic(Direction.kReverse));
+    _driverController.a().onTrue(_elevatinator.elevatorRoutine.dynamic(Direction.kForward));
+    _driverController.x().onTrue(_elevatinator.elevatorRoutine.dynamic(Direction.kReverse));
     new Trigger (_ascendinator::hasCage).negate().and(_driverController.back()).onTrue(_ascendinator.setWantedState(CageState.DEPLOY));
     new Trigger(_ascendinator::hasCage).and(_driverController.back()).onTrue(_ascendinator.setWantedState(CageState.ASCEND));
 
-    new Trigger(_claw::hasAlgae).negate().and(_driverController.rightBumper()).onTrue(_claw.setWantedState(ClawState.FLOOR_INTAKE)).onFalse(_claw.setWantedState(ClawState.IDLE));
+    new Trigger(_claw::hasAlgae).negate().and(_driverController.rightBumper()).onTrue(doinator(ClawState.FLOOR_INTAKE, ElevatinatorConstants.kAlgaePickup)).onFalse(goHomeinator());
     
     // new Trigger(DriverStation::isAutonomousEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO));
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
-    _operatorController.a().onTrue(_claw.setWantedState(ClawState.DEALGIFY)).onFalse(_claw.setWantedState(ClawState.IDLE));
-    _operatorController.y().onTrue(_claw.setWantedState(ClawState.PREP_NET));
-    _operatorController.x().onTrue(_claw.setWantedState(ClawState.PREP_PROCESSOR));
+    _operatorController.a().onTrue(doinator(ClawState.DEALGIFY, ElevatinatorConstants.kL2Algae)).onFalse(goHomeinator());
+    _operatorController.y().onTrue(doinator(ClawState.PREP_NET, ElevatinatorConstants.kAlgaeScore));
+    _operatorController.x().onTrue(doinator(ClawState.PREP_PROCESSOR, ElevatinatorConstants.kAlgaeProcessor));
 
     // _operatorController.povRight().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(0)));
     // _operatorController.povUp().onTrue(new InstantCommand(()-> _drivetrain.setReefTargetSideRight(1)));
@@ -120,5 +129,14 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return _autoChooser.getSelected();
+  }
+
+  public ParallelCommandGroup goHomeinator() {
+    return new ParallelCommandGroup(_claw.setWantedState(ClawState.IDLE), 
+      new InstantCommand(()->_elevatinator.setPositioninator(ElevatinatorConstants.kHome)));
+  }
+
+  public ParallelCommandGroup doinator(ClawState clawinator, double positioninator) {
+    return new ParallelCommandGroup(_claw.setWantedState(clawinator), new InstantCommand(()->_elevatinator.setPositioninator(positioninator)));
   }
 }

@@ -256,10 +256,6 @@ public final class Constants {
   }
 
     public static class ClawConstants {
-      // Elevatinator constants
-
-      // Ascendinator constants
-
       // Claw constants
       public static final int kClawPivotinatorID = 19;
       public static final int kClawTopRollinatorID = 20;
@@ -274,7 +270,6 @@ public final class Constants {
     }
 
     public static class AscendinatorConstants {
-      public static final int kLifinatorMotor = 15;
       public static final int kPrimaryinatorAscendinatorID = 16;
       public static final int kSecondaryinatorAscendinatorID = 17;
       public static final int kAscendinatorDetectinatorID = 18;
@@ -282,4 +277,18 @@ public final class Constants {
       public static final int kAscendinatorDetectinatorChannel = 1;
     }
 
+    public static class ElevatinatorConstants {
+      public static final int kLifinatorMotor = 15;
+      public static final double kAlgaeScore = 0;
+      public static final double kL4Coral = 0;
+      public static final double kL3Coral = 0;
+      public static final double kL3Algae = 0;
+      public static final double kL2Coral = 0;
+      public static final double kL2Algae = 0;
+      public static final double kL1Coral = 0;
+      public static final double kHumanPlayer = 0;
+      public static final double kAlgaePickup = 0;
+      public static final double kAlgaeProcessor = 0;
+      public static final double kHome = 0;
+    }
 }
