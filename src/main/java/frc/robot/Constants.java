@@ -310,4 +310,9 @@ public final class Constants {
       public static final double kAlgaeProcessor = 0;
       public static final double kHome = 0;
     }
+
+    public static class LEDinatorConstants
+    {
+      public static final int kLEDinatorID = 28;
+    }
 }

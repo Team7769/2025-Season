@@ -57,6 +57,11 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
         _liftMotorinator.setControl(_requestinator.withPosition(_manualPositioninator));
     }
 
+    public double getPositioninator()
+    {
+        return _manualPositioninator;
+    }
+
     private void handleCurrentStateinator(){
         switch (_currentState){
             case HOLD:

@@ -33,6 +33,10 @@ public abstract class StateBasedSubsystem<T extends IState> extends SubsystemBas
 
     public InstantCommand setWantedState(T state){
         return new InstantCommand(() -> {
+            if(state == null)
+            {
+                return;
+            }
             if (state != _currentState) {
                 _previousState = _currentState;
                 _currentState = state;
