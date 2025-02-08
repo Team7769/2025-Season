@@ -276,6 +276,15 @@ public final class Constants {
       public static final int kDebouncinatorTime = 0;
       public static final int kAscendinatorDetectinatorChannel = 1;
     }
+    public static class CalsificationinatorConstants {
+        public static final int kSuckinatorScoreinatorID = 23;
+        public static final int kPivotinatorID = 24;
+        public static final int kPostioninatorID = 25;
+        public static final int kFirstDetectinatorID = 26;
+        public static final int kSecondDetectinatorID = 27; /*First is the one closer to the rooler*/
+        public static final int kDebouncinatorCoralTime = 0;
+        public static final int kCalsificationDetectinatorChanel = 1;
+    }
 
     public static class ElevatinatorConstants {
       public static final int kLifinatorMotor = 15;
