@@ -188,16 +188,20 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         return _currentTarget;
     }
 
-    public int targetedPole() {
+    public int getTargetedPole() {
         return reefTarget;
     }
 
-    public void setReefTargetSideRight(int target) {
+    public void setReefTargetSide(int target) {
         reefTarget = target;
     }
 
     public void setReefTargetFace(int face) {
         targetReefFace = face;
+    }
+
+    public int getReefTargetFace() {
+        return targetReefFace;
     }
 
     public void targetNextReefFace() {
