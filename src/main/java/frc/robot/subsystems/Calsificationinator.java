@@ -80,53 +80,45 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
     public void handleCurrentState() {
         switch (_currentState) {
             case IDLE:
-            _pivotinator.setControl(_magicinator.withPosition(0));
-            // _pivotinator.setPosition(Rotation.of(0));
-                _suckinator.set(0);
+            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kIdlePosition));
+           
+                handleCoral();
                 break;
             case PICKUP:
-            _pivotinator.setControl(_magicinator.withPosition(0));
-            // _pivotinator.setPosition(Rotation.of(0));
-                if(_hasCoralinator()){ 
-                    _suckinator.set(0.5);}
-                    else{
-                        _suckinator.set(0);
-                    }
+            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kPickUpPosition));
+           handleCoral();
                 break;
 
             case L1:
-            _pivotinator.setControl(_magicinator.withPosition(0.75));
-            // _pivotinator.setPosition(Rotation.of(0));
-            if(_hasCoralinator()){ 
-                _suckinator.set(0.5);}
-                else{
-                    _suckinator.set(0);
-                }
+            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL1Position));
+         
+            handleCoral();
 
-
+            break;
             case L2:
-            _pivotinator.setControl(_magicinator.withPosition(0.65));
-            // _pivotinator.setPosition(Rotation.of(0));
-            if(_hasCoralinator()){ 
-                _suckinator.set(0.5);}
-                else{
-                    _suckinator.set(0);
-                }
-
+            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL2Position));
+            
+           handleCoral();
+           break;
+           case L3:
+           _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL3Position));
+           
+          handleCoral();
+          break;
 
             case L4:
-            _pivotinator.setControl(_magicinator.withPosition(0.90));
-                // _pivotinator.setPosition(Rotation.of(0));
-                if(_hasCoralinator()){ 
-                    _suckinator.set(0.5);}
-                    else{
-                        _suckinator.set(0);
-                    }
+            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL4Position));
+                
+               handleCoral();
+                break;
+            case SCORE:
+            _suckinator.set(0.3);
+            break;
 
             default:
-            _pivotinator.setControl(_magicinator.withPosition(0));
-                // _pivotinator.setPosition(Rotation.of(0));
-                _suckinator.set(0);
+            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kIdlePosition));
+            
+                handleCoral();
                 break;
         }
     }
@@ -136,9 +128,16 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
         _hasCoralinator = _calsificationDebouncinator.calculate(!_calsificationDetectinator.get());
     }
 
-    public boolean _hasCoralinator() {
+    public boolean hasCoralinator() {
         return _hasCoralinator ;
     }
-   
+   private void handleCoral(){
+    if(hasCoralinator()){ 
+    _suckinator.set(0);}
+    else{
+        _suckinator.set(-0.25);
+    }
+}
+
 
 }
