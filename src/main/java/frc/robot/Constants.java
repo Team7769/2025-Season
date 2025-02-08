@@ -288,6 +288,12 @@ public final class Constants {
         public static final int kSecondDetectinatorID = 27; /*First is the one closer to the rooler*/
         public static final int kDebouncinatorCoralTime = 0;
         public static final int kCalsificationDetectinatorChanel = 1;
+        public static final double kIdlePosition = 0;
+        public static final double kPickUpPosition = 0;
+        public static final double kL4Position = 0;
+        public static final double kL3Position = 0;
+        public static final double kL2Position = 0;
+        public static final double kL1Position = 0;
     }
 
     public static class ElevatinatorConstants {
