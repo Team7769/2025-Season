@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.enums.CageState;
+import frc.robot.enums.CalsificationinatorState;
 import frc.robot.enums.ClawState;
 import frc.robot.enums.DrivetrainState;
 import frc.robot.enums.LocationTarget;
@@ -25,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.enums.RollerState;
 import frc.robot.subsystems.Ascendinator;
+import frc.robot.subsystems.Calsificationinator;
 import frc.robot.subsystems.KitbotRoller;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Vision;
@@ -50,6 +52,7 @@ public class RobotContainer {
   private final KitbotRoller _roller;
   private final Vision _vision;
   private final SendableChooser<Command> _autoChooser;
+  private final Calsificationinator _calsificationinator;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     _claw = new Claw();
@@ -59,6 +62,7 @@ public class RobotContainer {
     _operatorController = new CommandXboxController(OperatorConstants.kOperatorControllerPort);
     _vision = new Vision();
     _drivetrain = new Drivetrain(_driverController, _vision);
+    _calsificationinator = new Calsificationinator();
     // Configure the trigger bindings
     new EventTrigger("Initialize").onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO).withTimeout(.05));
     new EventTrigger("KitBotScore").onTrue(_roller.score());
@@ -97,7 +101,10 @@ public class RobotContainer {
     
     // new Trigger(DriverStation::isAutonomousEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO));
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
-
+    _operatorController.b().onTrue(_calsificationinator.setWantedState(CalsificationinatorState.PICKUP)).onFalse(_calsificationinator.setWantedState(CalsificationinatorState.IDLE));
+    _operatorController.rightBumper().onTrue(_calsificationinator.setWantedState(CalsificationinatorState.L1)).onFalse(_calsificationinator.setWantedState(CalsificationinatorState.IDLE));
+    _operatorController.leftBumper().onTrue(_calsificationinator.setWantedState(CalsificationinatorState.L2)).onFalse(_calsificationinator.setWantedState(CalsificationinatorState.IDLE));
+    _operatorController.rightTrigger().onTrue(_calsificationinator.setWantedState(CalsificationinatorState.L4)).onFalse(_calsificationinator.setWantedState(CalsificationinatorState.IDLE));
     _operatorController.a().onTrue(_claw.setWantedState(ClawState.DEALGIFY)).onFalse(_claw.setWantedState(ClawState.IDLE));
     _operatorController.y().onTrue(_claw.setWantedState(ClawState.PREP_NET));
     _operatorController.x().onTrue(_claw.setWantedState(ClawState.PREP_PROCESSOR));

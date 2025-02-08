@@ -46,6 +46,8 @@ public class Ascendinator extends StateBasedSubsystem<CageState> {
 
     private Follower _follower;
 
+    
+
     public Ascendinator() {
         Slot0Configs slot0 = _configinator.Slot0;
         slot0.kS = 0.25;
