@@ -119,7 +119,6 @@ public class Claw extends StateBasedSubsystem<ClawState> {
     public void handleCurrentState() {
         switch (_currentState) {
             case IDLE:
-
                 _pivotinator.setControl(_request.withPosition(0));
                 // _pivotinator.setPosition(Rotation.of(0));
                 _topRollinator.set(0);
