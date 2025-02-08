@@ -9,5 +9,5 @@ public enum CalsificationinatorState implements IState{
     L3,
     L4,
     IDLE,
-    SCORE
+    SCORE,
 }
