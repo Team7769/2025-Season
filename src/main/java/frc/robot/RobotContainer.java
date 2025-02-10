@@ -82,7 +82,7 @@ public class RobotContainer {
     _reefController = new CommandXboxController(OperatorConstants.kReefControllerPort);
     _elevatinator = new Elevatinator();
     _vision = new Vision();
-    _drivetrain = new Drivetrain(_driverController, _vision);
+    _drivetrain = new Drivetrain(_driverController, _vision, _elevatinator);
     _calsificationinator = new Calsificationinator();
     _ledinator = new LEDinator(_calsificationinator,_claw,_elevatinator,_ascendinator);
     // Configure the trigger bindings

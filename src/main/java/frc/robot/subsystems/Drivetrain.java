@@ -44,6 +44,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants;
 import frc.robot.TunerConstants;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.ElevatinatorConstants;
 import frc.robot.Constants.FieldConstants;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.LimelightHelpers;
@@ -83,6 +84,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private FollowType _followType = FollowType.POINT;
     private Pose2d _target = new Pose2d();
     private boolean _isFollowingFront = false;
+    private boolean _capSpeed = false;
+    private final double kCappedSpeed = .2;
     private double targetRotation;
     private double xFollow;
     private double yFollow;
@@ -100,10 +103,12 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
     private final CommandXboxController _driverController;
     private final Vision _vision;
+    private final Elevatinator _elevatinator;
 
-    public Drivetrain(CommandXboxController driveController , Vision vision ) {
+    public Drivetrain(CommandXboxController driveController , Vision vision, Elevatinator elevatinator) {
         super(TunerConstants.DrivetrainConstants, TunerConstants.FrontLeft, TunerConstants.FrontRight, TunerConstants.BackLeft, TunerConstants.BackRight);
         _driverController = driveController;
+        _elevatinator = elevatinator;
         _vision = vision;
         m_field = new Field2d();
 
@@ -328,6 +333,12 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 targetRotation = -0.5;
             }
         }
+
+        if(_elevatinator.getPositioninator() >= ElevatinatorConstants.kL2Coral) {
+            _capSpeed = true;
+        } else {
+            _capSpeed = false;
+        }
         
         SmartDashboard.putNumber("target rotation", targetRotation);
         SmartDashboard.putNumber("target angle", _target.getRotation().getDegrees());
@@ -337,6 +348,13 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
     //#region State logic
     private Command handleCurrentState() {
+        if (_capSpeed) {
+            this.periodicIO.VxCmd = (this.periodicIO.VxCmd > kCappedSpeed) ? kCappedSpeed : this.periodicIO.VxCmd;
+            this.periodicIO.VyCmd = (this.periodicIO.VyCmd > kCappedSpeed) ? kCappedSpeed : this.periodicIO.VyCmd;
+            this.periodicIO.WzCmd = (this.periodicIO.WzCmd > kCappedSpeed) ? kCappedSpeed : this.periodicIO.WzCmd;
+            xFollow = (xFollow > kCappedSpeed) ? kCappedSpeed : xFollow;
+            yFollow = (yFollow > kCappedSpeed) ? kCappedSpeed : yFollow;
+        }
         switch (_currentState) {
             case IDLE:
                 return applyRequest(() -> idle);
