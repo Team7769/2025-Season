@@ -309,6 +309,7 @@ public final class Constants {
       public static final double kAlgaePickup = 0;
       public static final double kAlgaeProcessor = 0;
       public static final double kHome = 0;
+      public static final double kLiftinatorMaxHeight = 74;
     }
 
     public static class LEDinatorConstants
