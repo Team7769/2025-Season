@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.filter.Debouncer;
@@ -10,12 +11,15 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Constants;
 import frc.robot.enums.CageState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -46,7 +50,10 @@ public class Ascendinator extends StateBasedSubsystem<CageState> {
 
     private Follower _follower;
 
-    
+    private VoltageOut voltageOut = new VoltageOut(0);
+    public SysIdRoutine pivotinatorRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(4), null,
+        state -> SignalLogger.writeString("SysidAscendinator_State", state.toString())), 
+        new Mechanism(output -> _primaryinatorAscendinator.setControl(voltageOut.withOutput(output)), null, this));
 
     public Ascendinator() {
         Slot0Configs slot0 = _configinator.Slot0;

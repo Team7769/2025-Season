@@ -3,21 +3,32 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Constants;
+import frc.robot.Constants.CalsificationinatorConstants;
 import frc.robot.enums.CageState;
 import frc.robot.enums.CalsificationinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -26,6 +37,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.math.util.Units;
 
 public class Calsificationinator extends StateBasedSubsystem<CalsificationinatorState> {
     private TalonFX _suckinator = new TalonFX(Constants.CalsificationinatorConstants.kSuckinatorScoreinatorID);
@@ -44,17 +56,20 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
 
     private Debouncer _calsificationDebouncinatorTwo;
 
-
-
-
-    
-
+    private VoltageOut voltageOut = new VoltageOut(0);
+    public SysIdRoutine pivotinatorRoutine = new SysIdRoutine(new SysIdRoutine.Config(Volts.of(.25).per(Second), Volts.of(2), null,
+        state -> SignalLogger.writeString("SysidPivotinator_State", state.toString())), 
+        new Mechanism(output -> _pivotinator.setControl(voltageOut.withOutput(output)), null, this));
    
     public Calsificationinator(){
+        _currentState = CalsificationinatorState.NOTHING;
+        _previousState = CalsificationinatorState.NOTHING;
         _calsificationDetectinator = new DigitalInput(Constants.CalsificationinatorConstants.kCalsificationDetectinatorChanel);
         _pivotConfig = new TalonFXConfiguration();
-        _pivotFeedbackConfigs = _pivotConfig.Feedback;
-        _pivotFeedbackConfigs.SensorToMechanismRatio = 1;
+        _pivotConfig.Feedback.FeedbackRemoteSensorID = CalsificationinatorConstants.kPivotinatorCancoderID;
+        _pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+        _pivotConfig.Feedback.SensorToMechanismRatio = 1;
+        _pivotConfig.Feedback.RotorToSensorRatio = 12;
 
         _calsificationDebouncinator = new Debouncer(0);
         _calsificationDebouncinatorTwo = new Debouncer(0);
@@ -74,7 +89,7 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
                                                                                  // reach max vel
                 // Take approximately 0.1 seconds to reach max accel
                 .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(100));
-        
+        _pivotinator.getConfigurator().apply(_pivotConfig);
     }
     
     public void handleCurrentState() {
@@ -114,6 +129,8 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
             case SCORE:
             _suckinator.set(0.3);
             break;
+            case NOTHING:
+            break;
 
             default:
             _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kIdlePosition));
@@ -139,5 +156,8 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
     }
 }
 
+public InstantCommand zeroMotor() {
+    return new InstantCommand(() -> _pivotinator.setControl(voltageOut.withOutput(0)), this);
+}
 
 }
