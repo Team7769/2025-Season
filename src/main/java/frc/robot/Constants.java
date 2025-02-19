@@ -132,9 +132,11 @@ public final class Constants {
         0.4, 0.6, .7, 1.0 };
     public static final double kSpeedAt12VoltsMps = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     public static final double MaxAngularRate = RotationsPerSecond.of(Math.PI / 2).in(RadiansPerSecond);
+    //Front Left
     public static final int kFrontLeftDriveMotorId = 2;
     public static final int kFrontLeftSteerMotorId = 3;
     public static final int kFrontLeftEncoderId = 4;
+
     // public static final double kFrontLeftEncoderOffset = -0.91259765625;
     // public static final double kFrontLeftEncoderOffset = 179.087402;
 
@@ -281,6 +283,7 @@ public final class Constants {
       public static final int kAscendinatorDetectinatorChannel = 1;
     }
     public static class CalsificationinatorConstants {
+      public static final int kCalsificationatorCANcoderID = 30;
         public static final int kSuckinatorScoreinatorID = 23;
         public static final int kPivotinatorID = 24;
         public static final int kPostioninatorID = 25;
@@ -314,5 +317,6 @@ public final class Constants {
     public static class LEDinatorConstants
     {
       public static final int kLEDinatorID = 28;
+      public static final int kLEDPartyLightinatorID = 29;
     }
 }

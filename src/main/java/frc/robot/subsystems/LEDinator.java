@@ -2,8 +2,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
+import com.ctre.phoenix.led.ColorFlowAnimation;
 import com.ctre.phoenix.led.FireAnimation;
+import com.ctre.phoenix.led.RainbowAnimation;
 import com.ctre.phoenix.led.StrobeAnimation;
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix6.configs.CANdiConfiguration;
 
 import frc.robot.Constants;
@@ -14,6 +17,7 @@ import frc.robot.statemachine.StateBasedSubsystem;
 
 public class LEDinator extends StateBasedSubsystem<LEDinatorState> {
     private CANdle _candle;
+    private CANdle _partyLightinator;
     private CANdiConfiguration config;
 
     private Calsificationinator _calsificationator;
@@ -26,7 +30,12 @@ public class LEDinator extends StateBasedSubsystem<LEDinatorState> {
     private Animation L4;
     private Animation WAITING_FOR_CAGE;
     private Animation EPIC_CLIMB;
+    private Animation DISCO_MODE;
+    private Animation DISCO_MODE_PARTY;
+    private Animation GREEN_DECORATION_LIGHTS;
+    private Animation BLUE_DECORATION_LIGHTS;
     private int numLEDS = 20;
+    private int numPartyLEDS = 20;
 
     private Calsificationinator _calsificationinator;
     private Claw _claw;
@@ -50,6 +59,12 @@ public class LEDinator extends StateBasedSubsystem<LEDinatorState> {
 
         //fire
         EPIC_CLIMB = new FireAnimation(.5, .5, numLEDS, .25, .1);
+        DISCO_MODE = new RainbowAnimation(.5, .5, numLEDS);
+        DISCO_MODE_PARTY = new RainbowAnimation(.5, .5, numPartyLEDS);
+
+        //green flow animation
+        GREEN_DECORATION_LIGHTS = new ColorFlowAnimation(153, 247, 45, 255, .5, numPartyLEDS, Direction.Forward);
+        BLUE_DECORATION_LIGHTS = new ColorFlowAnimation(0, 115, 255, 255,5, numLEDS, Direction.Forward);
 
         _calsificationator = calsificationinator;
         _claw = claw;
@@ -58,6 +73,8 @@ public class LEDinator extends StateBasedSubsystem<LEDinatorState> {
 
         _currentState = LEDinatorState.CORAL;
         _previousState = LEDinatorState.ALGAE;
+
+        setDecorationLights();
         
     }
 
@@ -163,7 +180,19 @@ public class LEDinator extends StateBasedSubsystem<LEDinatorState> {
     public void setEpicClimbAnimation()
     {
         _candle.clearAnimation(0);
-        _candle.animate(EPIC_CLIMB);
+        //_candle.animate(EPIC_CLIMB);
+        _candle.animate(DISCO_MODE);
+        _partyLightinator.clearAnimation(0);
+        _partyLightinator.animate(DISCO_MODE_PARTY);
+    }
+
+    public void setDecorationLights()
+    {
+        _partyLightinator.clearAnimation(0);
+        _partyLightinator.animate(GREEN_DECORATION_LIGHTS);
+
+        _candle.clearAnimation(0);
+        _candle.animate(BLUE_DECORATION_LIGHTS);
     }
 
     public void handleCurrentState()
