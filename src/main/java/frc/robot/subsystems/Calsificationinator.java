@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.controls.ControlRequest;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -10,67 +8,53 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.units.VoltageUnit;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Velocity;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Constants;
-import frc.robot.Constants.CalsificationinatorConstants;
-import frc.robot.enums.CageState;
 import frc.robot.enums.CalsificationinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.SignalLogger;
-import com.ctre.phoenix6.StatusCode;
-import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.math.util.Units;
 
 public class Calsificationinator extends StateBasedSubsystem<CalsificationinatorState> {
     private TalonFX _suckinator = new TalonFX(Constants.CalsificationinatorConstants.kSuckinatorScoreinatorID);
-    
+
     private TalonFX _pivotinator = new TalonFX(Constants.CalsificationinatorConstants.kPivotinatorID);
 
     private boolean _hasCoralinator;
 
     private boolean _hasCoralinatorTwo;
-   
+
     private TalonFXConfiguration _pivotConfig;
-    private FeedbackConfigs _pivotFeedbackConfigs;
     private final MotionMagicVoltage _magicinator = new MotionMagicVoltage(0);
 
     private DigitalInput _calsificationDetectinator;
 
     private DigitalInput _calsificationDetectinatorTwo;
- 
+
     private Debouncer _calsificationDebouncinator;
 
     private Debouncer _calsificationDebouncinatorTwo;
 
     private VoltageOut voltageOut = new VoltageOut(0);
-    public SysIdRoutine pivotinatorRoutine = new SysIdRoutine(new SysIdRoutine.Config(Volts.of(.25).per(Second), Volts.of(2), null,
-        state -> SignalLogger.writeString("SysidPivotinator_State", state.toString())), 
-        new Mechanism(output -> _pivotinator.setControl(voltageOut.withOutput(output)), null, this));
-   
-    public Calsificationinator(){
+    public SysIdRoutine pivotinatorRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(Volts.of(.25).per(Second), Volts.of(2), null,
+                    state -> SignalLogger.writeString("SysidPivotinator_State", state.toString())),
+            new Mechanism(output -> _pivotinator.setControl(voltageOut.withOutput(output)), null, this));
+
+    public Calsificationinator() {
         _currentState = CalsificationinatorState.IDLE;
         _previousState = CalsificationinatorState.IDLE;
-        _calsificationDetectinator = new DigitalInput(Constants.CalsificationinatorConstants.kCalsificationDetectinatorChanel);
+        _calsificationDetectinator = new DigitalInput(
+                Constants.CalsificationinatorConstants.kCalsificationDetectinatorChanel);
         _calsificationDetectinatorTwo = new DigitalInput(Constants.CalsificationinatorConstants.kSecondDetectinatorID);
         _pivotConfig = new TalonFXConfiguration();
         _pivotConfig.Feedback.SensorToMechanismRatio = 12;
@@ -91,7 +75,7 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
         slot0.withGravityType(GravityTypeValue.Arm_Cosine);
         MotionMagicConfigs _pivotMotionMagic = _pivotConfig.MotionMagic;
         _pivotMotionMagic.withMotionMagicCruiseVelocity(RotationsPerSecond.of(10)) // 5 (mechanism) rotations per second
-                                                                                  // cruise
+                                                                                   // cruise
                 .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(10)) // Take approximately 0.5 seconds to
                                                                                  // reach max vel
                 // Take approximately 0.1 seconds to reach max accel
@@ -99,58 +83,59 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
         _pivotinator.getConfigurator().apply(_pivotConfig);
         _pivotinator.setNeutralMode(NeutralModeValue.Brake);
     }
-    
+
     public void handleCurrentState() {
         switch (_currentState) {
             case IDLE:
-            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kIdlePosition));
-           
+                _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kIdlePosition));
+
                 handleCoral();
                 break;
             case PICKUP:
-            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kPickUpPosition));
-           handleCoral();
+                _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kPickUpPosition));
+                handleCoral();
                 break;
 
             case L1:
-            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL1Position));
-         
-            handleCoral();
+                _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL1Position));
 
-            break;
+                handleCoral();
+
+                break;
             case L2:
-            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL2Position));
-            
-           handleCoral();
-           break;
-           case L3:
-           _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL3Position));
-           
-          handleCoral();
-          break;
+                _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL2Position));
+
+                handleCoral();
+                break;
+            case L3:
+                _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL3Position));
+
+                handleCoral();
+                break;
 
             case L4:
-            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL4Position));
-                
-               handleCoral();
+                _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL4Position));
+
+                handleCoral();
                 break;
             case SCORE:
-            if (_previousState == CalsificationinatorState.L1) {
-                _suckinator.set(0.05);
-            } else {
-                _suckinator.set(0.3);
-            }
-            break;
+                if (_previousState == CalsificationinatorState.L1) {
+                    _suckinator.set(0.05);
+                } else {
+                    _suckinator.set(0.3);
+                }
+                break;
             case NOTHING:
-            break;
+                break;
 
             default:
-            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kIdlePosition));
-            
+                _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kIdlePosition));
+
                 handleCoral();
                 break;
         }
     }
+
     @Override
     public void periodic() {
         handleCurrentState();
@@ -161,19 +146,19 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
     public boolean hasCoralinator() {
         return _hasCoralinator || _hasCoralinatorTwo;
     }
-   private void handleCoral(){
-    if(_hasCoralinatorTwo){
-        _suckinator.set(-.1);
-    } else if (_hasCoralinator) {
-        _suckinator.set(0);
-    }
-    else {
-        _suckinator.set(0.15);
-    }
-}
 
-public InstantCommand zeroMotor() {
-    return new InstantCommand(() -> _pivotinator.setControl(voltageOut.withOutput(0)), this);
-}
+    private void handleCoral() {
+        if (_hasCoralinatorTwo) {
+            _suckinator.set(-.1);
+        } else if (_hasCoralinator) {
+            _suckinator.set(0);
+        } else {
+            _suckinator.set(0.15);
+        }
+    }
+
+    public InstantCommand zeroMotor() {
+        return new InstantCommand(() -> _pivotinator.setControl(voltageOut.withOutput(0)), this);
+    }
 
 }
