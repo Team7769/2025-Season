@@ -37,8 +37,9 @@ import frc.robot.subsystems.Calsificationinator;
 import frc.robot.subsystems.LEDinator;
 import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Vision;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -182,16 +183,16 @@ public class RobotContainer {
   // return _autoChooser.getSelected();
   // }
 
-  public ParallelCommandGroup goHomeinator() {
-    return new ParallelCommandGroup(
+  public Command goHomeinator() {
+    return Commands.parallel(
         // _claw.setWantedState(ClawState.IDLE),
         _elevatinator.setWantedState(ElavatinatorState.HOME),
         _calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
   }
 
-  public ParallelCommandGroup doinator(Supplier<ClawState> clawinator,
+  public Command doinator(Supplier<ClawState> clawinator,
       CalsificationinatorState calsificationinatorState, LEDinatorState ledinatorState) {
-    return new ParallelCommandGroup(
+    return Commands.parallel(
         _claw.setWantedState(clawinator),
         _elevatinator.setWantedState(ElavatinatorState.HOLD),
         _calsificationinator.setWantedState(CalsificationinatorState.L4)
@@ -199,8 +200,8 @@ public class RobotContainer {
     );
   }
 
-  public ParallelCommandGroup L1() {
-    return new ParallelCommandGroup(
+  public Command L1() {
+    return Commands.parallel(
         // _claw.setWantedState(clawinator),
         _elevatinator.setWantedState(ElavatinatorState.HOLD),
         _calsificationinator.setWantedState(CalsificationinatorState.L4)
@@ -208,9 +209,9 @@ public class RobotContainer {
     );
   }
 
-  public ParallelCommandGroup reefSetinator(double position, int side,
+  public Command reefSetinator(double position, int side,
       CalsificationinatorState calsificationinatorState, ClawState clawState, ScoringTarget scoringTarget) {
-    return new ParallelCommandGroup(new InstantCommand(() -> {
+    return Commands.parallel(new InstantCommand(() -> {
       if (side == ReefConstants.kReefAlgae) {
         if (_drivetrain.getReefTargetFace() % 2 == 0) {
           _elevatinator.setPositioninator(ElevatinatorConstants.kL2Algae);
@@ -232,9 +233,9 @@ public class RobotContainer {
     );
   }
 
-  public ParallelCommandGroup algaeSetinator(double position, CalsificationinatorState calsificationinatorState,
+  public Command algaeSetinator(double position, CalsificationinatorState calsificationinatorState,
       ClawState clawState) {
-    return new ParallelCommandGroup(new InstantCommand(() -> {
+    return Commands.parallel(new InstantCommand(() -> {
       _targetCalsificationinatorState = calsificationinatorState;
       _targetClawState = clawState;
     })
