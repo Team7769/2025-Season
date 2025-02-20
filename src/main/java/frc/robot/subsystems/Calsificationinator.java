@@ -6,6 +6,8 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.VoltageUnit;
@@ -45,12 +47,16 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
     private TalonFX _pivotinator = new TalonFX(Constants.CalsificationinatorConstants.kPivotinatorID);
 
     private boolean _hasCoralinator;
+
+    private boolean _hasCoralinatorTwo;
    
     private TalonFXConfiguration _pivotConfig;
     private FeedbackConfigs _pivotFeedbackConfigs;
     private final MotionMagicVoltage _magicinator = new MotionMagicVoltage(0);
 
     private DigitalInput _calsificationDetectinator;
+
+    private DigitalInput _calsificationDetectinatorTwo;
  
     private Debouncer _calsificationDebouncinator;
 
@@ -62,34 +68,36 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
         new Mechanism(output -> _pivotinator.setControl(voltageOut.withOutput(output)), null, this));
    
     public Calsificationinator(){
-        _currentState = CalsificationinatorState.NOTHING;
-        _previousState = CalsificationinatorState.NOTHING;
+        _currentState = CalsificationinatorState.IDLE;
+        _previousState = CalsificationinatorState.IDLE;
         _calsificationDetectinator = new DigitalInput(Constants.CalsificationinatorConstants.kCalsificationDetectinatorChanel);
+        _calsificationDetectinatorTwo = new DigitalInput(Constants.CalsificationinatorConstants.kSecondDetectinatorID);
         _pivotConfig = new TalonFXConfiguration();
-        _pivotConfig.Feedback.FeedbackRemoteSensorID = CalsificationinatorConstants.kPivotinatorCancoderID;
-        _pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-        _pivotConfig.Feedback.SensorToMechanismRatio = 1;
-        _pivotConfig.Feedback.RotorToSensorRatio = 12;
+        _pivotConfig.Feedback.SensorToMechanismRatio = 12;
+        _pivotConfig.Feedback.RotorToSensorRatio = 1;
+        _pivotConfig.Feedback.FeedbackRemoteSensorID = 0;
+        _pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
         _calsificationDebouncinator = new Debouncer(0);
         _calsificationDebouncinatorTwo = new Debouncer(0);
         Slot0Configs slot0 = _pivotConfig.Slot0;
-        slot0.kS = 0.25; // Add 0.25 V output to overcome static friction
-        slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-        slot0.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-        slot0.kP = 0.5; // A position error of 0.2 rotations results in 12 V output
+        slot0.kS = 0.24; // Add 0.25 V output to overcome static friction
+        slot0.kV = 1.4; // A velocity target of 1 rps results in 0.12 V output
+        slot0.kA = 0.05; // An acceleration of 1 rps/s requires 0.01 V output
+        slot0.kP = 3; // A position error of 0.2 rotations results in 12 V output
         slot0.kI = 0; // No output for integrated error
-        slot0.kD = 0.5; // A velocity error of 1 rps results in 0.5 V output
+        slot0.kD = 0; // A velocity error of 1 rps results in 0.5 V output
         slot0.kG = 0;
-
+        slot0.withGravityType(GravityTypeValue.Arm_Cosine);
         MotionMagicConfigs _pivotMotionMagic = _pivotConfig.MotionMagic;
-        _pivotMotionMagic.withMotionMagicCruiseVelocity(RotationsPerSecond.of(5)) // 5 (mechanism) rotations per second
+        _pivotMotionMagic.withMotionMagicCruiseVelocity(RotationsPerSecond.of(10)) // 5 (mechanism) rotations per second
                                                                                   // cruise
                 .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(10)) // Take approximately 0.5 seconds to
                                                                                  // reach max vel
                 // Take approximately 0.1 seconds to reach max accel
-                .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(100));
+                .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(0));
         _pivotinator.getConfigurator().apply(_pivotConfig);
+        _pivotinator.setNeutralMode(NeutralModeValue.Brake);
     }
     
     public void handleCurrentState() {
@@ -127,7 +135,11 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
                handleCoral();
                 break;
             case SCORE:
-            _suckinator.set(0.3);
+            if (_previousState == CalsificationinatorState.L1) {
+                _suckinator.set(0.05);
+            } else {
+                _suckinator.set(0.3);
+            }
             break;
             case NOTHING:
             break;
@@ -143,16 +155,20 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
     public void periodic() {
         handleCurrentState();
         _hasCoralinator = _calsificationDebouncinator.calculate(!_calsificationDetectinator.get());
+        _hasCoralinatorTwo = _calsificationDebouncinatorTwo.calculate(!_calsificationDetectinatorTwo.get());
     }
 
     public boolean hasCoralinator() {
-        return _hasCoralinator ;
+        return _hasCoralinator || _hasCoralinatorTwo;
     }
    private void handleCoral(){
-    if(hasCoralinator()){ 
-    _suckinator.set(0);}
-    else{
-        _suckinator.set(-0.25);
+    if(_hasCoralinatorTwo){
+        _suckinator.set(-.1);
+    } else if (_hasCoralinator) {
+        _suckinator.set(0);
+    }
+    else {
+        _suckinator.set(0.15);
     }
 }
 

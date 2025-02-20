@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -64,25 +65,26 @@ public class Claw extends StateBasedSubsystem<ClawState> {
         _pivotinator = new TalonFX(Constants.ClawConstants.kClawPivotinatorID);
         _pivotConfig = new TalonFXConfiguration();
         _pivotFeedbackConfigs = _pivotConfig.Feedback;
-        _pivotFeedbackConfigs.SensorToMechanismRatio = 1;
+        _pivotFeedbackConfigs.RotorToSensorRatio = 1;
+        _pivotFeedbackConfigs.SensorToMechanismRatio = 45;
         // 45 to 1 gear ratio
 
         MotionMagicConfigs _pivotMotionMagic = _pivotConfig.MotionMagic;
-        _pivotMotionMagic.withMotionMagicCruiseVelocity(RotationsPerSecond.of(5)) // 5 (mechanism) rotations per second
+        _pivotMotionMagic.withMotionMagicCruiseVelocity(RotationsPerSecond.of(2)) // 5 (mechanism) rotations per second
                                                                                   // cruise
-                .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(10)) // Take approximately 0.5 seconds to
+                .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(2)) // Take approximately 0.5 seconds to
                                                                                  // reach max vel
                 // Take approximately 0.1 seconds to reach max accel
-                .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(100));
+                .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(0));
 
         Slot0Configs slot0 = _pivotConfig.Slot0;
-        slot0.kS = 0.25; // Add 0.25 V output to overcome static friction
-        slot0.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
-        slot0.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-        slot0.kP = 0.5; // A position error of 0.2 rotations results in 12 V output
+        slot0.kS = 0.12; // Add 0.25 V output to overcome static friction
+        slot0.kV = 2.5; // A velocity target of 1 rps results in 0.12 V output
+        slot0.kA = 0; // An acceleration of 1 rps/s requires 0.01 V output
+        slot0.kP = 30; // A position error of 0.2 rotations results in 12 V output
         slot0.kI = 0; // No output for integrated error
-        slot0.kD = 0.5; // A velocity error of 1 rps results in 0.5 V output
-        slot0.kG = 0;
+        slot0.kD = 0; // A velocity error of 1 rps results in 0.5 V output
+        slot0.kG = .1;
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
@@ -95,6 +97,7 @@ public class Claw extends StateBasedSubsystem<ClawState> {
                 System.out.println("Could not configure device. Error: " + status.toString());
             }
         }
+        _pivotinator.setNeutralMode(NeutralModeValue.Brake);
         //// #endregion
 
         ///// #region Rollinator motor configs

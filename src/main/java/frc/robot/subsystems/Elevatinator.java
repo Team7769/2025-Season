@@ -35,6 +35,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     public Elevatinator() {
         _manualPositioninator = 0;
         _talonFXConfiginator = new TalonFXConfiguration();
+        _talonFXConfiginator.Feedback.SensorToMechanismRatio = 1;
         _PIDConfiginator = _talonFXConfiginator.Slot0;
         _PIDConfiginator.withGravityType(GravityTypeValue.Elevator_Static);
         _PIDConfiginator.kG = 0.37009;
@@ -49,9 +50,9 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
         _motionMagicConfiginator.MotionMagicAcceleration = 300; // Target acceleration in rps/s 
         _motionMagicConfiginator.MotionMagicJerk = 0; // Target jerk in rps/s/s
         _requestinator = new MotionMagicVoltage(0);
-        _liftMotorinator = new TalonFX(ElevatinatorConstants.kLifinatorMotor, "Canivore");
-        _currentState = ElavatinatorState.IDLE;
-        _previousState = ElavatinatorState.IDLE;
+        _liftMotorinator = new TalonFX(ElevatinatorConstants.kLifinatorMotor);
+        _currentState = ElavatinatorState.HOME;
+        _previousState = ElavatinatorState.HOLD;
         _liftMotorinator.getConfigurator().apply(_talonFXConfiginator);
         _liftMotorinator.setNeutralMode(NeutralModeValue.Brake);
     }
@@ -79,9 +80,14 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
                 holdPositioninator();
             break;
             case MANUAL:
-                setPositioninator(SmartDashboard.getNumber("Manual Position", 0));
+                //setPositioninator(SmartDashboard.getNumber("Manual Position", 20));
+                setPositioninator(30);
+
                 holdPositioninator();
             break;
+            case HOME:
+                _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kHumanPlayer));
+                break;
             default:
             break;
         }
@@ -89,6 +95,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     
     @Override
     public void periodic(){
+        SmartDashboard.putString("Current state", _currentState.name());
         SmartDashboard.putNumber("Manual Position", _manualPositioninator);
         handleCurrentStateinator();
     }
