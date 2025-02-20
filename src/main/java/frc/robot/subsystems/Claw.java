@@ -2,12 +2,15 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -149,6 +152,11 @@ public class Claw extends StateBasedSubsystem<ClawState> {
                 _topRollinator.set(0);
                 break;
         }
+    }
+
+    public InstantCommand setWantedState(Supplier<ClawState> clawState){        
+        var desiredState = clawState.get();
+        return super.setWantedState(desiredState);
     }
 
     @Override

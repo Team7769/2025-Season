@@ -192,7 +192,7 @@ public class RobotContainer {
   public ParallelCommandGroup doinator(Supplier<ClawState> clawinator,
       CalsificationinatorState calsificationinatorState, LEDinatorState ledinatorState) {
     return new ParallelCommandGroup(
-        _claw.setWantedState(clawinator.get()),
+        _claw.setWantedState(clawinator),
         _elevatinator.setWantedState(ElavatinatorState.HOLD),
         _calsificationinator.setWantedState(CalsificationinatorState.L4)
     // _ledinator.setWantedState(ledinatorState)
