@@ -8,6 +8,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -20,6 +21,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import frc.robot.Constants;
@@ -39,6 +41,8 @@ public class Claw extends StateBasedSubsystem<ClawState> {
     private DigitalInput _algaeDetectinator;
     private Debouncer _algaeDebouncinator;
     private boolean _hasAlgae;
+
+    private ClawState _targetClawState;
 
     private final VoltageOut voltage = new VoltageOut(0);
     private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
@@ -84,6 +88,7 @@ public class Claw extends StateBasedSubsystem<ClawState> {
         slot0.kI = 0; // No output for integrated error
         slot0.kD = 0; // A velocity error of 1 rps results in 0.5 V output
         slot0.kG = .1;
+        slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; ++i) {
@@ -101,8 +106,23 @@ public class Claw extends StateBasedSubsystem<ClawState> {
 
         ///// #region Rollinator motor configs
         _topRollinator = new TalonFX(Constants.ClawConstants.kClawTopRollinatorID);
+        _topRollinator.setNeutralMode(NeutralModeValue.Brake);
+        var topConfig = new TalonFXConfiguration();
+        topConfig.CurrentLimits.SupplyCurrentLimit = 70;
+        topConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        topConfig.CurrentLimits.StatorCurrentLimit = 120;
+        topConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        _topRollinator.getConfigurator().apply(topConfig);
+
 
         _bottomRollinator = new TalonFX(Constants.ClawConstants.kClawBottomRollinatorID);
+        _bottomRollinator.setNeutralMode(NeutralModeValue.Brake);
+        var bottomConfig = new TalonFXConfiguration();
+        bottomConfig.CurrentLimits.SupplyCurrentLimit = 70;
+        bottomConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+        bottomConfig.CurrentLimits.StatorCurrentLimit = 120;
+        bottomConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+        _bottomRollinator.getConfigurator().apply(bottomConfig);
 
         // bottom Rollinator will follow the top Rollinator in the opposite direction
         _bottomRollinator.setControl(new Follower(Constants.ClawConstants.kClawTopRollinatorID, true));
@@ -115,6 +135,7 @@ public class Claw extends StateBasedSubsystem<ClawState> {
 
         _currentState = ClawState.IDLE;
         _previousState = ClawState.FLOOR_INTAKE;
+        _targetClawState = ClawState.IDLE;
 
     }
 
@@ -123,28 +144,35 @@ public class Claw extends StateBasedSubsystem<ClawState> {
             case IDLE:
                 _pivotinator.setControl(_request.withPosition(0));
                 // _pivotinator.setPosition(Rotation.of(0));
+                // if (_hasAlgae) {
+                //     _topRollinator.set(-.05);
+                // } else {                    
+                //     _topRollinator.set(0);
+                // }
                 _topRollinator.set(0);
                 break;
             case FLOOR_INTAKE:
                 _pivotinator.setControl(_request.withPosition(0.375));
-                _topRollinator.set(.5);
+                _topRollinator.set(-.5);
                 break;
             case DEALGIFY:
                 _pivotinator.setControl(_request.withPosition(0.25));
-                _topRollinator.set(.5);
+                _topRollinator.set(-.5);
                 break;
             case PREP_NET:
-                _pivotinator.setControl(_request.withPosition(0.125));
+                _pivotinator.setControl(_request.withPosition(0));
+                _topRollinator.set(0);
                 break;
             case PREP_PROCESSOR:
-                _pivotinator.setControl(_request.withPosition(0.25));
+                _pivotinator.setControl(_request.withPosition(0.175));
+                _topRollinator.set(0);
                 break;
             case SCORE:
                 if (_previousState == ClawState.PREP_NET) {
-                    _topRollinator.set(-.8);
+                    _topRollinator.set(.8);
                 }
                 if (_previousState == ClawState.PREP_PROCESSOR) {
-                    _topRollinator.set(-.5);
+                    _topRollinator.set(.5);
                 }
                 break;
             default:
@@ -154,19 +182,29 @@ public class Claw extends StateBasedSubsystem<ClawState> {
         }
     }
 
-    public InstantCommand setWantedState(Supplier<ClawState> clawState){        
-        var desiredState = clawState.get();
-        return super.setWantedState(desiredState);
+    public InstantCommand setWantedTargetState(){        
+        return super.setWantedState(_targetClawState);
     }
 
     @Override
     public void periodic() {
         handleCurrentState();
         _hasAlgae = _algaeDebouncinator.calculate(!_algaeDetectinator.get());
+        SmartDashboard.putString("Claw Current State", _currentState.name());
+        SmartDashboard.putBoolean("Claw Has Algae", _hasAlgae);
+        SmartDashboard.putString("Claw Target", _targetClawState.name());
     }
 
     public boolean hasAlgae() {
         return _hasAlgae;
+    }
+    public boolean doesNotHaveAlgae() {
+        return !_hasAlgae;
+    }
+
+    public void setTargetState(ClawState clawState)
+    {
+        _targetClawState = clawState;
     }
 
 }

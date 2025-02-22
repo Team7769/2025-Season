@@ -9,5 +9,7 @@ public enum ElavatinatorState implements IState {
     L2Coral,
     L3Coral,
     L4Coral,
-    HOME
+    HOME,
+    DEALGIFY,
+    HOMEWITHALGAE
 }

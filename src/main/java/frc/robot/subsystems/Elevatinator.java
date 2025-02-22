@@ -26,13 +26,17 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     private Slot0Configs _PIDConfiginator;
     private MotionMagicVoltage _requestinator;
     private double _manualPositioninator;
+    private boolean _holdAlgaePosition = false;
     private MotionMagicConfigs _motionMagicConfiginator;
     private TalonFXConfiguration _talonFXConfiginator;
     public SysIdRoutine elevatorRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(4), null,
         state -> SignalLogger.writeString("SysidElevatinator_State", state.toString())), 
         new Mechanism(output -> _liftMotorinator.setControl(voltageOut.withOutput(output)), null, this));
 
-    public Elevatinator() {
+        private double _algaePosition = 0;
+    private Claw _claw;
+    public Elevatinator(Claw claw) {
+        _claw = claw;
         _manualPositioninator = 0;
         _talonFXConfiginator = new TalonFXConfiguration();
         _talonFXConfiginator.Feedback.SensorToMechanismRatio = 1;
@@ -61,8 +65,20 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
         _manualPositioninator = positioninator;
     }
 
+    public void setAlgaePosition(int reefFace) {
+        _algaePosition = reefFace % 2 == 0 ? ElevatinatorConstants.kL2Algae : ElevatinatorConstants.kL3Algae;
+    }
+
+    public void setHoldAlgaePosition(boolean value) {
+        _holdAlgaePosition = value;
+    }
+
     private void holdPositioninator() {
-        _liftMotorinator.setControl(_requestinator.withPosition(_manualPositioninator));
+        if (_holdAlgaePosition) {
+            _liftMotorinator.setControl(_requestinator.withPosition(_algaePosition));
+        } else {
+            _liftMotorinator.setControl(_requestinator.withPosition(_manualPositioninator));
+        }
     }
 
     public double getPositioninator()
@@ -86,7 +102,11 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
                 holdPositioninator();
             break;
             case HOME:
-                _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kHumanPlayer));
+                if (_claw.hasAlgae()) {
+                    _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kAlgaePickup));
+                } else {
+                    _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kHumanPlayer));
+                }
                 break;
             default:
             break;
@@ -97,6 +117,8 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     public void periodic(){
         SmartDashboard.putString("Current state", _currentState.name());
         SmartDashboard.putNumber("Manual Position", _manualPositioninator);
+        SmartDashboard.putNumber("Algae Position", _algaePosition);
+        SmartDashboard.putBoolean("Hold Algae Position", _holdAlgaePosition);
         handleCurrentStateinator();
     }
 }

@@ -9,6 +9,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
@@ -43,6 +44,8 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
     private Debouncer _calsificationDebouncinator;
 
     private Debouncer _calsificationDebouncinatorTwo;
+
+    private CalsificationinatorState _targetState;
 
     private VoltageOut voltageOut = new VoltageOut(0);
     public SysIdRoutine pivotinatorRoutine = new SysIdRoutine(
@@ -82,6 +85,7 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
                 .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(0));
         _pivotinator.getConfigurator().apply(_pivotConfig);
         _pivotinator.setNeutralMode(NeutralModeValue.Brake);
+        _targetState = CalsificationinatorState.IDLE;
     }
 
     public void handleCurrentState() {
@@ -141,6 +145,9 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
         handleCurrentState();
         _hasCoralinator = _calsificationDebouncinator.calculate(!_calsificationDetectinator.get());
         _hasCoralinatorTwo = _calsificationDebouncinatorTwo.calculate(!_calsificationDetectinatorTwo.get());
+
+        SmartDashboard.putString("Calcificationator Target State", _targetState.name());
+        SmartDashboard.putString("Calcificationator State", _currentState.name());
     }
 
     public boolean hasCoralinator() {
@@ -161,4 +168,12 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
         return new InstantCommand(() -> _pivotinator.setControl(voltageOut.withOutput(0)), this);
     }
 
+    public void setTargetState(CalsificationinatorState state)
+    {
+        _targetState = state;
+    }
+
+    public InstantCommand setWantedStateToTarget(){
+        return this.setWantedState(_targetState);
+    }
 }

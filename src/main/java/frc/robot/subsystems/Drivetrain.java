@@ -227,6 +227,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             targetPeriodic();
             handleCurrentState().schedule();
         }
+        
+        SmartDashboard.putString("Current Drivetrain State", _currentState.name());
     }
 
     private void updateOdometry() {
