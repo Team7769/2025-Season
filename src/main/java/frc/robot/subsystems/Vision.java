@@ -19,7 +19,8 @@ import frc.robot.utilities.VisionMeasurement;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Vision extends SubsystemBase{
-    private Pose2d _limelightPose = new Pose2d();
+    private Pose2d _limelightThreePose = new Pose2d();
+    private Pose2d _limelightFourPose = new Pose2d();
 
     private static final double filterDistanceError = 2;
     private static final double filterAngleError = 5; 
@@ -34,7 +35,7 @@ public class Vision extends SubsystemBase{
     public void updateLimelightPosition(Rotation2d rotation)
     {
             LimelightHelpers.SetRobotOrientation(
-                "limelight",
+                "limelight-three",
                 rotation.getDegrees(),
                 0,
                 0,
@@ -42,15 +43,22 @@ public class Vision extends SubsystemBase{
                 0,
                 0
             );
+
+            
     }
 
     @Override
     public void periodic() {
-        _limelightPose = LimelightHelpers.getBotPose2d("limelight");
+        _limelightThreePose = LimelightHelpers.getBotPose2d("limelight-three");
+        _limelightFourPose = LimelightHelpers.getBotPose2d("limelight-four");
     }
 
-    public Pose2d getLimelightPose() {
-        return _limelightPose;
+    public Pose2d getLimelightThreePose() {
+        return _limelightThreePose;
+    }
+
+    public Pose2d getLimelightFourPose() {
+        return _limelightFourPose;
     }
 
     public double getDistance()
@@ -78,7 +86,7 @@ public class Vision extends SubsystemBase{
         ArrayList<VisionMeasurement> visionMeasurements = new ArrayList<>();
 
             LimelightHelpers.SetRobotOrientation(
-                "limelight",
+                "limelight-three",
                 rotation.getDegrees(),
                 0, 
                 0, 
@@ -89,7 +97,7 @@ public class Vision extends SubsystemBase{
 
             PoseEstimate limelightPoseEstimate =
                 LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(
-                    "limelight"
+                    "limelight-three"
                 );
 
             if (limelightPoseEstimate != null && limelightPoseEstimate.tagCount > 0) {
@@ -97,6 +105,29 @@ public class Vision extends SubsystemBase{
                     new VisionMeasurement(
                         limelightPoseEstimate.pose,
                         limelightPoseEstimate.timestampSeconds
+                    )
+                );
+            }
+            LimelightHelpers.SetRobotOrientation(
+                "limelight-four",
+                rotation.getDegrees(),
+                0, 
+                0, 
+                0, 
+                0,
+                0
+            );
+
+            PoseEstimate limelightFourPoseEstimate =
+                LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(
+                    "limelight-four"
+                );
+
+            if (limelightFourPoseEstimate != null && limelightFourPoseEstimate.tagCount > 0) {
+                visionMeasurements.add(
+                    new VisionMeasurement(
+                        limelightFourPoseEstimate.pose,
+                        limelightFourPoseEstimate.timestampSeconds
                     )
                 );
             }

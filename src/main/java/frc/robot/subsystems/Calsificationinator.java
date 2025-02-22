@@ -58,15 +58,15 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
         _previousState = CalsificationinatorState.IDLE;
         _calsificationDetectinator = new DigitalInput(
                 Constants.CalsificationinatorConstants.kCalsificationDetectinatorChanel);
-        _calsificationDetectinatorTwo = new DigitalInput(Constants.CalsificationinatorConstants.kSecondDetectinatorID);
+        _calsificationDetectinatorTwo = new DigitalInput(Constants.CalsificationinatorConstants.kCalsificationDetectinatorTwoChanel);
         _pivotConfig = new TalonFXConfiguration();
         _pivotConfig.Feedback.SensorToMechanismRatio = 12;
         _pivotConfig.Feedback.RotorToSensorRatio = 1;
         _pivotConfig.Feedback.FeedbackRemoteSensorID = 0;
         _pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
-        _calsificationDebouncinator = new Debouncer(0);
-        _calsificationDebouncinatorTwo = new Debouncer(0);
+        _calsificationDebouncinator = new Debouncer(.1);
+        _calsificationDebouncinatorTwo = new Debouncer(.1);
         Slot0Configs slot0 = _pivotConfig.Slot0;
         slot0.kS = 0.24; // Add 0.25 V output to overcome static friction
         slot0.kV = 1.4; // A velocity target of 1 rps results in 0.12 V output
@@ -148,6 +148,8 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
 
         SmartDashboard.putString("Calcificationator Target State", _targetState.name());
         SmartDashboard.putString("Calcificationator State", _currentState.name());
+        SmartDashboard.putBoolean("Top Coral Detected", _hasCoralinator);
+        SmartDashboard.putBoolean("Bottom Coral Detected", _hasCoralinatorTwo);
     }
 
     public boolean hasCoralinator() {
@@ -156,7 +158,7 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
 
     private void handleCoral() {
         if (_hasCoralinatorTwo) {
-            _suckinator.set(-.1);
+            _suckinator.set(-.02);
         } else if (_hasCoralinator) {
             _suckinator.set(0);
         } else {

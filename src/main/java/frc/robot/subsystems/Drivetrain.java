@@ -227,7 +227,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             targetPeriodic();
             handleCurrentState().schedule();
         }
-        
+
         SmartDashboard.putString("Current Drivetrain State", _currentState.name());
     }
 
@@ -284,20 +284,22 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 break;
         }
 
-        SmartDashboard.putNumber("XDiff", GeometryUtil.getXDifference(_target, this::getPose));
-        SmartDashboard.putNumber("YDiff", GeometryUtil.getYDifference(_target, this::getPose));
+        var xDifference = GeometryUtil.getXDifference(_target, this::getPose);
+        var yDifference = GeometryUtil.getYDifference(_target, this::getPose);
+        SmartDashboard.putNumber("XDiff", xDifference);
+        SmartDashboard.putNumber("YDiff", yDifference);
         SmartDashboard.putString("currentTarget", getCurrentTarget().name());
 
-        if (Math.abs(GeometryUtil.getXDifference(_target, this::getPose)) < 1 && Math.abs(GeometryUtil.getYDifference(_target, this::getPose)) < 1) {
+        if (Math.abs(xDifference) < 1 && Math.abs(yDifference) < 1) {
             followP = .9;
-        } else if (Math.abs(GeometryUtil.getXDifference(_target, this::getPose)) < 1 && _followType == FollowType.LINE) {
+        } else if (Math.abs(xDifference) < 1 && _followType == FollowType.LINE) {
             followP = .9;
         } else {
             followP = 4;
         }
 
-        xFollow = GeometryUtil.getXDifference(_target, this::getPose) / followP;
-        yFollow = GeometryUtil.getYDifference(_target, this::getPose) / followP;
+        xFollow = xDifference / followP;
+        yFollow = yDifference / followP;
 
         if (yFollow > 1) {
             yFollow = 1;
@@ -318,6 +320,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("target angle", _target.getRotation().getDegrees());
         SmartDashboard.putNumber("Target X", _target.getX());
         SmartDashboard.putNumber("Target Y", _target.getY());
+        SmartDashboard.putString("Follow Type", _followType.name());
     }
 
     //#region State logic
@@ -344,6 +347,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 _previousState = _currentState;
                 _currentState = state;
             }
+
         }, this);
     }
 
@@ -361,18 +365,19 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         Pose2d[] _sourcePositionArray;
         _followType = FollowType.POINT;
         _isFollowingFront = false;
-        if (getPose().getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
+        var currentPose = getPose();
+        if (currentPose.getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
              _sourcePositionArray = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceTop : Constants.FieldConstants.kBlueSourceTop;
         } else {
             _sourcePositionArray = isRedAlliance.get() ? Constants.FieldConstants.kRedSourceBottom : Constants.FieldConstants.kBlueSourceBottom;
         }
 
         Pose2d closestPoint = new Pose2d();
-        Translation2d currentPose = getPose().getTranslation();
+        Translation2d currentTranslation = currentPose.getTranslation();
         for(Pose2d position : _sourcePositionArray)
         {
-            var positionDistance = position.getTranslation().getDistance(currentPose);
-            var closestPointDistance = closestPoint.getTranslation().getDistance(currentPose);
+            var positionDistance = position.getTranslation().getDistance(currentTranslation);
+            var closestPointDistance = closestPoint.getTranslation().getDistance(currentTranslation);
             if(positionDistance < closestPointDistance)
             {
                 closestPoint = position;
