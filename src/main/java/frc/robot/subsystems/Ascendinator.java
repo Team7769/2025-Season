@@ -5,10 +5,13 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Constants;
 import frc.robot.enums.CageState;
+import frc.robot.enums.CalsificationinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
 import static edu.wpi.first.units.Units.*;
@@ -21,7 +24,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 
-public class Ascendinator extends StateBasedSubsystem<CageState> {
+public class Ascendinator extends SubsystemBase {
     private TalonFX _ascendinator = new TalonFX(Constants.AscendinatorConstants.kPrimaryinatorAscendinatorID);
     private TalonFXConfiguration _configinator = new TalonFXConfiguration();
 
@@ -32,6 +35,8 @@ public class Ascendinator extends StateBasedSubsystem<CageState> {
     private DigitalInput _detectinator;
 
     private FeedbackConfigs FeedBackConfig = _configinator.Feedback;
+    private CageState _currentState;
+    private CageState _previousState;
 
     private VoltageOut voltageOut = new VoltageOut(0);
     public SysIdRoutine pivotinatorRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(4), null,
@@ -87,6 +92,19 @@ public class Ascendinator extends StateBasedSubsystem<CageState> {
         }
     }
 
+    public InstantCommand setWantedState(CageState state){
+        return new InstantCommand(() -> {
+            if(state == null)
+            {
+                return;
+            }
+            if (state != _currentState) {
+                _previousState = _currentState;
+                _currentState = state;
+            }
+        }, this);
+    }
+
     @Override
     public void periodic() {
         _hasCage = _debounceinator.calculate(!_detectinator.get());
@@ -95,5 +113,9 @@ public class Ascendinator extends StateBasedSubsystem<CageState> {
 
     public boolean hasCage() {
         return _hasCage;
+    }
+
+    public CageState getCurrentState() {
+        return _currentState;
     }
 }

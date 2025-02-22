@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -25,10 +26,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import frc.robot.Constants;
+import frc.robot.enums.CalsificationinatorState;
 import frc.robot.enums.ClawState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
-public class Claw extends StateBasedSubsystem<ClawState> {
+public class Claw extends SubsystemBase {
 
     private TalonFX _pivotinator;
     private TalonFXConfiguration _pivotConfig;
@@ -43,6 +45,8 @@ public class Claw extends StateBasedSubsystem<ClawState> {
     private boolean _hasAlgae;
 
     private ClawState _targetClawState;
+    private ClawState _currentState;
+    private ClawState _previousState;
 
     private final VoltageOut voltage = new VoltageOut(0);
     private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
@@ -183,7 +187,20 @@ public class Claw extends StateBasedSubsystem<ClawState> {
     }
 
     public InstantCommand setWantedTargetState(){        
-        return super.setWantedState(_targetClawState);
+        return setWantedState(_targetClawState);
+    }
+
+    public InstantCommand setWantedState(ClawState state){
+        return new InstantCommand(() -> {
+            if(state == null)
+            {
+                return;
+            }
+            if (state != _currentState) {
+                _previousState = _currentState;
+                _currentState = state;
+            }
+        }, this);
     }
 
     @Override

@@ -33,9 +33,9 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Wait For Coral",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
+      "name": "Go Home",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": 1.0,
       "command": null
     }
   ],

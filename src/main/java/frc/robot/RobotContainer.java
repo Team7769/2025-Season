@@ -85,38 +85,32 @@ public class RobotContainer {
     _calsificationinator = new Calsificationinator();
     // _ledinator = new
     // LEDinator(_calsificationinator,_claw,_elevatinator,_ascendinator);
-    // // Configure the trigger bindings
-    new EventTrigger("Initialize").onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO).withTimeout(.05));
-    new EventTrigger("Score Coral").onTrue(
-        Commands.sequence(Commands.waitUntil(_elevatinator::isReady), _calsificationinator.setWantedState(CalsificationinatorState.SCORE), Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator)
-        ));
 
-    // NamedCommands.registerCommand("Score Coral",
-    //     Commands.sequence(Commands.waitUntil(_elevatinator::isReady), _calsificationinator.setWantedState(CalsificationinatorState.SCORE),
-    //     Commands.waitSeconds(0.25), 
-    //     goHomeinator().withTimeout(0.25)));
-    //NamedCommands.registerCommand("Score Coral", Commands.waitUntil(_elevatinator::isReady).andThen(_calsificationinator.setWantedState(CalsificationinatorState.SCORE)));
-    NamedCommands.registerCommand("Wait Until Coral Scored", Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator).andThen(goHomeinator()));
-    //NamedCommands.registerCommand("Prep For Coral", Commands.sequence(new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL4Coral), _elevatinator), _elevatinator.setWantedState(ElavatinatorState.HOLD)));
-    //NamedCommands.registerCommand("Wait For Coral", Commands.waitUntil(_calsificationinator::hasCoralinator));
-    // NamedCommands.registerCommand("Score Coral", new Trigger(_elevatinator::isReady).onTrue(_calsificationinator.setWantedState(CalsificationinatorState.SCORE)));
-    // NamedCommands.registerCommand("Wait Until Coral Scored", Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator).andThen(goHomeinator()));
-    new EventTrigger("Go Home").onTrue(goHomeinator());
-    new EventTrigger("Wait For Coral").onTrue(Commands.waitUntil(_calsificationinator::hasCoralinator).andThen(_calsificationinator.setWantedState(CalsificationinatorState.IDLE)));
-    //NamedCommands.registerCommand("Wait For Coral", Commands.waitUntil(_calsificationinator::hasCoralinator).andThen(_calsificationinator.setWantedState(CalsificationinatorState.IDLE)));
-
-    //NamedCommands.registerCommand("Wait For Coral", getAutonomousCommand());
-    new EventTrigger("Prep For Coral").onTrue(Commands.sequence(new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL4Coral), _elevatinator), _elevatinator.setWantedState(ElavatinatorState.HOLD), _calsificationinator.setWantedState(CalsificationinatorState.L4)));
-
-    // new EventTrigger("Score Coral").onTrue(new InstantCommand());
-
-    // new EventTrigger("Wait For Coral").onTrue(new InstantCommand());
-
-    // new EventTrigger("Prep For Coral").onTrue(new InstantCommand());
-
+    registerEventTriggersForAuto();
+    registerNamedCommandsForAuto();
     _autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("AutoChooser", _autoChooser);
     configureBindings();
+  }
+
+  private void registerNamedCommandsForAuto()
+  {
+    //NamedCommands.registerCommand("Wait Until Coral Scored", Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator).andThen(goHomeinator()));
+    NamedCommands.registerCommand("Score Coral", _calsificationinator.setWantedState(CalsificationinatorState.SCORE));
+  }
+
+  private void registerEventTriggersForAuto() {
+    new EventTrigger("Prep For Coral").onTrue(
+      Commands.sequence(
+        new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL4Coral), _elevatinator),
+        _elevatinator.setWantedState(ElavatinatorState.HOLD),
+        _calsificationinator.setWantedState(CalsificationinatorState.L4)));
+    new EventTrigger("Go Home").onTrue(
+      Commands.sequence(
+        _claw.setWantedState(ClawState.IDLE),
+        _elevatinator.setWantedState(ElavatinatorState.HOME),
+        _calsificationinator.setWantedState(CalsificationinatorState.PICKUP))
+    );  
   }
 
   /**
@@ -241,11 +235,11 @@ public class RobotContainer {
   }
 
   public Command goHomeinator() {
-    return Commands.parallel(
+    return Commands.sequence(
         new InstantCommand(() -> {
           _elevatinator.setHoldAlgaePosition(false);
           _drivetrain.targetSource(GeometryUtil::isRedAlliance);
-        }),
+        }, _drivetrain, _elevatinator),        
         _drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE),
          _claw.setWantedState(ClawState.IDLE),
         _elevatinator.setWantedState(ElavatinatorState.HOME),
@@ -373,7 +367,7 @@ public class RobotContainer {
     //     return _calsificationinator.setWantedState(CalsificationinatorState.SCORE);
     // }
 
-    return Commands.parallel(_claw.setWantedState(ClawState.SCORE), _calsificationinator.setWantedState(CalsificationinatorState.SCORE)).withTimeout(0.25);
+    return Commands.parallel(_claw.setWantedState(ClawState.SCORE), _calsificationinator.setWantedState(CalsificationinatorState.SCORE));
   }
 
   private ScoringTarget GetDesiredScoringTarget() {
