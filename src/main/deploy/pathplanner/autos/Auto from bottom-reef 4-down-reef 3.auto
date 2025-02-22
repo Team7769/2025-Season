@@ -17,6 +17,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Wait For Coral"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "From bottom coral to reef 4 right"

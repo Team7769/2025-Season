@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.244,
-        "y": 2.916
+        "x": 5.3027288732394355,
+        "y": 2.9904049295774637
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.3273715753424655,
-        "y": 2.0749426369863007
+        "x": 4.386100448581901,
+        "y": 2.1493475665637645
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef 3 Right"
     },
     {
       "anchor": {
@@ -32,6 +32,12 @@
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
+    {
+      "name": "Go Home",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
     {
       "name": "Wait For Coral",
       "waypointRelativePos": 1.0,

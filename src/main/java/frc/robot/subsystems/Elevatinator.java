@@ -34,9 +34,9 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
         new Mechanism(output -> _liftMotorinator.setControl(voltageOut.withOutput(output)), null, this));
 
         private double _algaePosition = 0;
-    private Claw _claw;
-    public Elevatinator(Claw claw) {
-        _claw = claw;
+    //private Claw _claw;
+    public Elevatinator() {
+        //_claw = claw;
         _manualPositioninator = 0;
         _talonFXConfiginator = new TalonFXConfiguration();
         _talonFXConfiginator.Feedback.SensorToMechanismRatio = 1;
@@ -106,11 +106,8 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
                 holdPositioninator();
             break;
             case HOME:
-                if (_claw.hasAlgae()) {
-                    _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kAlgaePickup));
-                } else {
-                    _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kHumanPlayer));
-                }
+                _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kHumanPlayer));
+
                 break;
             default:
             break;
