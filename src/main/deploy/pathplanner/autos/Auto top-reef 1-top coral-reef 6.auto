@@ -7,61 +7,55 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom start to reef 3"
+            "pathName": "Top Start to reef 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 3 to bottom coral"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "pathName": "Reef 1 to top coral"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "From bottom coral to reef 4"
+            "pathName": "Top coral to reef 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "From reef 4 to bottom coral"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "pathName": "Reef 1 to top coral"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "From bottom coral to reef 4"
+            "pathName": "Top coral to reef 6"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "From reef 4 to bottom coral"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "pathName": "Reef 6 to top coral"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "From bottom coral to reef 4"
+            "pathName": "Top coral to reef 6"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 6 to top coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top coral to reef 5"
           }
         }
       ]

@@ -156,6 +156,10 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
         return _hasCoralinator || _hasCoralinatorTwo;
     }
 
+    public boolean doesNotHaveCoralinator() {
+        return !(_hasCoralinator || _hasCoralinatorTwo);
+    }
+
     private void handleCoral() {
         if (_hasCoralinatorTwo) {
             _suckinator.set(-.02);

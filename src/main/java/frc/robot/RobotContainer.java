@@ -63,7 +63,7 @@ public class RobotContainer {
   // private final Ascendinator _ascendinator;
   private final Vision _vision;
   private final Elevatinator _elevatinator;
-  // private final SendableChooser<Command> _autoChooser;
+  private final SendableChooser<Command> _autoChooser;
   private final Calsificationinator _calsificationinator;
   // private final LEDinator _ledinator;
   private CalsificationinatorState _targetCalsificationinatorState = CalsificationinatorState.IDLE;
@@ -86,10 +86,23 @@ public class RobotContainer {
     // _ledinator = new
     // LEDinator(_calsificationinator,_claw,_elevatinator,_ascendinator);
     // // Configure the trigger bindings
-    // new
-    // EventTrigger("Initialize").onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO).withTimeout(.05));
-    // _autoChooser = AutoBuilder.buildAutoChooser("Test Auto");
-    // SmartDashboard.putData("AutoChooser", _autoChooser);
+    new EventTrigger("Initialize").onTrue(_drivetrain.setWantedState(DrivetrainState.AUTO).withTimeout(.05));
+    // new EventTrigger("Score Coral").onTrue(
+    //    Commands.sequence(Commands.waitUntil(_elevatinator::isReady), scoreinator(),
+    //    Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator), goHomeinator()));
+
+    // new EventTrigger("Wait For Coral").onTrue(Commands.waitUntil(_calsificationinator::hasCoralinator));
+
+    // new EventTrigger("Prep For Coral").onTrue(Commands.sequence(new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL4Coral)), _elevatinator.setWantedState(ElavatinatorState.HOLD)));
+
+    new EventTrigger("Score Coral").onTrue(new InstantCommand());
+
+    new EventTrigger("Wait For Coral").onTrue(new InstantCommand());
+
+    new EventTrigger("Prep For Coral").onTrue(new InstantCommand());
+
+    _autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("AutoChooser", _autoChooser);
     configureBindings();
   }
 
@@ -111,7 +124,7 @@ public class RobotContainer {
     _drivetrain.setDefaultCommand(
         _drivetrain.applyRequest(() -> _drivetrain.drive.withVelocityX(0).withVelocityY(0).withRotationalRate(0)));
 
-    _driverController.rightTrigger().onTrue(scoreinator(this::GetDesiredScoringTarget)).onFalse(goHomeinator());
+    _driverController.rightTrigger().onTrue(scoreinator()).onFalse(goHomeinator());
     _driverController.leftTrigger().onTrue(doinator(null));
     _driverController.start().onTrue(_drivetrain.resetGyro());
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
@@ -210,9 +223,9 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  // public Command getAutonomousCommand() {
-  // return _autoChooser.getSelected();
-  // }
+  public Command getAutonomousCommand() {
+  return _autoChooser.getSelected();
+  }
 
   public Command goHomeinator() {
     return Commands.parallel(
@@ -338,7 +351,7 @@ public class RobotContainer {
     );
   }
 
-  public Command scoreinator(Supplier<ScoringTarget> scoringTarget) {
+  public Command scoreinator() {
     // switch (scoringTarget.get()) {
     //   case PROCESSOR:
     //   case NET:
