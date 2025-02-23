@@ -106,7 +106,7 @@ public class RobotContainer {
         _elevatinator.setWantedState(ElavatinatorState.HOLD),
         _calsificationinator.setWantedState(CalsificationinatorState.L4)));
     new EventTrigger("Go Home").onTrue(
-      Commands.sequence(
+      Commands.parallel(
         _claw.setWantedState(ClawState.IDLE),
         _elevatinator.setWantedState(ElavatinatorState.HOME),
         _calsificationinator.setWantedState(CalsificationinatorState.PICKUP))
