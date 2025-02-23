@@ -35,7 +35,7 @@
     {
       "name": "Prep For Coral",
       "waypointRelativePos": 0.48813559322034183,
-      "endWaypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
       "command": null
     }
   ],
