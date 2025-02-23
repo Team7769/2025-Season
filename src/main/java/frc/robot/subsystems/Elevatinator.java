@@ -66,7 +66,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     }
 
     public void setAlgaePosition(int reefFace) {
-        _algaePosition = reefFace % 2 == 0 ? ElevatinatorConstants.kL2Algae : ElevatinatorConstants.kL3Algae;
+        _manualPositioninator = reefFace % 2 == 0 ? ElevatinatorConstants.kL2Algae : ElevatinatorConstants.kL3Algae;
     }
 
     public void setHoldAlgaePosition(boolean value) {

@@ -11,6 +11,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Constants;
@@ -25,7 +26,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
-public class Calsificationinator extends StateBasedSubsystem<CalsificationinatorState> {
+public class Calsificationinator extends SubsystemBase {
     private TalonFX _suckinator = new TalonFX(Constants.CalsificationinatorConstants.kSuckinatorScoreinatorID);
 
     private TalonFX _pivotinator = new TalonFX(Constants.CalsificationinatorConstants.kPivotinatorID);
@@ -46,6 +47,8 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
     private Debouncer _calsificationDebouncinatorTwo;
 
     private CalsificationinatorState _targetState;
+    private CalsificationinatorState _currentState;
+    private CalsificationinatorState _previousState;
 
     private VoltageOut voltageOut = new VoltageOut(0);
     public SysIdRoutine pivotinatorRoutine = new SysIdRoutine(
@@ -129,6 +132,9 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
                     _suckinator.set(0.3);
                 }
                 break;
+            case TARGET:
+                setWantedStateInternal(_targetState);
+                break;
             case NOTHING:
                 break;
 
@@ -175,7 +181,20 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
         _targetState = state;
     }
 
-    public InstantCommand setWantedStateToTarget(){
-        return this.setWantedState(_targetState);
+    private void setWantedStateInternal(CalsificationinatorState state){
+        if(state == null)
+        {
+            return;
+        }
+        if (state != _currentState) {
+            _previousState = _currentState;
+            _currentState = state;
+        }
+    }
+
+    public InstantCommand setWantedState(CalsificationinatorState state){
+        return new InstantCommand(() -> {
+            setWantedStateInternal(state);
+        }, this);
     }
 }

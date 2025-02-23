@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -25,10 +26,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import frc.robot.Constants;
+import frc.robot.enums.CalsificationinatorState;
 import frc.robot.enums.ClawState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
-public class Claw extends StateBasedSubsystem<ClawState> {
+public class Claw extends SubsystemBase {
 
     private TalonFX _pivotinator;
     private TalonFXConfiguration _pivotConfig;
@@ -43,22 +45,21 @@ public class Claw extends StateBasedSubsystem<ClawState> {
     private boolean _hasAlgae;
 
     private ClawState _targetClawState;
+    private ClawState _currentState;
+    private ClawState _previousState;
 
     private final VoltageOut voltage = new VoltageOut(0);
     private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(
-            null,        // Use default ramp rate (1 V/s)
-            Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
-            null,        // Use default timeout (10 s)
-            // Log state with SignalLogger class
-            state -> SignalLogger.writeString("SysId_Claw", state.toString())
-        ),
-        new SysIdRoutine.Mechanism(
-            output -> _pivotinator.setControl(voltage.withOutput(output)),
-            null,
-            this
-        )
-    );
+            new SysIdRoutine.Config(
+                    null, // Use default ramp rate (1 V/s)
+                    Volts.of(4), // Reduce dynamic step voltage to 4 V to prevent brownout
+                    null, // Use default timeout (10 s)
+                    // Log state with SignalLogger class
+                    state -> SignalLogger.writeString("SysId_Claw", state.toString())),
+            new SysIdRoutine.Mechanism(
+                    output -> _pivotinator.setControl(voltage.withOutput(output)),
+                    null,
+                    this));
 
     public Claw() {
 
@@ -76,7 +77,7 @@ public class Claw extends StateBasedSubsystem<ClawState> {
         _pivotMotionMagic.withMotionMagicCruiseVelocity(RotationsPerSecond.of(2)) // 5 (mechanism) rotations per second
                                                                                   // cruise
                 .withMotionMagicAcceleration(RotationsPerSecondPerSecond.of(2)) // Take approximately 0.5 seconds to
-                                                                                 // reach max vel
+                                                                                // reach max vel
                 // Take approximately 0.1 seconds to reach max accel
                 .withMotionMagicJerk(RotationsPerSecondPerSecond.per(Second).of(0));
 
@@ -114,7 +115,6 @@ public class Claw extends StateBasedSubsystem<ClawState> {
         topConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         _topRollinator.getConfigurator().apply(topConfig);
 
-
         _bottomRollinator = new TalonFX(Constants.ClawConstants.kClawBottomRollinatorID);
         _bottomRollinator.setNeutralMode(NeutralModeValue.Brake);
         var bottomConfig = new TalonFXConfiguration();
@@ -143,13 +143,11 @@ public class Claw extends StateBasedSubsystem<ClawState> {
         switch (_currentState) {
             case IDLE:
                 _pivotinator.setControl(_request.withPosition(0));
-                // _pivotinator.setPosition(Rotation.of(0));
-                // if (_hasAlgae) {
-                //     _topRollinator.set(-.05);
-                // } else {                    
-                //     _topRollinator.set(0);
-                // }
-                _topRollinator.set(0);
+                if (_hasAlgae) {
+                    _topRollinator.set(-.05);
+                } else {
+                    _topRollinator.set(0);
+                }
                 break;
             case FLOOR_INTAKE:
                 _pivotinator.setControl(_request.withPosition(0.375));
@@ -175,15 +173,14 @@ public class Claw extends StateBasedSubsystem<ClawState> {
                     _topRollinator.set(.5);
                 }
                 break;
+            case TARGET:
+                setWantedStateInternal(_targetClawState);
+                break;
             default:
                 _pivotinator.setControl(_request.withPosition(0));
                 _topRollinator.set(0);
                 break;
         }
-    }
-
-    public InstantCommand setWantedTargetState(){        
-        return super.setWantedState(_targetClawState);
     }
 
     @Override
@@ -198,13 +195,28 @@ public class Claw extends StateBasedSubsystem<ClawState> {
     public boolean hasAlgae() {
         return _hasAlgae;
     }
+
     public boolean doesNotHaveAlgae() {
         return !_hasAlgae;
     }
 
-    public void setTargetState(ClawState clawState)
-    {
+    public void setTargetState(ClawState clawState) {
         _targetClawState = clawState;
     }
 
+    private void setWantedStateInternal(ClawState state) {
+        if (state == null) {
+            return;
+        }
+        if (state != _currentState) {
+            _previousState = _currentState;
+            _currentState = state;
+        }
+    }
+
+    public InstantCommand setWantedState(ClawState state) {
+        return new InstantCommand(() -> {
+            setWantedStateInternal(state);
+        }, this);
+    }
 }
