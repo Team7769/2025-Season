@@ -150,7 +150,7 @@ public class Calsificationinator extends SubsystemBase {
         _hasCoralinatorTwo = _calsificationDebouncinatorTwo.calculate(!_calsificationDetectinatorTwo.get());
 
         SmartDashboard.putString("Calcificationator Target State", _targetState.name());
-        SmartDashboard.putString("Calcificationator State", _currentState.name());
+        SmartDashboard.putString("Calcificationator Current State", _currentState.name());
         SmartDashboard.putBoolean("Top Coral Detected", _hasCoralinator);
         SmartDashboard.putBoolean("Bottom Coral Detected", _hasCoralinatorTwo);
     }

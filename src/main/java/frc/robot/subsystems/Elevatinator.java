@@ -117,7 +117,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState> {
     
     @Override
     public void periodic(){
-        SmartDashboard.putString("Current state", _currentState.name());
+        SmartDashboard.putString("Elevator Current state", _currentState.name());
         SmartDashboard.putNumber("Manual Position", _manualPositioninator);
         SmartDashboard.putNumber("Algae Position", _algaePosition);
         SmartDashboard.putBoolean("Hold Algae Position", _holdAlgaePosition);

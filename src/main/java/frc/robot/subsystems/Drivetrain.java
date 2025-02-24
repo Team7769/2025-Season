@@ -250,8 +250,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("followP", followP);
         SmartDashboard.putNumber("reefTarget", reefTarget);
         SmartDashboard.putNumber("reefFace", targetReefFace);
-        SmartDashboard.putString("current state", getCurrentState());
-        SmartDashboard.putString("previous state", getPreviousState());
+        SmartDashboard.putString("Drive Train current state", getCurrentState());
+        SmartDashboard.putString("Drive Train previous state", getPreviousState());
         SmartDashboard.putNumber("speed", getState().Speeds.vxMetersPerSecond);
     }
 
