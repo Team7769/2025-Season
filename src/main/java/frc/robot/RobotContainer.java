@@ -255,7 +255,9 @@ public class RobotContainer {
         new InstantCommand(() -> {
           _elevatinator.setHoldAlgaePosition(false);
           _drivetrain.targetSource(GeometryUtil::isRedAlliance);
-        },  _elevatinator, _drivetrain),
+        }
+        //,  _elevatinator, _drivetrain
+        ),
         _drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE),
         _claw.setWantedState(ClawState.IDLE),
         _elevatinator.setWantedState(ElavatinatorState.HOME),
