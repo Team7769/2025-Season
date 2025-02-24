@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Go Home",
+      "name": "Go Home Elevator",
       "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": null

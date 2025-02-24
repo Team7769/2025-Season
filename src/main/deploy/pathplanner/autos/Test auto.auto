@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Reef 3 right to bottom coral"
@@ -26,6 +32,12 @@
           "type": "path",
           "data": {
             "pathName": "From bottom coral to reef 4 right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
           }
         },
         {

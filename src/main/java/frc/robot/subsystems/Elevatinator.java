@@ -22,7 +22,7 @@ import frc.robot.enums.CalsificationinatorState;
 import frc.robot.enums.ElavatinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
-public class Elevatinator extends SubsystemBase {
+public class Elevatinator extends StateBasedSubsystem<ElavatinatorState> {
     private TalonFX _liftMotorinator;
     private VoltageOut voltageOut = new VoltageOut(0);
     private Slot0Configs _PIDConfiginator;
@@ -36,8 +36,6 @@ public class Elevatinator extends SubsystemBase {
         new Mechanism(output -> _liftMotorinator.setControl(voltageOut.withOutput(output)), null, this));
 
         private double _algaePosition = 0;
-    private ElavatinatorState _currentState;
-    private ElavatinatorState _previousState;
     //private Claw _claw;
     public Elevatinator() {
         //_claw = claw;
@@ -126,16 +124,16 @@ public class Elevatinator extends SubsystemBase {
         handleCurrentStateinator();
     }
 
-    public InstantCommand setWantedState(ElavatinatorState state){
-        return new InstantCommand(() -> {
-            if(state == null)
-            {
-                return;
-            }
-            if (state != _currentState) {
-                _previousState = _currentState;
-                _currentState = state;
-            }
-        }, this);
-    }
+    // public InstantCommand setWantedState(ElavatinatorState state){
+    //     return new InstantCommand(() -> {
+    //         if(state == null)
+    //         {
+    //             return;
+    //         }
+    //         if (state != _currentState) {
+    //             _previousState = _currentState;
+    //             _currentState = state;
+    //         }
+    //     }, this);
+    // }
 }
