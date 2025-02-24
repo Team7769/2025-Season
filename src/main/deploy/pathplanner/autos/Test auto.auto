@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Score Coral"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Reef 3 right to bottom coral"
@@ -35,45 +29,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Score Coral"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "From reef 4 right to bottom coral"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Wait For Coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "From bottom coral to reef 4 leftt"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Score Coral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "From reef 4 left to bottom coral"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }

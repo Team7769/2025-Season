@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "Go Home",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": null
     }

@@ -34,7 +34,13 @@
   "eventMarkers": [
     {
       "name": "Prep For Coral",
-      "waypointRelativePos": 0.5104477611940296,
+      "waypointRelativePos": 0.48059701492537316,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Score Coral",
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": null
     }

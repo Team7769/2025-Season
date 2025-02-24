@@ -111,7 +111,6 @@ public class Elevatinator extends SubsystemBase {
             break;
             case HOME:
                 _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kHumanPlayer));
-
                 break;
             default:
             break;

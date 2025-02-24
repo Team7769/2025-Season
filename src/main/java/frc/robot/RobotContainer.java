@@ -95,11 +95,15 @@ public class RobotContainer {
 
   private void registerNamedCommandsForAuto()
   {
-    //NamedCommands.registerCommand("Wait Until Coral Scored", Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator).andThen(goHomeinator()));
-    NamedCommands.registerCommand("Score Coral", _calsificationinator.setWantedState(CalsificationinatorState.SCORE));
+    // NamedCommands.registerCommand("Wait Until Coral Scored", Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator).andThen(goHomeinator()));
+    // NamedCommands.registerCommand("Score Coral", Commands.sequence(_calsificationinator.setWantedState(CalsificationinatorState.SCORE), Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator)));
+    NamedCommands.registerCommand("Wait For Coral", Commands.waitUntil(_calsificationinator::hasCoralinator));
   }
 
   private void registerEventTriggersForAuto() {
+    new EventTrigger("Score Coral").onTrue(
+      Commands.sequence(Commands.waitUntil(_elevatinator::isReady), _calsificationinator.setWantedState(CalsificationinatorState.SCORE), Commands.waitSeconds(.4))
+    );
     new EventTrigger("Prep For Coral").onTrue(
       Commands.sequence(
         new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL4Coral), _elevatinator),
@@ -134,6 +138,7 @@ public class RobotContainer {
     _driverController.rightTrigger().onTrue(scoreinator()).onFalse(goHomeinator());
     _driverController.leftTrigger().onTrue(doinator(null));
     _driverController.start().onTrue(_drivetrain.resetGyro());
+    _driverController.back().onTrue(goHomeinator());
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
@@ -241,7 +246,7 @@ public class RobotContainer {
           _drivetrain.targetSource(GeometryUtil::isRedAlliance);
         }, _drivetrain, _elevatinator),        
         _drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE),
-         _claw.setWantedState(ClawState.IDLE),
+        _claw.setWantedState(ClawState.IDLE),
         _elevatinator.setWantedState(ElavatinatorState.HOME),
         _calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
   }
