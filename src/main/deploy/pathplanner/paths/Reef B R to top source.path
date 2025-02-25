@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.713,
-        "y": 7.293
+        "x": 3.695,
+        "y": 5.107
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1486729452054796,
-        "y": 6.271339897260273
+        "x": 2.954472448976538,
+        "y": 5.827040415961452
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.1553938356164384,
-        "y": 4.062564212328767
+        "x": 1.713,
+        "y": 7.293
       },
       "prevControl": {
-        "x": 2.794777397260274,
-        "y": 4.949079623287671
+        "x": 2.1504707418186912,
+        "y": 6.884934872079525
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,7 +31,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Go Home Elevator",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 4.0,
@@ -41,14 +48,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.25,
-    "rotation": 180.0
+    "velocity": 2.0,
+    "rotation": 125.53800000000001
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Top C B A",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 125.53800000000001
+    "rotation": 120.332
   },
   "useDefaultConstraints": true
 }
