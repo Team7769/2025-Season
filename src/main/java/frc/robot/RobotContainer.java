@@ -96,7 +96,7 @@ public class RobotContainer {
   private void registerNamedCommandsForAuto()
   {
     // NamedCommands.registerCommand("Wait Until Coral Scored", Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator).andThen(goHomeinator()));
-    NamedCommands.registerCommand("Score Coral", Commands.sequence(Commands.waitUntil(_elevatinator::isReady), _calsificationinator.setWantedState(CalsificationinatorState.SCORE),
+    NamedCommands.registerCommand("Score Coral", Commands.sequence(Commands.waitUntil(_elevatinator::isReady), Commands.waitSeconds(.4), _calsificationinator.setWantedState(CalsificationinatorState.SCORE),
       Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator), Commands.parallel(
         _claw.setWantedState(ClawState.IDLE),
         _calsificationinator.setWantedState(CalsificationinatorState.PICKUP))));
@@ -302,9 +302,8 @@ public class RobotContainer {
       _elevatinator.setPositioninator(ElevatinatorConstants.kL3Algae);
       _claw.setTargetState(ClawState.DEALGIFY);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
-      _drivetrain.setWantedTarget(LocationTarget.REEF);
       _drivetrain.setReefTargetSide(ReefConstants.kReefAlgae);
-    }));
+    }), _drivetrain.setWantedTarget(LocationTarget.REEF));
   }
 
   public Command dealgifyLow(LEDinatorState ledinatorState) {
@@ -312,9 +311,8 @@ public class RobotContainer {
       _elevatinator.setPositioninator(ElevatinatorConstants.kL2Algae);
       _claw.setTargetState(ClawState.DEALGIFY);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
-      _drivetrain.setWantedTarget(LocationTarget.REEF);
       _drivetrain.setReefTargetSide(ReefConstants.kReefAlgae);
-    }));
+    }), _drivetrain.setWantedTarget(LocationTarget.REEF));
     // return Commands.sequence(new InstantCommand(() -> {
     //   _elevatinator.setPositioninator(ElevatinatorConstants.kL2Algae);
     // }), Commands.parallel(
@@ -329,8 +327,7 @@ public class RobotContainer {
       _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeNet);
       _claw.setTargetState(ClawState.PREP_NET);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
-      _drivetrain.setWantedTarget(LocationTarget.BARGE);
-    }));
+    }), _drivetrain.setWantedTarget(LocationTarget.BARGE));
     // return Commands.sequence(new InstantCommand(() -> {
     //   _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeNet);
     // }), Commands.parallel(
@@ -346,8 +343,7 @@ public class RobotContainer {
       _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeProcessor);
       _claw.setTargetState(ClawState.PREP_PROCESSOR);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
-      _drivetrain.setWantedTarget(LocationTarget.PROCESSOR);
-    }));
+    }), _drivetrain.setWantedTarget(LocationTarget.PROCESSOR));
     // return Commands.sequence(new InstantCommand(() -> {
     //   _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeProcessor);
     // }), Commands.parallel(

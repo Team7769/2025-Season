@@ -41,7 +41,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     public final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.05).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.05)
+            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.03).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.03)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     public final SwerveRequest idle = new SwerveRequest.Idle();
     public final SwerveRequest.ApplyRobotSpeeds chassisDrive = new SwerveRequest.ApplyRobotSpeeds();
@@ -252,6 +252,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("reefFace", targetReefFace);
         SmartDashboard.putString("Drive Train current state", getCurrentState());
         SmartDashboard.putString("Drive Train previous state", getPreviousState());
+        SmartDashboard.putString("Drive Train current target", getCurrentTarget().name());
         SmartDashboard.putNumber("speed", getState().Speeds.vxMetersPerSecond);
     }
 
@@ -291,9 +292,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putString("currentTarget", getCurrentTarget().name());
 
         if (Math.abs(xDifference) < 1 && Math.abs(yDifference) < 1) {
-            followP = .9;
+            followP = 1.5;
         } else if (Math.abs(xDifference) < 1 && _followType == FollowType.LINE) {
-            followP = .9;
+            followP = 1.5;
         } else {
             followP = 4;
         }
