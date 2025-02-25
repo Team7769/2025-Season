@@ -251,7 +251,7 @@ public class RobotContainer {
   }
 
   public Command goHomeinator() {
-    return Commands.sequence(
+    return Commands.parallel(
         new InstantCommand(() -> {
           _elevatinator.setHoldAlgaePosition(false);
           _drivetrain.targetSource(GeometryUtil::isRedAlliance);
