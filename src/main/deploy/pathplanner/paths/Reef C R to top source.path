@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.246,
-        "y": 5.215
+        "x": 5.06,
+        "y": 5.293
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.555442573619135,
-        "y": 5.673758380817836
+        "x": 4.369442573619134,
+        "y": 5.7517583808178365
       },
       "isLocked": false,
       "linkedName": null
@@ -36,7 +36,14 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Go Home Elevator",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 4.0,
@@ -50,7 +57,7 @@
     "rotation": 125.53767779197443
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Top C B A",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 57.524

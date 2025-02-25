@@ -8,35 +8,37 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5399485192587914,
-        "y": 6.848896492295413
+        "x": 2.126352805944739,
+        "y": 6.9157960940934915
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.246,
-        "y": 5.215
+        "x": 3.959,
+        "y": 5.273
       },
       "prevControl": {
-        "x": 4.892323811514085,
-        "y": 5.436555554187466
+        "x": 3.26985753914135,
+        "y": 5.97923042079008
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.782608695652174,
-      "rotationDegrees": 57.13469581332186
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Prep For Coral",
+      "waypointRelativePos": 0.7076923076923038,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 4.0,
@@ -46,11 +48,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 57.524
+    "velocity": 2.0,
+    "rotation": 120.33226448539487
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Top C B A",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 125.53800000000001
