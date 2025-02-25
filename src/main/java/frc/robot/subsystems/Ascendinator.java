@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Constants;
+import frc.robot.Constants.AscendinatorConstants;
 import frc.robot.enums.CageState;
 import frc.robot.enums.CalsificationinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
@@ -35,8 +36,8 @@ public class Ascendinator extends SubsystemBase {
     private DigitalInput _detectinator;
 
     private FeedbackConfigs FeedBackConfig = _configinator.Feedback;
-    private CageState _currentState;
-    private CageState _previousState;
+    private CageState _currentState = CageState.IDLE;
+    private CageState _previousState = CageState.IDLE;
 
     private VoltageOut voltageOut = new VoltageOut(0);
     public SysIdRoutine pivotinatorRoutine = new SysIdRoutine(new SysIdRoutine.Config(null, Volts.of(4), null,
@@ -52,7 +53,7 @@ public class Ascendinator extends SubsystemBase {
         slot0.kI = 0;
         slot0.kD = 0.5;
 
-        FeedBackConfig.SensorToMechanismRatio = 3.5;
+        FeedBackConfig.SensorToMechanismRatio = 350;
 
         MotionMagicConfigs MotionMagicinator = _configinator.MotionMagic;
         MotionMagicinator.withMotionMagicCruiseVelocity(RotationsPerSecond.of(5))
@@ -71,21 +72,21 @@ public class Ascendinator extends SubsystemBase {
                 break;
 
             case DEPLOY:
-                if (_ascendinator.getPosition().getValueAsDouble() >= 0.5) {
+                if (_ascendinator.getPosition().getValueAsDouble() >= AscendinatorConstants.kPrepClimb) {
                     _ascendinator.set(0);
                 } else {
-                    _ascendinator.set(0.25);
+                    _ascendinator.set(0.4);
                 }
                 break;
 
             case ASCEND:
-                if (_ascendinator.getPosition().getValueAsDouble() > 0.5) {
-                    setWantedState(CageState.IDLE);
+                if (_ascendinator.getPosition().getValueAsDouble() >= AscendinatorConstants.kEndClimb) {
+                    _ascendinator.set(0);
+                    _currentState = CageState.IDLE;
                 } else {
-                    _ascendinator.set(0.5);
+                    _ascendinator.set(0.4);
                 }
                 break;
-
             default:
                 _ascendinator.set(0);
                 break;

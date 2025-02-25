@@ -134,7 +134,7 @@ public class Claw extends SubsystemBase {
         /// //#region Detectinator config
 
         _algaeDetectinator = new DigitalInput(Constants.ClawConstants.kClawAlgaeDetectinatorChannel);
-        _algaeDebouncinator = new Debouncer(Constants.ClawConstants.kClawAlgaeDebounceTime, DebounceType.kBoth);
+        _algaeDebouncinator = new Debouncer(Constants.ClawConstants.kClawAlgaeDebounceTime, DebounceType.kRising);
         /// //#endregion
 
         _currentState = ClawState.IDLE;
@@ -173,11 +173,14 @@ public class Claw extends SubsystemBase {
                 break;
             case SCORE:
                 if (_previousState == ClawState.PREP_NET) {
-                    _topRollinator.set(.8);
+                    _topRollinator.set(.7);
                 }
                 if (_previousState == ClawState.PREP_PROCESSOR) {
                     _topRollinator.set(.5);
                 }
+                break;
+            case TARGET:
+                _currentState = _targetClawState;
                 break;
             default:
                 _pivotinator.setControl(_request.withPosition(0));

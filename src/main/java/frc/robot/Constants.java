@@ -269,7 +269,7 @@ public final class Constants {
       // TODO: change the detectinator channel
       public static final int kClawAlgaeDetectinatorChannel = 2;
       // TODO: change debounce time
-      public static final int kClawAlgaeDebounceTime = 0;
+      public static final double kClawAlgaeDebounceTime = .5;
 
     }
 
@@ -279,6 +279,9 @@ public final class Constants {
       public static final int kAscendinatorDetectinatorID = 18;
       public static final int kDebouncinatorTime = 0;
       public static final int kAscendinatorDetectinatorChannel = 3;
+      public static final double kIdle = 0;
+      public static final double kPrepClimb = .25;
+      public static final double kEndClimb = .75;
     }
     public static class CalsificationinatorConstants {
         public static final int kSuckinatorScoreinatorID = 23;
@@ -309,7 +312,7 @@ public final class Constants {
       public static final double kL1Coral = 0;
       public static final double kHumanPlayer = 3.74;
       public static final double kAlgaePickup = 15;
-      public static final double kAlgaeProcessor = 15;
+      public static final double kAlgaeProcessor = 8;
       public static final double kHome = 0;
       public static final double kLiftinatorMaxHeight = 74;
     }

@@ -57,6 +57,7 @@ public class Calsificationinator extends SubsystemBase {
     //         new Mechanism(output -> _pivotinator.setControl(voltageOut.withOutput(output)), null, this));
 
     public Calsificationinator() {
+        _targetState = CalsificationinatorState.IDLE;
         _currentState = CalsificationinatorState.IDLE;
         _previousState = CalsificationinatorState.IDLE;
         _calsificationDetectinator = new DigitalInput(
@@ -134,7 +135,9 @@ public class Calsificationinator extends SubsystemBase {
                 break;
             case NOTHING:
                 break;
-
+            case TARGET:
+                _currentState = _targetState;
+                break;
             default:
                 _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kIdlePosition));
 
@@ -165,9 +168,9 @@ public class Calsificationinator extends SubsystemBase {
 
     private void handleCoral() {
         if (_hasCoralinatorTwo) {
-            _suckinator.set(-.02);
-        } else if (_hasCoralinator) {
             _suckinator.set(0);
+        } else if (_hasCoralinator) {
+            _suckinator.set(.05);
         } else {
             _suckinator.set(0.15);
         }
