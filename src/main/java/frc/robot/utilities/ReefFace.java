@@ -18,11 +18,11 @@ public class ReefFace {
     }
 
     public Pose2d[] getBothPoles() {
-        return new Pose2d[]{right, left};
+        return new Pose2d[]{left, right};
     }
 
     public Pose2d[] getAllPoles() {
-        return new Pose2d[]{right, algae, left};
+        return new Pose2d[]{left, algae, right};
     }
 
     public Pose2d getRight() {

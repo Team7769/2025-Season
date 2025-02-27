@@ -10,4 +10,6 @@ public enum CalsificationinatorState implements IState{
     L4,
     IDLE,
     SCORE,
+    NOTHING,
+    TARGET
 }

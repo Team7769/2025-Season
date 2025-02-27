@@ -9,13 +9,14 @@ import com.ctre.phoenix.led.StrobeAnimation;
 import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix6.configs.CANdiConfiguration;
 
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.enums.CageState;
 import frc.robot.enums.LEDinatorState;
 import frc.robot.enums.ReefLevel;
 import frc.robot.statemachine.StateBasedSubsystem;
 
-public class LEDinator extends StateBasedSubsystem<LEDinatorState> {
+public class LEDinator extends SubsystemBase {
     private CANdle _candle;
     private CANdle _partyLightinator;
     private CANdiConfiguration config;
@@ -41,6 +42,8 @@ public class LEDinator extends StateBasedSubsystem<LEDinatorState> {
     private Claw _claw;
     private Elevatinator _elevatinator;
     private Ascendinator _ascendinator;
+    private LEDinatorState _currentState;
+    private LEDinatorState _previousState;
 
     public LEDinator(Calsificationinator calsificationinator, Claw claw, Elevatinator elevatinator, Ascendinator ascendinator)
     {

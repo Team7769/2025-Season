@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom start to reef 4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "From reef 4 left to bottom coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "From bottom coral to reef 4 right"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "From reef 4 left to bottom coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom coral to reef 5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 5 to bottom coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom coral to reef 5"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 5 to bottom coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
