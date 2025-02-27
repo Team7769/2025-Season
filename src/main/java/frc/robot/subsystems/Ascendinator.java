@@ -30,7 +30,7 @@ public class Ascendinator extends SubsystemBase {
     private TalonFXConfiguration _configinator = new TalonFXConfiguration();
 
     private boolean _hasCage;
-
+    private boolean _readyToClimb = false;
     private Debouncer _debounceinator;
 
     private DigitalInput _detectinator;
@@ -74,6 +74,7 @@ public class Ascendinator extends SubsystemBase {
             case DEPLOY:
                 if (_ascendinator.getPosition().getValueAsDouble() >= AscendinatorConstants.kPrepClimb) {
                     _ascendinator.set(0);
+                    _readyToClimb = true;
                 } else {
                     _ascendinator.set(0.4);
                 }
@@ -114,6 +115,10 @@ public class Ascendinator extends SubsystemBase {
 
     public boolean hasCage() {
         return _hasCage;
+    }
+    
+    public boolean isReady() {
+        return _readyToClimb;
     }
 
     public CageState getCurrentState() {

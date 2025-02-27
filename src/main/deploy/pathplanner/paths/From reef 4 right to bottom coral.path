@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.922,
-        "y": 2.845
+        "x": 3.9799180327868857,
+        "y": 2.832223360655737
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0208544520547944,
-        "y": 2.199327910958907
+        "x": 3.07877248484168,
+        "y": 2.186551271614644
       },
       "isLocked": false,
       "linkedName": "Reef 4 Right"
@@ -32,8 +32,8 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.5,
-      "maxWaypointRelativePos": 1,
+      "minWaypointRelativePos": 0.7670492910195839,
+      "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.5,
         "maxAcceleration": 4.0,
