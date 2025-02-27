@@ -159,12 +159,12 @@ public class RobotContainer {
     // _driverController.b().whileTrue(_drivetrain.sysIdQuasistatic(Direction.kReverse));
     // _driverController.a().whileTrue(_drivetrain.sysIdDynamic(Direction.kForward));
     // _driverController.x().whileTrue(_drivetrain.sysIdDynamic(Direction.kReverse));
-    _driverController.back().onTrue(
+    _driverController.povUp().onTrue(
     (_ascendinator.setWantedState(CageState.DEPLOY)
     // , _ledinator.setWantedState(LEDinatorState.CAGE)
     ));
     new
-    Trigger(_ascendinator::hasCage).and(_driverController.y()).onTrue(_ascendinator.setWantedState(CageState.ASCEND));
+    Trigger(_ascendinator::isReady).and(_driverController.back()).onTrue(_ascendinator.setWantedState(CageState.ASCEND));
 
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
