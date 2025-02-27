@@ -11,6 +11,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Constants;
@@ -25,7 +26,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
-public class Calsificationinator extends StateBasedSubsystem<CalsificationinatorState> {
+public class Calsificationinator extends SubsystemBase {
     private TalonFX _suckinator = new TalonFX(Constants.CalsificationinatorConstants.kSuckinatorScoreinatorID);
 
     private TalonFX _pivotinator = new TalonFX(Constants.CalsificationinatorConstants.kPivotinatorID);
@@ -46,14 +47,17 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
     private Debouncer _calsificationDebouncinatorTwo;
 
     private CalsificationinatorState _targetState;
+    private CalsificationinatorState _currentState;
+    private CalsificationinatorState _previousState;
 
     private VoltageOut voltageOut = new VoltageOut(0);
-    public SysIdRoutine pivotinatorRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(Volts.of(.25).per(Second), Volts.of(2), null,
-                    state -> SignalLogger.writeString("SysidPivotinator_State", state.toString())),
-            new Mechanism(output -> _pivotinator.setControl(voltageOut.withOutput(output)), null, this));
+    // public SysIdRoutine pivotinatorRoutine = new SysIdRoutine(
+    //         new SysIdRoutine.Config(Volts.of(.25).per(Second), Volts.of(2), null,
+    //                 state -> SignalLogger.writeString("SysidPivotinator_State", state.toString())),
+    //         new Mechanism(output -> _pivotinator.setControl(voltageOut.withOutput(output)), null, this));
 
     public Calsificationinator() {
+        _targetState = CalsificationinatorState.IDLE;
         _currentState = CalsificationinatorState.IDLE;
         _previousState = CalsificationinatorState.IDLE;
         _calsificationDetectinator = new DigitalInput(
@@ -131,7 +135,9 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
                 break;
             case NOTHING:
                 break;
-
+            case TARGET:
+                _currentState = _targetState;
+                break;
             default:
                 _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kIdlePosition));
 
@@ -147,7 +153,7 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
         _hasCoralinatorTwo = _calsificationDebouncinatorTwo.calculate(!_calsificationDetectinatorTwo.get());
 
         SmartDashboard.putString("Calcificationator Target State", _targetState.name());
-        SmartDashboard.putString("Calcificationator State", _currentState.name());
+        SmartDashboard.putString("Calcificationator Current State", _currentState.name());
         SmartDashboard.putBoolean("Top Coral Detected", _hasCoralinator);
         SmartDashboard.putBoolean("Bottom Coral Detected", _hasCoralinatorTwo);
     }
@@ -156,11 +162,15 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
         return _hasCoralinator || _hasCoralinatorTwo;
     }
 
+    public boolean doesNotHaveCoralinator() {
+        return !_hasCoralinator && !_hasCoralinatorTwo;
+    }
+
     private void handleCoral() {
         if (_hasCoralinatorTwo) {
-            _suckinator.set(-.02);
-        } else if (_hasCoralinator) {
             _suckinator.set(0);
+        } else if (_hasCoralinator) {
+            _suckinator.set(.05);
         } else {
             _suckinator.set(0.15);
         }
@@ -177,5 +187,18 @@ public class Calsificationinator extends StateBasedSubsystem<Calsificationinator
 
     public InstantCommand setWantedStateToTarget(){
         return this.setWantedState(_targetState);
+    }
+
+    public InstantCommand setWantedState(CalsificationinatorState state){
+        return new InstantCommand(() -> {
+            if(state == null)
+            {
+                return;
+            }
+            if (state != _currentState) {
+                _previousState = _currentState;
+                _currentState = state;
+            }
+        }, this);
     }
 }

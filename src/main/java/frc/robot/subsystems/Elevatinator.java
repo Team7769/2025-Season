@@ -14,13 +14,15 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.Constants.ElevatinatorConstants;
+import frc.robot.enums.CalsificationinatorState;
 import frc.robot.enums.ElavatinatorState;
 import frc.robot.statemachine.StateBasedSubsystem;
 
-public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
+public class Elevatinator extends StateBasedSubsystem<ElavatinatorState> {
     private TalonFX _liftMotorinator;
     private VoltageOut voltageOut = new VoltageOut(0);
     private Slot0Configs _PIDConfiginator;
@@ -34,9 +36,9 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
         new Mechanism(output -> _liftMotorinator.setControl(voltageOut.withOutput(output)), null, this));
 
         private double _algaePosition = 0;
-    private Claw _claw;
-    public Elevatinator(Claw claw) {
-        _claw = claw;
+    //private Claw _claw;
+    public Elevatinator() {
+        //_claw = claw;
         _manualPositioninator = 0;
         _talonFXConfiginator = new TalonFXConfiguration();
         _talonFXConfiginator.Feedback.SensorToMechanismRatio = 1;
@@ -86,6 +88,10 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
         return _manualPositioninator;
     }
 
+    public boolean isReady() {
+        return (Math.abs(_manualPositioninator - _liftMotorinator.getPosition().getValueAsDouble()) < .5) && (_currentState != ElavatinatorState.HOME);
+    }
+
     public InstantCommand zeroMotor() {
         return new InstantCommand(() -> _liftMotorinator.setControl(voltageOut.withOutput(0)), this);
     }
@@ -102,11 +108,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
                 holdPositioninator();
             break;
             case HOME:
-                if (_claw.hasAlgae()) {
-                    _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kAlgaePickup));
-                } else {
-                    _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kHumanPlayer));
-                }
+                _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kHumanPlayer));
                 break;
             default:
             break;
@@ -115,10 +117,23 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState>{
     
     @Override
     public void periodic(){
-        SmartDashboard.putString("Current state", _currentState.name());
+        SmartDashboard.putString("Elevator Current state", _currentState.name());
         SmartDashboard.putNumber("Manual Position", _manualPositioninator);
         SmartDashboard.putNumber("Algae Position", _algaePosition);
         SmartDashboard.putBoolean("Hold Algae Position", _holdAlgaePosition);
         handleCurrentStateinator();
     }
+
+    // public InstantCommand setWantedState(ElavatinatorState state){
+    //     return new InstantCommand(() -> {
+    //         if(state == null)
+    //         {
+    //             return;
+    //         }
+    //         if (state != _currentState) {
+    //             _previousState = _currentState;
+    //             _currentState = state;
+    //         }
+    //     }, this);
+    // }
 }

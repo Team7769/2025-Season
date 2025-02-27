@@ -7,6 +7,8 @@ import frc.robot.enums.DrivetrainState;
 import frc.robot.enums.FollowType;
 import frc.robot.enums.LocationTarget;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import java.util.ArrayList;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -40,8 +42,9 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
+    private final SwerveRequest.ApplyRobotSpeeds test = new SwerveRequest.ApplyRobotSpeeds();
     public final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.05).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.05)
+            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.03).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.03)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     public final SwerveRequest idle = new SwerveRequest.Idle();
     public final SwerveRequest.ApplyRobotSpeeds chassisDrive = new SwerveRequest.ApplyRobotSpeeds();
@@ -205,7 +208,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         });
     }
 
-     _vision.updateLimelightPosition(getPigeon2().getRotation2d());
+     _vision.updateLimelightPosition(getPigeon2().getRotation2d().plus(this.getOperatorForwardDirection()));
     
         this.periodicIO.VxCmd = -OneDimensionalLookup.interpLinear(
                 Constants.DrivetrainConstants.XY_Axis_inputBreakpoints,
@@ -233,8 +236,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
     private void updateOdometry() {
         ArrayList<VisionMeasurement> visionMeasurements = _vision
-            .getVisionMeasurements(
-            getPigeon2().getRotation2d()
+            .getVisionMeasurements(getPigeon2().getRotation2d().plus(this.getOperatorForwardDirection())
         );
 
         for (VisionMeasurement visionMeasurement : visionMeasurements) {
@@ -250,8 +252,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("followP", followP);
         SmartDashboard.putNumber("reefTarget", reefTarget);
         SmartDashboard.putNumber("reefFace", targetReefFace);
-        SmartDashboard.putString("current state", getCurrentState());
-        SmartDashboard.putString("previous state", getPreviousState());
+        SmartDashboard.putString("Drive Train current state", getCurrentState());
+        SmartDashboard.putString("Drive Train previous state", getPreviousState());
+        SmartDashboard.putString("Drive Train current target", getCurrentTarget().name());
         SmartDashboard.putNumber("speed", getState().Speeds.vxMetersPerSecond);
     }
 
@@ -291,9 +294,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putString("currentTarget", getCurrentTarget().name());
 
         if (Math.abs(xDifference) < 1 && Math.abs(yDifference) < 1) {
-            followP = .9;
+            followP = .7;
         } else if (Math.abs(xDifference) < 1 && _followType == FollowType.LINE) {
-            followP = .9;
+            followP = .7;
         } else {
             followP = 4;
         }
@@ -301,11 +304,17 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         xFollow = xDifference / followP;
         yFollow = yDifference / followP;
 
-        if (yFollow > 1) {
-            yFollow = 1;
-        } 
-        if (xFollow > 1) {
-            xFollow = 1;
+        if (Math.abs(yFollow) > .25) {
+            if (yFollow > 0)
+                yFollow = .25;
+            else 
+                yFollow = -.25;
+        }
+        if (Math.abs(xFollow) > .25) {
+            if (xFollow > 0)
+                xFollow = .25;
+            else 
+                xFollow = -.25;
         }
 
         if (Math.abs(targetRotation) >= .5) {
@@ -430,10 +439,17 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
                 DrivetrainConstants.MaxAngularRate));
             default:
-                return applyRequest(() -> drive.withVelocityX(-xFollow *
-                DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(-yFollow *
-                DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
-                DrivetrainConstants.MaxAngularRate));
+                if (GeometryUtil.isRedAlliance()){
+                    return applyRequest(() -> drive.withVelocityX(xFollow *
+                    DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(yFollow *
+                    DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
+                    DrivetrainConstants.MaxAngularRate));
+                } else {
+                    return applyRequest(() -> drive.withVelocityX(-xFollow *
+                    DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(-yFollow *
+                    DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
+                    DrivetrainConstants.MaxAngularRate));
+                }
 
         }
     }

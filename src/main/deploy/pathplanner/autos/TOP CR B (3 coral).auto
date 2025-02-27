@@ -7,61 +7,73 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Bottom start to reef 3"
+            "pathName": "Top Start to reef C R"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 3 to bottom coral"
+            "pathName": "Reef C R to top source"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "From bottom coral to reef 4"
+            "name": "Wait For Coral"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "From reef 4 to bottom coral"
+            "pathName": "Top source to reef B L"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "From bottom coral to reef 4"
+            "name": "Score Coral"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "From reef 4 to bottom coral"
+            "pathName": "Reef B L to top source"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
+            "name": "Wait For Coral"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "From bottom coral to reef 4"
+            "pathName": "Top source to reef B R"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Coral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef B R to top source"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait For Coral"
           }
         }
       ]

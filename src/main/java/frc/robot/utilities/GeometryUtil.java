@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
+import frc.robot.Constants.FieldConstants;
 
 /**
  * Utility class for various geometry related actions.
@@ -35,7 +36,13 @@ public class GeometryUtil {
                         (2 * blueTranslation.getX()),
 
                 blueTranslation.getY());
-    }       
+    }   
+    
+    public static Translation2d mirrorReef(Translation2d blueTranslation2d) {
+        Translation2d reefTranslation = new Translation2d();
+        reefTranslation = blueTranslation2d.rotateAround(FieldConstants.kFieldCenter, Rotation2d.k180deg);
+        return reefTranslation;
+    }
 
     /**
      * Gets the angle to a target translation (point).
