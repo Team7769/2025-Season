@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.06,
-        "y": 5.293
+        "x": 5.019,
+        "y": 5.234567636986301
       },
       "prevControl": {
-        "x": 6.023732394366197,
-        "y": 5.392207746478874
+        "x": 5.982732394366198,
+        "y": 5.333775383465175
       },
       "nextControl": null,
       "isLocked": false,
@@ -63,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 57.52880770915151
+    "rotation": 58.3924977537512
   },
   "reversed": false,
   "folder": "Top Cr B",

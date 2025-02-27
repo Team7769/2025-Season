@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 5.287,
-        "y": 3.0
+        "x": 5.36,
+        "y": 3.01
       },
       "prevControl": {
-        "x": 6.3560224258063185,
-        "y": 3.0843309620110997
+        "x": 6.429022425806319,
+        "y": 3.0943309620110995
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6482106684672517,
+      "minWaypointRelativePos": 0.5016949152542373,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.5,
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "Prep For Coral",
-      "waypointRelativePos": 0.8993923024983105,
+      "waypointRelativePos": 0.9,
       "endWaypointRelativePos": null,
       "command": null
     }

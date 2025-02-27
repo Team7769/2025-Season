@@ -3,39 +3,39 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.287,
-        "y": 3.0
+        "x": 5.353,
+        "y": 3.01
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.370371575342466,
-        "y": 2.1589426369863007
+        "x": 4.4363715753424655,
+        "y": 2.1689426369863005
       },
       "isLocked": false,
       "linkedName": "Reef 3 Right"
     },
     {
       "anchor": {
-        "x": 1.187,
-        "y": 1.01
+        "x": 1.2321061643835618,
+        "y": 1.0724529109589036
       },
       "prevControl": {
-        "x": 2.8247996575342462,
-        "y": 1.6410787671232872
+        "x": 2.8699058219178077,
+        "y": 1.7035316780821907
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Coral Station"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.7616475354490299,
+      "minWaypointRelativePos": 0.6305084745762702,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
-        "maxVelocity": 2.5,
+        "maxVelocity": 2.0,
         "maxAcceleration": 4.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.692213114754098,
-        "y": 2.976075819672131
+        "x": 3.635,
+        "y": 3.0107662671232878
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7910675668088922,
-        "y": 2.3304037306310375
+        "x": 2.733854452054794,
+        "y": 2.3650941780821944
       },
       "isLocked": false,
       "linkedName": "Reef 4 Left"
     },
     {
       "anchor": {
-        "x": 1.187,
-        "y": 1.01
+        "x": 1.2321061643835618,
+        "y": 1.0724529109589036
       },
       "prevControl": {
-        "x": 2.2087465753424658,
-        "y": 1.7462585616438353
+        "x": 2.2538527397260273,
+        "y": 1.808711472602739
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.802160702228227,
+      "minWaypointRelativePos": 0.5,
       "maxWaypointRelativePos": 1.0,
       "constraints": {
         "maxVelocity": 2.5,
@@ -69,7 +69,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -122.82854179141256
+    "rotation": -119.02399999999999
   },
   "useDefaultConstraints": true
 }
