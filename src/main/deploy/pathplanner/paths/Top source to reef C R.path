@@ -36,7 +36,14 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Prep For Coral",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 4.0,
@@ -50,7 +57,7 @@
     "rotation": 58.83739922083239
   },
   "reversed": false,
-  "folder": "Top C B A",
+  "folder": "Top Cr B",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 125.53800000000001

@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "Prep For Coral",
-      "waypointRelativePos": 0.6203473945409492,
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -52,7 +52,7 @@
     "rotation": 57.52880770915151
   },
   "reversed": false,
-  "folder": "Top C B A",
+  "folder": "Top Cr B",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -1.8297389161656241
