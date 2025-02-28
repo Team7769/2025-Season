@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.signals.GravityTypeValue;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import frc.robot.Constants;
+import frc.robot.Constants.ClawConstants;
 import frc.robot.enums.CalsificationinatorState;
 import frc.robot.enums.ClawState;
 import frc.robot.statemachine.StateBasedSubsystem;
@@ -114,7 +116,7 @@ public class Claw extends SubsystemBase {
         var topConfig = new TalonFXConfiguration();
         topConfig.CurrentLimits.SupplyCurrentLimit = 70;
         topConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        topConfig.CurrentLimits.StatorCurrentLimit = 120;
+        topConfig.CurrentLimits.StatorCurrentLimit = 40;
         topConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         _topRollinator.getConfigurator().apply(topConfig);
 
@@ -124,7 +126,7 @@ public class Claw extends SubsystemBase {
         var bottomConfig = new TalonFXConfiguration();
         bottomConfig.CurrentLimits.SupplyCurrentLimit = 70;
         bottomConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-        bottomConfig.CurrentLimits.StatorCurrentLimit = 120;
+        bottomConfig.CurrentLimits.StatorCurrentLimit = 40;
         bottomConfig.CurrentLimits.StatorCurrentLimitEnable = true;
         _bottomRollinator.getConfigurator().apply(bottomConfig);
 
@@ -153,7 +155,7 @@ public class Claw extends SubsystemBase {
                 // } else {                    
                 //     _topRollinator.set(0);
                 // }
-                _topRollinator.set(0);
+                _topRollinator.set(-.2);
                 break;
             case FLOOR_INTAKE:
                 _pivotinator.setControl(_request.withPosition(0.375));
@@ -165,11 +167,11 @@ public class Claw extends SubsystemBase {
                 break;
             case PREP_NET:
                 _pivotinator.setControl(_request.withPosition(0));
-                _topRollinator.set(0);
+                _topRollinator.set(-.2);
                 break;
             case PREP_PROCESSOR:
-                _pivotinator.setControl(_request.withPosition(0.175));
-                _topRollinator.set(0);
+                _pivotinator.setControl(_request.withPosition(0.18));
+                _topRollinator.set(-.2);
                 break;
             case SCORE:
                 if (_previousState == ClawState.PREP_NET) {
@@ -202,8 +204,41 @@ public class Claw extends SubsystemBase {
             if (state != _currentState) {
                 _previousState = _currentState;
                 _currentState = state;
+
+                switch (state){
+                    case SCORE:
+                        setHighCurrentLimit();
+                        break;
+                    default:
+                        setLowCurrentLimit();
+                        break;
+                }
             }
         }, this);
+    }
+
+    private void setHighCurrentLimit()
+    {
+        var currentLimits = new CurrentLimitsConfigs();
+        currentLimits.StatorCurrentLimit = 120;
+        currentLimits.StatorCurrentLimitEnable = true;
+        currentLimits.SupplyCurrentLimit = 70;
+        currentLimits.SupplyCurrentLimitEnable = true;
+
+        _topRollinator.getConfigurator().apply(currentLimits);        
+        _bottomRollinator.getConfigurator().apply(currentLimits);
+    }
+
+    private void setLowCurrentLimit()
+    {
+        var currentLimits = new CurrentLimitsConfigs();
+        currentLimits.StatorCurrentLimit = 40;
+        currentLimits.StatorCurrentLimitEnable = true;
+        currentLimits.SupplyCurrentLimit = 70;
+        currentLimits.SupplyCurrentLimitEnable = true;
+
+        _topRollinator.getConfigurator().apply(currentLimits);        
+        _bottomRollinator.getConfigurator().apply(currentLimits);
     }
 
     @Override

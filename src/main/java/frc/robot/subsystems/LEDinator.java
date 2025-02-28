@@ -53,7 +53,7 @@ public class LEDinator extends SubsystemBase {
         _candle = new CANdle(Constants.LEDinatorConstants.kLEDinatorID);
         _partyLightinator = new CANdle(Constants.LEDinatorConstants.kLEDPartyLightinatorID);
         //white
-        WAITING_FOR_CORAL = new StrobeAnimation(255,255,255, 0,.15, numLEDS);
+        WAITING_FOR_CORAL = new StrobeAnimation(100,100,100, 0,.15, numLEDS);
         //teal
         WAITING_FOR_ALGAE = new StrobeAnimation(10, 255, 194, 0, .15, numLEDS);
         //purple for all levels
