@@ -110,6 +110,9 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState> {
             case HOME:
                 _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kHumanPlayer));
                 break;
+            case HOMEWITHALGAE:
+                _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kL2Coral));
+                break;
             default:
             break;
         }
