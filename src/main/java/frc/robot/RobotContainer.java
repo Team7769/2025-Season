@@ -188,8 +188,8 @@ public class RobotContainer {
         .onFalse(_calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
 
     _driverController.rightBumper().onTrue(Commands.parallel(new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaePickup)), 
-      _elevatinator.setWantedState(ElavatinatorState.HOLD), _claw.setWantedState(ClawState.FLOOR_INTAKE), _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
-      .onFalse(_claw.hasAlgae() ? goHomeinatorWithAlgae() : goHomeinatorForFloorPickup());
+      _elevatinator.setWantedState(ElavatinatorState.HOLD), _claw.setWantedState(ClawState.FLOOR_INTAKE), _ledinator.setWantedState(LEDinatorState.ALGAE), _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
+      .onFalse(_claw.hasAlgae() ? Commands.parallel(goHomeinatorWithAlgae(), _ledinator.setWantedState(LEDinatorState.ALGAE)) : Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.CORAL)));
 
     new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
 
