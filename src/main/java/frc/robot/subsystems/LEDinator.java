@@ -259,7 +259,7 @@ public class LEDinator extends SubsystemBase {
             }
             else if(_ascendinator.getCurrentState() == CageState.ASCEND && !_ascendinator.hasCage())
             {
-                setFallenAnimation();
+                setImplosionAnimation();
             }
             else if(_ascendinator.getCurrentState() == CageState.DEPLOY && _ascendinator.hasCage())
             {
