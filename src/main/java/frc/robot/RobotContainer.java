@@ -275,15 +275,15 @@ public class RobotContainer {
         _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)));
   }
 
-  public Command doinator(ClawState clawinator,
-      CalsificationinatorState calsificationinatorState, LEDinatorState ledinatorState) {
-    return Commands.parallel(
-      //_claw.setWantedState(clawinator),
-      _elevatinator.setWantedState(ElavatinatorState.HOLD),
-      _calsificationinator.setWantedState(CalsificationinatorState.L4)
-      // _ledinator.setWantedState(ledinatorState)
-      );
-  }
+  // public Command doinator(ClawState clawinator,
+  //     CalsificationinatorState calsificationinatorState, LEDinatorState ledinatorState) {
+  //   return Commands.parallel(
+  //     //_claw.setWantedState(clawinator),
+  //     _elevatinator.setWantedState(ElavatinatorState.HOLD),
+  //     _calsificationinator.setWantedState(CalsificationinatorState.L4)
+  //     // _ledinator.setWantedState(ledinatorState)
+  //     );
+  // }
 
   public Command doinator(LEDinatorState ledinatorState) {
     return Commands.parallel(

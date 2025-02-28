@@ -53,9 +53,9 @@ public class LEDinator extends SubsystemBase {
         _candle = new CANdle(Constants.LEDinatorConstants.kLEDinatorID);
         _partyLightinator = new CANdle(Constants.LEDinatorConstants.kLEDPartyLightinatorID);
         //white
-        WAITING_FOR_CORAL = new StrobeAnimation(255,255,255, 0,.15, numLEDS);
+        WAITING_FOR_CORAL = new StrobeAnimation(150, 38, 255, 0,.05, numLEDS);
         //teal
-        WAITING_FOR_ALGAE = new StrobeAnimation(10, 255, 194, 0, .15, numLEDS);
+        WAITING_FOR_ALGAE = new StrobeAnimation(10, 255, 194, 0, .05, numLEDS);
         //purple for all levels
         L1 = new StrobeAnimation(150, 38, 255, 0, .05, numLEDS / 4);
         L2 = new StrobeAnimation(150, 38, 255, 0, .05, (numLEDS * 2) / 4);
@@ -63,7 +63,7 @@ public class LEDinator extends SubsystemBase {
         L4 = new StrobeAnimation(150, 38, 255, 0, .05, numLEDS);
         //orange
         //WAITING_FOR_CAGE = new StrobeAnimation(255,149,10,0,.15, numLEDS);
-        WAITING_FOR_CAGE = new StrobeAnimation(255,0,0,0,.15, numLEDS);
+        WAITING_FOR_CAGE = new StrobeAnimation(255,0,0,0,.05, numLEDS);
 
         //fire
         EPIC_CLIMB = new FireAnimation(.5, .5, numLEDS, .25, .1);
@@ -71,7 +71,7 @@ public class LEDinator extends SubsystemBase {
         DISCO_MODE_PARTY = new RainbowAnimation(.5, .5, numPartyLEDS);
 
         //green flow animation
-        GREEN_DECORATION_LIGHTS = new ColorFlowAnimation(153, 247, 45, 255, .5, numPartyLEDS, Direction.Forward);
+        GREEN_DECORATION_LIGHTS = new ColorFlowAnimation(11, 252, 11, 255, .5, numPartyLEDS, Direction.Forward);
         BLUE_DECORATION_LIGHTS = new ColorFlowAnimation(0, 115, 255, 255,.5, numLEDS, Direction.Forward);
 
         _calsificationator = calsificationinator;
@@ -100,7 +100,7 @@ public class LEDinator extends SubsystemBase {
 
     public void setWaitingForAlgaeAnimation()
     {
-        _candle.clearAnimation(0);
+        //_candle.clearAnimation(0);
         _candle.animate(WAITING_FOR_ALGAE);
     }
 
@@ -225,7 +225,19 @@ public class LEDinator extends SubsystemBase {
             }
             else
             {
-                setHasAlgaeAnimation();
+                if(_claw.getCurrentState() == ClawState.PREP_PROCESSOR)
+                {
+                    setProcessorAnimation();
+                }
+                else if(_claw.getCurrentState() == ClawState.PREP_NET)
+                {
+                    setNetAnimation();
+                }
+                else 
+                {
+                    setHasAlgaeAnimation();
+                }
+                
             }
                 break;
             case CAGE:
