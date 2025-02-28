@@ -149,7 +149,7 @@ public class RobotContainer {
     _driverController.rightTrigger().onTrue(scoreinator()).onFalse(goHomeinator());
     _driverController.leftTrigger().onTrue(doinator(null));
     _driverController.start().onTrue(_drivetrain.resetGyro());
-    _driverController.a().onTrue(goHomeinator());
+    _driverController.a().onTrue(_claw.hasAlgae() ? goHomeinatorWithAlgae(): goHomeinator());
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
@@ -270,9 +270,14 @@ public class RobotContainer {
   }
 
   public Command goHomeinatorWithAlgae() {
-    return Commands.sequence(_claw.setWantedState(ClawState.PREP_PROCESSOR), Commands.waitSeconds(0.5), Commands.parallel(
-        new InstantCommand(()->_elevatinator.setPositioninator(ElevatinatorConstants.kL2Algae)),
-        _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)));
+    return Commands.parallel(
+        new InstantCommand(() -> {
+          _elevatinator.setHoldAlgaePosition(false);
+        }
+        ),
+        _claw.setWantedState(ClawState.IDLE),
+        _elevatinator.setWantedState(ElavatinatorState.HOMEWITHALGAE),
+        _calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
   }
 
   // public Command doinator(ClawState clawinator,
