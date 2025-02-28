@@ -65,7 +65,7 @@ public class RobotContainer {
   private final Elevatinator _elevatinator;
   private final SendableChooser<Command> _autoChooser;
   private final Calsificationinator _calsificationinator;
-  // private final LEDinator _ledinator;
+  private final LEDinator _ledinator;
   private CalsificationinatorState _targetCalsificationinatorState = CalsificationinatorState.IDLE;
   private ClawState _targetClawState = ClawState.IDLE;
   private ScoringTarget _targetScore = ScoringTarget.REEF;
@@ -83,8 +83,8 @@ public class RobotContainer {
     _vision = new Vision();
     _drivetrain = new Drivetrain(_driverController, _vision);
     _calsificationinator = new Calsificationinator();
-    // _ledinator = new
-    // LEDinator(_calsificationinator,_claw,_elevatinator,_ascendinator);
+    _ledinator = new
+    LEDinator(_calsificationinator,_claw,_elevatinator,_ascendinator);
 
     registerEventTriggersForAuto();
     registerNamedCommandsForAuto();
@@ -96,7 +96,7 @@ public class RobotContainer {
   private void registerNamedCommandsForAuto()
   {
     // NamedCommands.registerCommand("Wait Until Coral Scored", Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator).andThen(goHomeinator()));
-    NamedCommands.registerCommand("Score Coral", Commands.sequence(Commands.waitUntil(_elevatinator::isReady), Commands.waitSeconds(.4), _calsificationinator.setWantedState(CalsificationinatorState.SCORE),
+    NamedCommands.registerCommand("Score Coral", Commands.sequence(Commands.waitUntil(_elevatinator::isReady), _calsificationinator.setWantedState(CalsificationinatorState.SCORE),
       Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator), Commands.parallel(
         _claw.setWantedState(ClawState.IDLE),
         _calsificationinator.setWantedState(CalsificationinatorState.PICKUP))));
@@ -159,9 +159,9 @@ public class RobotContainer {
     // _driverController.b().whileTrue(_drivetrain.sysIdQuasistatic(Direction.kReverse));
     // _driverController.a().whileTrue(_drivetrain.sysIdDynamic(Direction.kForward));
     // _driverController.x().whileTrue(_drivetrain.sysIdDynamic(Direction.kReverse));
-    _driverController.povUp().onTrue(
+    _driverController.povUp().onTrue(Commands.parallel
     (_ascendinator.setWantedState(CageState.DEPLOY)
-    // , _ledinator.setWantedState(LEDinatorState.CAGE)
+     , _ledinator.setWantedState(LEDinatorState.CAGE)
     ));
     new
     Trigger(_ascendinator::isReady).and(_driverController.back()).onTrue(_ascendinator.setWantedState(CageState.ASCEND));
