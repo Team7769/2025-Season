@@ -288,7 +288,7 @@ public final class Constants {
       public static final int kAscendinatorDetectinatorChannel = 3;
       public static final double kIdle = 0;
       public static final double kPrepClimb = .25;
-      public static final double kEndClimb = .77;
+      public static final double kEndClimb = .79;
     }
     public static class CalsificationinatorConstants {
       public static final int kCalsificationatorCANcoderID = 30;
