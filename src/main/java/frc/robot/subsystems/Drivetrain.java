@@ -429,10 +429,17 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         {
             case LINE:
             //X axis movement is set to a point, Y axis movement is free 
+            if (GeometryUtil.isRedAlliance()){
+                return applyRequest(() -> drive.withVelocityX(xFollow *
+                DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
+                DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
+                DrivetrainConstants.MaxAngularRate));
+            } else {
                 return applyRequest(() -> drive.withVelocityX(-xFollow *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withRotationalRate(targetRotation * 
                 DrivetrainConstants.MaxAngularRate));
+            }
             case ROTATION:
                 return applyRequest(() -> drive.withVelocityX(this.periodicIO.VxCmd *
                 DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *

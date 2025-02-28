@@ -48,27 +48,29 @@ public final class Constants {
 
     // Coral Source Coordinates:
 
-    public static final Rotation2d kSourceRotationTop = new Rotation2d(125.2 * (Math.PI / 180));
-    public static final Rotation2d kSourceRotationBottom = new Rotation2d(234.8 * (Math.PI / 180));
+    public static final Rotation2d kBlueSourceRotationTop = new Rotation2d(125.2 * (Math.PI / 180));
+    public static final Rotation2d kBlueSourceRotationBottom = new Rotation2d(234.8 * (Math.PI / 180));
+    public static final Rotation2d kRedSourceRotationTop = new Rotation2d(55 * (Math.PI / 180));
+    public static final Rotation2d kRedSourceRotationBottom = new Rotation2d(306 * (Math.PI / 180));
 
     // blue side top
-    public static final Pose2d kBlueSourceTop_A = new Pose2d(new Translation2d(0.714, 6.620), kSourceRotationTop);
+    public static final Pose2d kBlueSourceTop_A = new Pose2d(new Translation2d(0.714, 6.620), kBlueSourceRotationTop);
     //public static final Pose2d kBlueSourceTop_B = new Pose2d(new Translation2d(0.85, 7.45), kSourceRotationTop);
-    public static final Pose2d kBlueSourceTop_C = new Pose2d(new Translation2d(1.702, 7.447), kSourceRotationTop);
+    public static final Pose2d kBlueSourceTop_C = new Pose2d(new Translation2d(1.702, 7.447), kBlueSourceRotationTop);
 
     public static final Pose2d[] kBlueSourceTop = { kBlueSourceTop_A, kBlueSourceTop_C };
 
     // blue side bottom
-    public static final Pose2d kBlueSourceBottom_A = new Pose2d(new Translation2d(0.644, 1.34), kSourceRotationBottom);
+    public static final Pose2d kBlueSourceBottom_A = new Pose2d(new Translation2d(0.644, 1.34), kBlueSourceRotationTop);
     //public static final Pose2d kBlueSourceBottom_B = new Pose2d(new Translation2d(0.85, 0.6), kSourceRotationBottom);
-    public static final Pose2d kBlueSourceBottom_C = new Pose2d(new Translation2d(1.6, 0.65), kSourceRotationBottom);
+    public static final Pose2d kBlueSourceBottom_C = new Pose2d(new Translation2d(1.6, 0.65), kBlueSourceRotationTop);
 
     public static final Pose2d[] kBlueSourceBottom = { kBlueSourceBottom_A, kBlueSourceBottom_C };
 
     // red side top
     public static final Translation2d kRedSourceTop_A_translation2d = GeometryUtil
         .mirrorTranslationForRedAlliance(kBlueSourceTop_A.getTranslation());
-    public static final Pose2d kRedSourceTop_A = new Pose2d(kRedSourceTop_A_translation2d, kSourceRotationTop);
+    public static final Pose2d kRedSourceTop_A = new Pose2d(kRedSourceTop_A_translation2d, kRedSourceRotationTop);
 
     // public static final Translation2d kRedSourceTop_B_translation2d = GeometryUtil
     //     .mirrorTranslationForRedAlliance(kBlueSourceTop_B.getTranslation());
@@ -76,14 +78,14 @@ public final class Constants {
 
     public static final Translation2d kRedSourceTop_C_translation2d = GeometryUtil
         .mirrorTranslationForRedAlliance(kBlueSourceTop_C.getTranslation());
-    public static final Pose2d kRedSourceTop_C = new Pose2d(kRedSourceTop_C_translation2d, kSourceRotationTop);
+    public static final Pose2d kRedSourceTop_C = new Pose2d(kRedSourceTop_C_translation2d, kRedSourceRotationTop);
 
     public static final Pose2d[] kRedSourceTop = { kRedSourceTop_A, kRedSourceTop_C };
 
     // red side bottom
     public static final Translation2d kRedSourceBottom_A_translation2d = GeometryUtil
         .mirrorTranslationForRedAlliance(kBlueSourceBottom_A.getTranslation());
-    public static final Pose2d kRedSourceBottom_A = new Pose2d(kRedSourceBottom_A_translation2d, kSourceRotationTop);
+    public static final Pose2d kRedSourceBottom_A = new Pose2d(kRedSourceBottom_A_translation2d, kRedSourceRotationBottom);
 
     // public static final Translation2d kRedSourceBottom_B_translation2d = GeometryUtil
     //     .mirrorTranslationForRedAlliance(kBlueSourceBottom_B.getTranslation());
@@ -91,7 +93,7 @@ public final class Constants {
 
     public static final Translation2d kRedSourceBottom_C_translation2d = GeometryUtil
         .mirrorTranslationForRedAlliance(kBlueSourceBottom_C.getTranslation());
-    public static final Pose2d kRedSourceBottom_C = new Pose2d(kRedSourceBottom_C_translation2d, kSourceRotationTop);
+    public static final Pose2d kRedSourceBottom_C = new Pose2d(kRedSourceBottom_C_translation2d, kRedSourceRotationBottom);
 
     public static final Pose2d[] kRedSourceBottom = { kRedSourceBottom_A, kRedSourceBottom_C };
 
@@ -110,7 +112,7 @@ public final class Constants {
 
     // the Y value will not be used for the Barge Pose2d coordinates
     public static final Pose2d kBlueBarge = new Pose2d(new Translation2d(7.6, 0), new Rotation2d(0 * (Math.PI / 180)));
-    public static final Pose2d kRedBarge = new Pose2d(new Translation2d(10, 0), new Rotation2d(180 * (Math.PI / 180)));
+    public static final Pose2d kRedBarge = new Pose2d(new Translation2d(10, 0), new Rotation2d(0 * (Math.PI / 180)));
 
   }
 
