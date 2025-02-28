@@ -33,7 +33,7 @@ public class LEDinator extends SubsystemBase {
     private Animation L3;
     private Animation L4;
     private Animation WAITING_FOR_CAGE;
-    private Animation EPIC_CLIMB;
+    private Animation WOMPWOMP;
     private Animation DISCO_MODE;
     private Animation DISCO_MODE_PARTY;
     private Animation GREEN_DECORATION_LIGHTS;
@@ -53,20 +53,20 @@ public class LEDinator extends SubsystemBase {
         _candle = new CANdle(Constants.LEDinatorConstants.kLEDinatorID);
         _partyLightinator = new CANdle(Constants.LEDinatorConstants.kLEDPartyLightinatorID);
         //white
-        WAITING_FOR_CORAL = new StrobeAnimation(150, 38, 255, 0,.05, numLEDS);
+        WAITING_FOR_CORAL = new StrobeAnimation(86, 1, 176, 0,.05, numLEDS);
         //teal
         WAITING_FOR_ALGAE = new StrobeAnimation(10, 255, 194, 0, .05, numLEDS);
         //purple for all levels
-        L1 = new StrobeAnimation(150, 38, 255, 0, .05, numLEDS / 4);
-        L2 = new StrobeAnimation(150, 38, 255, 0, .05, (numLEDS * 2) / 4);
-        L3 = new StrobeAnimation(150, 38, 255, 0, .05, (numLEDS * 3) / 4);
-        L4 = new StrobeAnimation(150, 38, 255, 0, .05, numLEDS);
+        L1 = new StrobeAnimation(86, 1, 176, 0, .05, numLEDS / 4);
+        L2 = new StrobeAnimation(86, 1, 176, 0, .05, (numLEDS * 2) / 4);
+        L3 = new StrobeAnimation(86, 1, 176, 0, .05, (numLEDS * 3) / 4);
+        L4 = new StrobeAnimation(86, 1, 176, 0, .05, numLEDS);
         //orange
         //WAITING_FOR_CAGE = new StrobeAnimation(255,149,10,0,.15, numLEDS);
-        WAITING_FOR_CAGE = new StrobeAnimation(255,0,0,0,.05, numLEDS);
+        WAITING_FOR_CAGE = new StrobeAnimation(120,0,0,0,.05, numLEDS);
 
         //fire
-        EPIC_CLIMB = new FireAnimation(.5, .5, numLEDS, .25, .1);
+        WOMPWOMP = new FireAnimation(.5, .5, numLEDS, .25, .1);
         DISCO_MODE = new RainbowAnimation(.5, .5, numLEDS);
         DISCO_MODE_PARTY = new RainbowAnimation(.5, .5, numPartyLEDS);
 
@@ -95,7 +95,7 @@ public class LEDinator extends SubsystemBase {
     public void setHasCoralAnimation()
     {
         //_candle.clearAnimation(0);
-        _candle.setLEDs(255, 255, 255);
+        _candle.setLEDs(86, 1, 176);
     }
 
     public void setWaitingForAlgaeAnimation()
@@ -115,7 +115,7 @@ public class LEDinator extends SubsystemBase {
         _candle.clearAnimation(0);
         //_candle.animate(L1);
         //_candle.setLEDs(150, 38, 255);
-        _candle.setLEDs(150, 38, 255, 0, 0, (numLEDS / 4));
+        _candle.setLEDs(86, 1, 176, 0, 0, (numLEDS / 4));
         _candle.setLEDs(0, 0, 0, 0, (numLEDS / 4) + 1, numLEDS);
     }
 
@@ -123,7 +123,7 @@ public class LEDinator extends SubsystemBase {
     {
         _candle.clearAnimation(0);
         //_candle.animate(L2);
-        _candle.setLEDs(150, 38, 255, 0, 0, (numLEDS * 2 / 4));
+        _candle.setLEDs(86, 1, 176, 0, 0, (numLEDS * 2 / 4));
         _candle.setLEDs(0, 0, 0, 0, (numLEDS * 2 / 4) + 1, numLEDS);
     }
 
@@ -131,7 +131,7 @@ public class LEDinator extends SubsystemBase {
     {
         _candle.clearAnimation(0);
         //_candle.animate(L3);
-        _candle.setLEDs(150, 38, 255, 0, 0, (numLEDS * 3 / 4));
+        _candle.setLEDs(86, 1, 176, 0, 0, (numLEDS * 3 / 4));
         _candle.setLEDs(0, 0, 0, 0, (numLEDS * 3/ 4) + 1, numLEDS);
     }
 
@@ -140,7 +140,7 @@ public class LEDinator extends SubsystemBase {
         _candle.clearAnimation(0);
         //_candle.animate(L4);
         //_candle.setLEDs(150, 38, 255);
-        _candle.setLEDs(150, 38, 255, 0, 0, numLEDS);
+        _candle.setLEDs(86, 1, 176, 0, 0, numLEDS);
     }
 
     public void setLevelAnimation()
@@ -197,10 +197,9 @@ public class LEDinator extends SubsystemBase {
 
     public void setEpicClimbAnimation()
     {
-        _candle.clearAnimation(0);
-        //_candle.animate(EPIC_CLIMB);
+        //_candle.clearAnimation(0);
         _candle.animate(DISCO_MODE);
-        _partyLightinator.clearAnimation(0);
+        //_partyLightinator.clearAnimation(0);
         _partyLightinator.animate(DISCO_MODE_PARTY);
     }
 
@@ -245,13 +244,17 @@ public class LEDinator extends SubsystemBase {
             {
                 setEpicClimbAnimation();
             }
-            else if(!_ascendinator.hasCage())
+            else if(_ascendinator.getCurrentState() == CageState.DEPLOY && _ascendinator.hasCage())
+            {
+                setHasCageAnimation();
+            }
+            else if(_ascendinator.getCurrentState() == CageState.DEPLOY && !_ascendinator.hasCage())
             {
                 setWaitingForCageAnimation();
             }
             else
             {
-                setHasCageAnimation();
+                setEpicClimbAnimation();
             }
                 break;
             default:

@@ -177,7 +177,7 @@ public class RobotContainer {
     //   _calsificationinator.setWantedState(CalsificationinatorState.PICKUP),
     //   _elevatinator.setWantedState(ElavatinatorState.HOLD))));
 
-    new Trigger(_driverController.rightBumper()).negate().and(_claw::doesNotHaveAlgae).onTrue(goHomeinatorForFloorPickup());
+    new Trigger(_driverController.rightBumper()).negate().and(_claw::doesNotHaveAlgae).onTrue(Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.ALGAE)));
     new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
     
     new Trigger(_calsificationinator::hasCoralinator).and(DriverStation::isTeleopEnabled)
@@ -258,6 +258,7 @@ public class RobotContainer {
         //,  _elevatinator, _drivetrain
         ),
         _drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE),
+        _ledinator.setWantedState(LEDinatorState.CORAL),
         _claw.setWantedState(ClawState.IDLE),
         _elevatinator.setWantedState(ElavatinatorState.HOME),
         _calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
@@ -308,6 +309,7 @@ public class RobotContainer {
     return Commands.parallel(new InstantCommand(()-> {
       _elevatinator.setPositioninator(ElevatinatorConstants.kL3Algae);
       _claw.setTargetState(ClawState.DEALGIFY);
+      _ledinator.setWantedState(LEDinatorState.ALGAE);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
       _drivetrain.setReefTargetSide(ReefConstants.kReefAlgae);
     }), _drivetrain.setWantedTarget(LocationTarget.REEF));
@@ -317,6 +319,7 @@ public class RobotContainer {
     return Commands.parallel(new InstantCommand(()-> {
       _elevatinator.setPositioninator(ElevatinatorConstants.kL2Algae);
       _claw.setTargetState(ClawState.DEALGIFY);
+      _ledinator.setWantedState(LEDinatorState.ALGAE);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
       _drivetrain.setReefTargetSide(ReefConstants.kReefAlgae);
     }), _drivetrain.setWantedTarget(LocationTarget.REEF));
