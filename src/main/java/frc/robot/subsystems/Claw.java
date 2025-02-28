@@ -184,6 +184,10 @@ public class Claw extends SubsystemBase {
             case TARGET:
                 _currentState = _targetClawState;
                 break;
+            case PREP_CLIMB:
+                _pivotinator.setControl(_request.withPosition(0));
+                _topRollinator.set(0);
+            break;
             default:
                 _pivotinator.setControl(_request.withPosition(0));
                 _topRollinator.set(0);

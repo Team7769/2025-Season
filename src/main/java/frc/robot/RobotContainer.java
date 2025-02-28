@@ -162,11 +162,12 @@ public class RobotContainer {
     _driverController.povUp().onTrue(Commands.parallel
     (_ascendinator.setWantedState(CageState.DEPLOY)
      , _ledinator.setWantedState(LEDinatorState.CAGE),
-     _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)
+     _calsificationinator.setWantedState(CalsificationinatorState.PICKUP),
+     _claw.setWantedState(ClawState.PREP_CLIMB)
     ));
     new
     Trigger(_ascendinator::isReady).and(_driverController.back()).onTrue(Commands.parallel(_ascendinator.setWantedState(CageState.ASCEND), 
-      _claw.setWantedState(ClawState.IDLE), _calsificationinator.setWantedState(CalsificationinatorState.PREP_CLIMB), _elevatinator.setWantedState(ElavatinatorState.HOME)));
+    _claw.setWantedState(ClawState.PREP_CLIMB), _calsificationinator.setWantedState(CalsificationinatorState.PREP_CLIMB), _elevatinator.setWantedState(ElavatinatorState.HOME)));
 
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
@@ -182,7 +183,7 @@ public class RobotContainer {
     // new Trigger(_driverController.rightBumper()).negate().and(_claw::doesNotHaveAlgae).onTrue(goHomeinatorWithAlgae());
 
     _driverController.rightBumper().onTrue(Commands.parallel(new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaePickup)), 
-      _elevatinator.setWantedState(ElavatinatorState.HOLD), _claw.setWantedState(ClawState.PREP_CLIMB), _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
+      _elevatinator.setWantedState(ElavatinatorState.HOLD), _claw.setWantedState(ClawState.FLOOR_INTAKE), _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
       .onFalse(_claw.hasAlgae() ? goHomeinatorWithAlgae() : goHomeinatorForFloorPickup());
 
     new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
