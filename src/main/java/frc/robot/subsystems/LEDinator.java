@@ -34,7 +34,7 @@ public class LEDinator extends SubsystemBase {
     private Animation L4;
     private Animation WAITING_FOR_CAGE;
     private Animation WOMPWOMP;
-    private Animation FALLEN;
+    private Animation IMPLOSION;
     private Animation DISCO_MODE;
     private Animation DISCO_MODE_PARTY;
     private Animation GREEN_DECORATION_LIGHTS;
@@ -68,7 +68,8 @@ public class LEDinator extends SubsystemBase {
 
         //fire
         WOMPWOMP = new FireAnimation(.5, .5, numLEDS, .25, .1);
-        FALLEN = new StrobeAnimation(75, 0, 0, 0, 0.025, numPartyLEDS);
+        IMPLOSION = new StrobeAnimation(75, 0, 0, 0, 0.025, numPartyLEDS);
+        //climb
         DISCO_MODE = new RainbowAnimation(.5, .5, numLEDS);
         DISCO_MODE_PARTY = new RainbowAnimation(.5, .5, numPartyLEDS);
 
@@ -214,9 +215,13 @@ public class LEDinator extends SubsystemBase {
         _candle.animate(BLUE_DECORATION_LIGHTS);
     }
 
-    public void setFallenAnimation()
+    public void setImplosionAnimation()
     {
+        _candle.clearAnimation(0);
         _candle.animate(WOMPWOMP);
+
+        _partyLightinator.clearAnimation(0);
+        _partyLightinator.animate(IMPLOSION);
 
     }
 
