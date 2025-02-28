@@ -11,5 +11,6 @@ public enum CalsificationinatorState implements IState{
     IDLE,
     SCORE,
     NOTHING,
-    TARGET
+    TARGET,
+    PREP_CLIMB
 }
