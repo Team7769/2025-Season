@@ -67,7 +67,7 @@ public final class Constants {
 
     // red side top
     public static final Translation2d kRedSourceTop_A_translation2d = GeometryUtil
-        .mirrorTranslationForRedAlliance(kBlueSourceTop_A.getTranslation());
+        .mirrorReef(kBlueSourceTop_A.getTranslation());
     public static final Pose2d kRedSourceTop_A = new Pose2d(kRedSourceTop_A_translation2d, kSourceRotationTop);
 
     // public static final Translation2d kRedSourceTop_B_translation2d = GeometryUtil
@@ -75,14 +75,14 @@ public final class Constants {
     // public static final Pose2d kRedSourceTop_B = new Pose2d(kRedSourceTop_B_translation2d, kSourceRotationTop);
 
     public static final Translation2d kRedSourceTop_C_translation2d = GeometryUtil
-        .mirrorTranslationForRedAlliance(kBlueSourceTop_C.getTranslation());
+        .mirrorReef(kBlueSourceTop_C.getTranslation());
     public static final Pose2d kRedSourceTop_C = new Pose2d(kRedSourceTop_C_translation2d, kSourceRotationTop);
 
     public static final Pose2d[] kRedSourceTop = { kRedSourceTop_A, kRedSourceTop_C };
 
     // red side bottom
     public static final Translation2d kRedSourceBottom_A_translation2d = GeometryUtil
-        .mirrorTranslationForRedAlliance(kBlueSourceBottom_A.getTranslation());
+        .mirrorReef(kBlueSourceBottom_A.getTranslation());
     public static final Pose2d kRedSourceBottom_A = new Pose2d(kRedSourceBottom_A_translation2d, kSourceRotationTop);
 
     // public static final Translation2d kRedSourceBottom_B_translation2d = GeometryUtil
@@ -90,7 +90,7 @@ public final class Constants {
     // public static final Pose2d kRedSourceBottom_B = new Pose2d(kRedSourceBottom_B_translation2d, kSourceRotationTop);
 
     public static final Translation2d kRedSourceBottom_C_translation2d = GeometryUtil
-        .mirrorTranslationForRedAlliance(kBlueSourceBottom_C.getTranslation());
+        .mirrorReef(kBlueSourceBottom_C.getTranslation());
     public static final Pose2d kRedSourceBottom_C = new Pose2d(kRedSourceBottom_C_translation2d, kSourceRotationTop);
 
     public static final Pose2d[] kRedSourceBottom = { kRedSourceBottom_A, kRedSourceBottom_C };
