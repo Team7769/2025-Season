@@ -138,6 +138,9 @@ public class Calsificationinator extends SubsystemBase {
             case TARGET:
                 _currentState = _targetState;
                 break;
+            case PREP_CLIMB:
+            _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kPrepClimb));
+            break;
             default:
                 _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kIdlePosition));
 

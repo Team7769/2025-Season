@@ -111,7 +111,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState> {
                 _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kHumanPlayer));
                 break;
             case HOMEWITHALGAE:
-                _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kL2Coral));
+                _liftMotorinator.setControl(_requestinator.withPosition(ElevatinatorConstants.kAlgaeHold));
                 break;
             default:
             break;
