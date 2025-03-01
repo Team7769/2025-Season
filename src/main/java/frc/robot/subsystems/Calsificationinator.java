@@ -171,9 +171,9 @@ public class Calsificationinator extends SubsystemBase {
 
     private void handleCoral() {
         if (_hasCoralinatorTwo) {
-            _suckinator.set(0);
+            _suckinator.set(.0);
         } else if (_hasCoralinator) {
-            _suckinator.set(.05);
+            _suckinator.set(0.05);
         } else {
             _suckinator.set(0.15);
         }

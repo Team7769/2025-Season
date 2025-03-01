@@ -289,6 +289,7 @@ public class RobotContainer {
     return Commands.parallel(
         new InstantCommand(() -> {
           _elevatinator.setHoldAlgaePosition(false);
+          _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeHold);
         }
         ),
         _claw.setWantedState(ClawState.IDLE),

@@ -177,7 +177,6 @@ public final class Constants {
 
 
     // #region blueReef
-
     private static final Translation2d kBlueRight1 = new Translation2d(4.95, 5.29);
     private static final Translation2d kBlueAlgae1 = new Translation2d(5.15, 5.15);
     private static final Translation2d kBlueLeft1 = new Translation2d(5.25, 5.1);
@@ -219,6 +218,47 @@ public final class Constants {
     private static final Rotation2d kBlueRotation6 = new Rotation2d(120 * (Math.PI / 180));
 
     private static final ReefFace kBlueReefFace6 = new ReefFace(kBlueRight6, kBlueAlgae6, kBlueLeft6, kBlueRotation6);
+    // private static final Translation2d kBlueRight1 = new Translation2d(4.95, 5.29);
+    // private static final Translation2d kBlueAlgae1 = new Translation2d(5.15, 5.15);
+    // private static final Translation2d kBlueLeft1 = new Translation2d(5.25, 5.1);
+    // private static final Rotation2d kBlueRotation1 = new Rotation2d(60 * (Math.PI / 180));
+
+    // private static final ReefFace kBlueReefFace1 = new ReefFace(kBlueRight1, kBlueAlgae1, kBlueLeft1, kBlueRotation1);
+
+    // private static final Translation2d kBlueRight2 = new Translation2d(5.8, 4.2);
+    // private static final Translation2d kBlueAlgae2 = new Translation2d(5.8, 4.04);
+    // private static final Translation2d kBlueLeft2 = new Translation2d(5.8, 3.9);
+    // private static final Rotation2d kBlueRotation2 = new Rotation2d(0);
+
+    // private static final ReefFace kBlueReefFace2 = new ReefFace(kBlueRight2, kBlueAlgae2, kBlueLeft2, kBlueRotation2);
+
+    // private static final Translation2d kBlueRight3 = new Translation2d(5.3, 3);
+    // private static final Translation2d kBlueAlgae3 = new Translation2d(5.15, 2.9);
+    // private static final Translation2d kBlueLeft3 = new Translation2d(5.025, 2.825);
+    // private static final Rotation2d kBlueRotation3 = new Rotation2d(300 * (Math.PI / 180));
+
+    // private static final ReefFace kBlueReefFace3 = new ReefFace(kBlueRight3, kBlueAlgae3, kBlueLeft3, kBlueRotation3);
+
+    // private static final Translation2d kBlueRight4 = new Translation2d(4., 2.8);
+    // private static final Translation2d kBlueAlgae4 = new Translation2d(3.85, 2.9);
+    // private static final Translation2d kBlueLeft4 = new Translation2d(3.7, 3);
+    // private static final Rotation2d kBlueRotation4 = new Rotation2d(240 * (Math.PI / 180));
+
+    // private static final ReefFace kBlueReefFace4 = new ReefFace(kBlueRight4, kBlueAlgae4, kBlueLeft4, kBlueRotation4);
+
+    // private static final Translation2d kBlueRight5 = new Translation2d(3.2, 3.8);
+    // private static final Translation2d kBlueAlgae5 = new Translation2d(3.2, 4.04);
+    // private static final Translation2d kBlueLeft5 = new Translation2d(3.2, 4.175);
+    // private static final Rotation2d kBlueRotation5 = new Rotation2d(180 * (Math.PI / 180));
+
+    // private static final ReefFace kBlueReefFace5 = new ReefFace(kBlueRight5, kBlueAlgae5, kBlueLeft5, kBlueRotation5);
+
+    // private static final Translation2d kBlueRight6 = new Translation2d(3.69, 5.05);
+    // private static final Translation2d kBlueAlgae6 = new Translation2d(3.85, 5.15);
+    // private static final Translation2d kBlueLeft6 = new Translation2d(3.95, 5.2);
+    // private static final Rotation2d kBlueRotation6 = new Rotation2d(120 * (Math.PI / 180));
+
+    // private static final ReefFace kBlueReefFace6 = new ReefFace(kBlueRight6, kBlueAlgae6, kBlueLeft6, kBlueRotation6);
 
     // #endregion
     // #region redReef
@@ -302,12 +342,12 @@ public final class Constants {
         public static final int kCalsificationDetectinatorChanel = 0;
         public static final int kCalsificationDetectinatorTwoChanel = 1;
         public static final double kIdlePosition = 0;
-        public static final double kPickUpPosition = .69;
-        public static final double kL4Position = -.2;
-        public static final double kL3Position = -.2;
-        public static final double kL2Position = -.2;
-        public static final double kL1Position = -.2;
-        public static final double kPrepClimb = .77;
+        public static final double kPickUpPosition = .78;
+        public static final double kL4Position = -.20;
+        public static final double kL3Position = -.20;
+        public static final double kL2Position = -.20;
+        public static final double kL1Position = -.20;
+        public static final double kPrepClimb = .76;
     }
 
     public static class ElevatinatorConstants {
@@ -319,10 +359,10 @@ public final class Constants {
       public static final double kL2Coral = 16.17;
       public static final double kL2Algae = 34;
       public static final double kL1Coral = 0;
-      public static final double kHumanPlayer = 3.74;
+      public static final double kHumanPlayer = 3;
       public static final double kAlgaePickup = 15;
       public static final double kAlgaeProcessor = 8;
-      public static final double kAlgaeHold = 25;
+      public static final double kAlgaeHold = 21;
       public static final double kHome = 0;
       public static final double kLiftinatorMaxHeight = 74;
     }
