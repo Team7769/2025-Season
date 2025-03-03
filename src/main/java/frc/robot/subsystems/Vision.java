@@ -1,11 +1,16 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -22,6 +27,15 @@ public class Vision extends SubsystemBase{
     private Pose2d _limelightThreePose = new Pose2d();
     private Pose2d _limelightFourPose = new Pose2d();
 
+    private PoseEstimate _limelightFourPoseEstimate = new PoseEstimate();
+    private AprilTagFieldLayout _fieldLayout;
+
+    private double coralPoseOffsetX = 0.5;
+    private double coralPoseOffsetY = 0.5;
+    
+    private double algaePoseOffsetX = 0.5;
+    private double algaePoseOffsetY = 0.5;
+
     private static final double filterDistanceError = 2;
     private static final double filterAngleError = 5; 
     private LinearFilter limelightDistanceFilter = LinearFilter.singlePoleIIR(1/(2* Math.PI * filterDistanceError), 0.02);
@@ -29,7 +43,7 @@ public class Vision extends SubsystemBase{
 
     public Vision()
     {
-
+        _fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
     }
 
     public void updateLimelightPosition(Rotation2d rotation)
@@ -124,6 +138,7 @@ public class Vision extends SubsystemBase{
                 );
 
             if (limelightFourPoseEstimate != null && limelightFourPoseEstimate.tagCount > 0) {
+                _limelightFourPoseEstimate = limelightFourPoseEstimate;
                 visionMeasurements.add(
                     new VisionMeasurement(
                         limelightFourPoseEstimate.pose,
@@ -134,7 +149,15 @@ public class Vision extends SubsystemBase{
         return visionMeasurements;
     }
 
+    public Pose2d getFrontLimelightPose(){
+        return _limelightFourPoseEstimate.pose;
+    }
 
+    public Pose2d getRobotPoseInTargetSpace() {
+        var botPoseTargetSpace = LimelightHelpers.getBotPose_TargetSpace("limelight-four");
+
+        return new Pose2d(botPoseTargetSpace[0], botPoseTargetSpace[1], new Rotation2d(botPoseTargetSpace[4]));
+    }
 }
 
 
