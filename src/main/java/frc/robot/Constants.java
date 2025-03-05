@@ -47,6 +47,8 @@ public final class Constants {
     // GeometryUtil.mirrorTranslationForRedAlliance(kBlueSourceLow);
 
     // Coral Source Coordinates:
+    public static final int[] kRedTagIDs = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+    public static final int[] kBlueTagIDs = {12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
 
     public static final Rotation2d kBlueSourceRotationTop = new Rotation2d(125.2 * (Math.PI / 180));
     public static final Rotation2d kBlueSourceRotationBottom = new Rotation2d(234.8 * (Math.PI / 180));
@@ -111,7 +113,7 @@ public final class Constants {
         ReefConstants.kRedReefFace6 };
 
     // the Y value will not be used for the Barge Pose2d coordinates
-    public static final Pose2d kBlueBarge = new Pose2d(new Translation2d(7.6, 0), new Rotation2d(0 * (Math.PI / 180)));
+    public static final Pose2d kBlueBarge = new Pose2d(new Translation2d(7.6, 0), new Rotation2d(180 * (Math.PI / 180)));
     public static final Pose2d kRedBarge = new Pose2d(new Translation2d(10, 0), new Rotation2d(0 * (Math.PI / 180)));
 
   }
@@ -328,7 +330,7 @@ public final class Constants {
       public static final int kAscendinatorDetectinatorChannel = 3;
       public static final double kIdle = 0;
       public static final double kPrepClimb = .25;
-      public static final double kEndClimb = .79;
+      public static final double kEndClimb = .82;
     }
     public static class CalsificationinatorConstants {
       public static final int kCalsificationatorCANcoderID = 30;

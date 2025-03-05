@@ -175,7 +175,7 @@ public class Calsificationinator extends SubsystemBase {
         } else if (_hasCoralinator) {
             _suckinator.set(0.05);
         } else {
-            _suckinator.set(0.15);
+            _suckinator.set(0.2);
         }
     }
 
