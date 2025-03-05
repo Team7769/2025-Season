@@ -25,13 +25,8 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
-    }
-  ],
-  "rotationTargets": [],
   "constraintZones": [
     {
-      "name": "Constraints Zone",
       "minWaypointRelativePos": 0.7322033898305084,
       "maxWaypointRelativePos": 1.0,
       "constraints": {

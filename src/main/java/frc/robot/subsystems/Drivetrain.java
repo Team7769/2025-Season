@@ -51,6 +51,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
     StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Robot Pose", Pose2d.struct).publish();
+    StructPublisher<Pose2d> targetPosePublisher = NetworkTableInstance.getDefault()
+    .getStructTopic("Target Pose", Pose2d.struct).publish();
     private final Field2d m_field;
 
     private final PeriodicIO periodicIO = new PeriodicIO();
@@ -61,7 +63,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private double followP = 4;
     // 0 = right 1 = algae 2 = left
     private int reefTarget = 0;
-    private int targetReefFace = 0;
+    private int targetReefFace = 4;
 
     private DrivetrainState _currentState = DrivetrainState.AUTO;
     private DrivetrainState _previousState = DrivetrainState.IDLE;
@@ -330,6 +332,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("Target X", _target.getX());
         SmartDashboard.putNumber("Target Y", _target.getY());
         SmartDashboard.putString("Follow Type", _followType.name());
+        targetPosePublisher.set(_target);
     }
 
     //#region State logic

@@ -266,4 +266,9 @@ public class Claw extends SubsystemBase {
         _targetClawState = clawState;
     }
 
+    public ClawState getCurrentState()
+    {
+        return _currentState;
+    }
+
 }
