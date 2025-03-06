@@ -156,7 +156,7 @@ public class Vision extends SubsystemBase{
     public Pose2d getRobotPoseInTargetSpace() {
         var botPoseTargetSpace = LimelightHelpers.getBotPose_TargetSpace("limelight-four");
 
-        return new Pose2d(botPoseTargetSpace[0], botPoseTargetSpace[1], new Rotation2d(botPoseTargetSpace[4]));
+        return new Pose2d(botPoseTargetSpace[0], botPoseTargetSpace[2], new Rotation2d(botPoseTargetSpace[4]));
     }
 }
 
