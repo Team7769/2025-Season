@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import com.pathplanner.lib.util.GeometryUtil;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.filter.LinearFilter;
@@ -10,13 +12,15 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation2d;import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 import frc.robot.LimelightHelpers;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.LimelightHelpers.PoseEstimate;
 import frc.robot.utilities.VisionMeasurement;
 
@@ -65,10 +69,18 @@ public class Vision extends SubsystemBase{
     public void periodic() {
         _limelightThreePose = LimelightHelpers.getBotPose2d("limelight-three");
         _limelightFourPose = LimelightHelpers.getBotPose2d("limelight-four");
+        if (DriverStation.isDisabled() && DriverStation.getAlliance().isPresent()){
+            if (DriverStation.getAlliance().get() == Alliance.Red){
+                LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kRedTagIDs);
+            } else {    
+                LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kBlueTagIDs);
+            }
+        }
     }
 
     public Pose2d getLimelightThreePose() {
         return _limelightThreePose;
+
     }
 
     public Pose2d getLimelightFourPose() {

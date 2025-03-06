@@ -180,11 +180,16 @@ public class RobotContainer {
     //   _calsificationinator.setWantedState(CalsificationinatorState.PICKUP),
     //   _elevatinator.setWantedState(ElavatinatorState.HOLD))));
 
-    // new Trigger(_driverController.rightBumper()).negate().and(_claw::doesNotHaveAlgae).onTrue(goHomeinatorWithAlgae());
+    new Trigger(_driverController.rightBumper()).negate().and(_claw::doesNotHaveAlgae).onTrue(Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.ALGAE)));
+    new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
+    
+    new Trigger(_calsificationinator::hasCoralinator).and(DriverStation::isTeleopEnabled)
+        .onTrue(_calsificationinator.setWantedState(CalsificationinatorState.IDLE))
+        .onFalse(_calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
 
     _driverController.rightBumper().onTrue(Commands.parallel(new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaePickup)), 
-      _elevatinator.setWantedState(ElavatinatorState.HOLD), _claw.setWantedState(ClawState.FLOOR_INTAKE), _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
-      .onFalse(_claw.hasAlgae() ? goHomeinatorWithAlgae() : goHomeinatorForFloorPickup());
+      _elevatinator.setWantedState(ElavatinatorState.HOLD), _claw.setWantedState(ClawState.FLOOR_INTAKE), _ledinator.setWantedState(LEDinatorState.ALGAE), _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
+      .onFalse(_claw.hasAlgae() ? Commands.parallel(goHomeinatorWithAlgae(), _ledinator.setWantedState(LEDinatorState.ALGAE)) : Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.CORAL)));
 
     new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
 
@@ -268,6 +273,7 @@ public class RobotContainer {
         //,  _elevatinator, _drivetrain
         ),
         _drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE),
+        _ledinator.setWantedState(LEDinatorState.CORAL),
         _claw.setWantedState(ClawState.IDLE),
         _elevatinator.setWantedState(ElavatinatorState.HOME),
         _calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
@@ -283,6 +289,7 @@ public class RobotContainer {
     return Commands.parallel(
         new InstantCommand(() -> {
           _elevatinator.setHoldAlgaePosition(false);
+          _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeHold);
         }
         ),
         _claw.setWantedState(ClawState.IDLE),
@@ -316,6 +323,7 @@ public class RobotContainer {
     return Commands.parallel(new InstantCommand(()-> {
       _elevatinator.setPositioninator(ElevatinatorConstants.kL3Algae);
       _claw.setTargetState(ClawState.DEALGIFY);
+      _ledinator.setWantedState(LEDinatorState.ALGAE);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
       _drivetrain.setReefTargetSide(ReefConstants.kReefAlgae);
     }), _drivetrain.setWantedTarget(LocationTarget.REEF));
@@ -325,6 +333,7 @@ public class RobotContainer {
     return Commands.parallel(new InstantCommand(()-> {
       _elevatinator.setPositioninator(ElevatinatorConstants.kL2Algae);
       _claw.setTargetState(ClawState.DEALGIFY);
+      _ledinator.setWantedState(LEDinatorState.ALGAE);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
       _drivetrain.setReefTargetSide(ReefConstants.kReefAlgae);
     }), _drivetrain.setWantedTarget(LocationTarget.REEF));
