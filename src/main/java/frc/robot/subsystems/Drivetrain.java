@@ -76,9 +76,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private double yFollow;
     private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(1.75, 0, 0), new PIDConstants(1.5, 0, 0));
     private ModuleConfig moduleConfig = new ModuleConfig(TunerConstants.kWheelRadiusMeters, TunerConstants.kSpeedAt12Volts,
-        1, DCMotor.getFalcon500(1), TunerConstants.kCurrentLimit, 1);
-    private RobotConfig config = new RobotConfig(38.2832, 38.6771362, moduleConfig, TunerConstants.kFrontLeftOffset,
-        TunerConstants.kFrontRightOffset, TunerConstants.kBackLeftOffset, TunerConstants.kBackRightOffset);
+        1, DCMotor.getKrakenX60(1), TunerConstants.kCurrentLimit, 1);
+    private RobotConfig config = new RobotConfig(38.2832, 38.6771362, moduleConfig, TunerConstants.kFrontLeftTranslation,
+        TunerConstants.kFrontRightTranslation, TunerConstants.kBackLeftTranslation, TunerConstants.kBackRightTranslation);
 
     private static class PeriodicIO {
         double VxCmd;
@@ -347,6 +347,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 DrivetrainConstants.MaxAngularRate));
             case TARGET_FOLLOW:
                 return handleFollowType();
+            case NONE:
+                return new InstantCommand();
             default:
                 return applyRequest(() -> idle);
         }

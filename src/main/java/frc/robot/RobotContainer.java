@@ -149,16 +149,16 @@ public class RobotContainer {
     _driverController.rightTrigger().onTrue(scoreinator()).onFalse(goHomeinator());
     _driverController.leftTrigger().onTrue(doinator(null));
     _driverController.start().onTrue(_drivetrain.resetGyro());
-    _driverController.a().onTrue(_claw.hasAlgae() ? goHomeinatorWithAlgae(): goHomeinator());
-    _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
-    .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
+    // _driverController.a().onTrue(_claw.hasAlgae() ? goHomeinatorWithAlgae(): goHomeinator());
+    // _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
+    // .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
-    // _driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    // _driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
-    // _driverController.y().whileTrue(_drivetrain.sysIdQuasistatic(Direction.kForward));
-    // _driverController.b().whileTrue(_drivetrain.sysIdQuasistatic(Direction.kReverse));
-    // _driverController.a().whileTrue(_drivetrain.sysIdDynamic(Direction.kForward));
-    // _driverController.x().whileTrue(_drivetrain.sysIdDynamic(Direction.kReverse));
+    _driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
+    _driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
+    _driverController.y().whileTrue(_drivetrain.sysIdQuasistatic(Direction.kForward));
+    _driverController.b().whileTrue(_drivetrain.sysIdQuasistatic(Direction.kReverse));
+    _driverController.a().whileTrue(_drivetrain.sysIdDynamic(Direction.kForward));
+    _driverController.x().whileTrue(_drivetrain.sysIdDynamic(Direction.kReverse));
     _driverController.povUp().onTrue(Commands.parallel
     (_ascendinator.setWantedState(CageState.DEPLOY)
      , _ledinator.setWantedState(LEDinatorState.CAGE),
@@ -180,16 +180,16 @@ public class RobotContainer {
     //   _calsificationinator.setWantedState(CalsificationinatorState.PICKUP),
     //   _elevatinator.setWantedState(ElavatinatorState.HOLD))));
 
-    new Trigger(_driverController.rightBumper()).negate().and(_claw::doesNotHaveAlgae).onTrue(Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.ALGAE)));
+    // new Trigger(_driverController.rightBumper()).negate().and(_claw::doesNotHaveAlgae).onTrue(Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.ALGAE)));
     new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
     
     new Trigger(_calsificationinator::hasCoralinator).and(DriverStation::isTeleopEnabled)
         .onTrue(_calsificationinator.setWantedState(CalsificationinatorState.IDLE))
         .onFalse(_calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
 
-    _driverController.rightBumper().onTrue(Commands.parallel(new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaePickup)), 
-      _elevatinator.setWantedState(ElavatinatorState.HOLD), _claw.setWantedState(ClawState.FLOOR_INTAKE), _ledinator.setWantedState(LEDinatorState.ALGAE), _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
-      .onFalse(_claw.hasAlgae() ? Commands.parallel(goHomeinatorWithAlgae(), _ledinator.setWantedState(LEDinatorState.ALGAE)) : Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.CORAL)));
+    // _driverController.rightBumper().onTrue(Commands.parallel(new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaePickup)), 
+    //   _elevatinator.setWantedState(ElavatinatorState.HOLD), _claw.setWantedState(ClawState.FLOOR_INTAKE), _ledinator.setWantedState(LEDinatorState.ALGAE), _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
+    //   .onFalse(_claw.hasAlgae() ? Commands.parallel(goHomeinatorWithAlgae(), _ledinator.setWantedState(LEDinatorState.ALGAE)) : Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.CORAL)));
 
     new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
 
