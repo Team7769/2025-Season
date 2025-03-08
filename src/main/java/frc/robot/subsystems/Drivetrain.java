@@ -22,6 +22,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -53,8 +54,8 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private final SwerveRequest.ApplyRobotSpeeds test = new SwerveRequest.ApplyRobotSpeeds();
     public final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.03)
-            .withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.03)
+            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.05)
+            .withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.05)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     public final SwerveRequest idle = new SwerveRequest.Idle();
     private final SwerveRequest.RobotCentric robotDrive = new SwerveRequest.RobotCentric();
@@ -100,9 +101,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             new PIDConstants(1.5, 0, 0));
     private ModuleConfig moduleConfig = new ModuleConfig(TunerConstants.kWheelRadiusMeters,
             TunerConstants.kSpeedAt12Volts,
-            1, DCMotor.getFalcon500(1), TunerConstants.kCurrentLimit, 1);
-    private RobotConfig config = new RobotConfig(38.2832, 38.6771362, moduleConfig, TunerConstants.kFrontLeftOffset,
-            TunerConstants.kFrontRightOffset, TunerConstants.kBackLeftOffset, TunerConstants.kBackRightOffset);
+            1, DCMotor.getKrakenX60(1), TunerConstants.kCurrentLimit, 1);
+    private RobotConfig config = new RobotConfig(38.2832, 38.6771362, moduleConfig, TunerConstants.kFrontLeftTranslation,
+            TunerConstants.kFrontRightTranslation, TunerConstants.kBackLeftTranslation, TunerConstants.kBackRightTranslation);
     private HolonomicDriveController _targetFollowController;
 
     private static class PeriodicIO {
@@ -337,6 +338,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         ArrayList<VisionMeasurement> visionMeasurements = _vision
                 .getVisionMeasurements(getPigeon2().getRotation2d().plus(this.getOperatorForwardDirection()));
 
+        this.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 3.14));
         for (VisionMeasurement visionMeasurement : visionMeasurements) {
             this.addVisionMeasurement(
                     visionMeasurement.pose, Utils.fpgaToCurrentTime(visionMeasurement.timestamp));
@@ -475,6 +477,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                                 DrivetrainConstants.MaxAngularRate));
             case TARGET_FOLLOW:
                 return handleFollowType();
+            case NONE:
+                return new InstantCommand();
             default:
                 return applyRequest(() -> idle);
         }
