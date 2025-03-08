@@ -104,7 +104,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private double xFollow;
     private double yFollow;
     private Debouncer _targetFollowDebouncer;
-    private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(1.75, 0, 0),
+    private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(2, 0, 0),
             new PIDConstants(1.5, 0, 0));
     private ModuleConfig moduleConfig = new ModuleConfig(TunerConstants.kWheelRadiusMeters,
             TunerConstants.kSpeedAt12Volts,
@@ -522,12 +522,25 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         }, this);
     }
 
+    public void setWantedStateNormal(DrivetrainState state) {
+        if (state != _currentState) {
+            _previousState = _currentState;
+            _currentState = state;
+        }
+    }
+
     public InstantCommand setWantedTarget(LocationTarget newTarget) {
         return new InstantCommand(() -> {
             if (newTarget != _currentTarget) {
                 _currentTarget = newTarget;
             }
         }, this);
+    }
+
+    public void setWantedTargetNormal(LocationTarget newTarget) {
+        if (newTarget != _currentTarget) {
+            _currentTarget = newTarget;
+        }
     }
     // #endregion
 

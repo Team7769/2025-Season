@@ -130,7 +130,7 @@ public class Calsificationinator extends SubsystemBase {
                 if (_previousState == CalsificationinatorState.L1) {
                     _suckinator.set(0.05);
                 } else {
-                    _suckinator.set(0.225);
+                    _suckinator.set(0.175);
                 }
                 break;
             case NOTHING:
