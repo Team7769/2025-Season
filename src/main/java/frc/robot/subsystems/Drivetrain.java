@@ -77,11 +77,14 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private int targetReefFace = 4;
     private AprilTagFieldLayout _fieldLayout;
 
-    private double coralPoseOffsetX = 0.5;
-    private double coralPoseOffsetY = 0.5;
+    private double coralPoseLeftOffsetX = 0.164;
+    private double coralPoseLeftOffsetY = 0.446;
+    
+    private double coralPoseRightOffsetX = 0.164;
+    private double coralPoseRightOffsetY = 0.446;
 
-    private double algaePoseOffsetX = 0.5;
-    private double algaePoseOffsetY = 0.5;
+    private double algaePoseOffsetX = 0.08;
+    private double algaePoseOffsetY = 0.446;
 
     private DrivetrainState _currentState = DrivetrainState.AUTO;
     private DrivetrainState _previousState = DrivetrainState.IDLE;
@@ -284,10 +287,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 scoringPoseInTargetSpace = new Pose2d(algaePoseOffsetX, -algaePoseOffsetY, new Rotation2d(0));
                 break;
             case 2:
-                scoringPoseInTargetSpace = new Pose2d(coralPoseOffsetX, -coralPoseOffsetY, new Rotation2d(0));
+                scoringPoseInTargetSpace = new Pose2d(coralPoseRightOffsetX, -coralPoseRightOffsetY, new Rotation2d(0));
                 break;
             default:
-                scoringPoseInTargetSpace = new Pose2d(-coralPoseOffsetX, -coralPoseOffsetY, new Rotation2d(0));
+                scoringPoseInTargetSpace = new Pose2d(-coralPoseLeftOffsetX, -coralPoseLeftOffsetY, new Rotation2d(0));
                 break;
         }
 
@@ -549,22 +552,22 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         int tagId = 0;
         switch (targetReefFace) {
             case 0:
-                tagId = isRedAlliance ? 5 : 14;
+                tagId = isRedAlliance ? 11 : 20;
                 break;
             case 1:
-                tagId = isRedAlliance ? 6 : 15;
+                tagId = isRedAlliance ? 10 : 21;
                 break;
             case 2:
-                tagId = isRedAlliance ? 7 : 16;
+                tagId = isRedAlliance ? 9 : 22;
                 break;
             case 3:
                 tagId = isRedAlliance ? 8 : 17;
                 break;
             case 4:
-                tagId = isRedAlliance ? 9 : 18;
+                tagId = isRedAlliance ? 7 : 18;
                 break;
             case 5:
-                tagId = isRedAlliance ? 10 : 19;
+                tagId = isRedAlliance ? 6 : 19;
                 break;
             default:
                 tagId = 1;
@@ -578,10 +581,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                         new Transform2d(new Translation2d(algaePoseOffsetX, -algaePoseOffsetY), new Rotation2d(0)));
             case 2:
                 return tagPose.transformBy(
-                        new Transform2d(new Translation2d(coralPoseOffsetX, -coralPoseOffsetY), new Rotation2d(0)));
+                        new Transform2d(new Translation2d(coralPoseRightOffsetX, -coralPoseRightOffsetY), new Rotation2d(0)));
             default:
                 return tagPose.transformBy(
-                        new Transform2d(new Translation2d(-coralPoseOffsetX, -coralPoseOffsetY), new Rotation2d(0)));
+                        new Transform2d(new Translation2d(-coralPoseLeftOffsetX, -coralPoseLeftOffsetY), new Rotation2d(0)));
         }
     }
 
