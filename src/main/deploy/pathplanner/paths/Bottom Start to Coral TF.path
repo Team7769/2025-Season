@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.27,
-        "y": 3.002
+        "x": 5.370491803278688,
+        "y": 2.520543032786885
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.353371575342465,
-        "y": 2.160942636986301
+        "x": 3.5843237704918027,
+        "y": 1.9331454918032782
       },
       "isLocked": false,
-      "linkedName": "Reef 3 Right"
+      "linkedName": "Reef 3"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 1.0724529109589036
       },
       "prevControl": {
-        "x": 2.8699058219178077,
-        "y": 1.7035316780821907
+        "x": 2.3975409836065573,
+        "y": 1.7413422131147547
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,21 +29,7 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6305084745762702,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 4.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
@@ -66,10 +52,10 @@
     "rotation": -128.991
   },
   "reversed": false,
-  "folder": null,
+  "folder": "TF Test",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -59.931
+    "rotation": -60.42216131873873
   },
   "useDefaultConstraints": true
 }
