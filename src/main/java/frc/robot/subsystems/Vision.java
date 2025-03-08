@@ -109,29 +109,29 @@ public class Vision extends SubsystemBase{
     {
         ArrayList<VisionMeasurement> visionMeasurements = new ArrayList<>();
 
-            LimelightHelpers.SetRobotOrientation(
-                "limelight-three",
-                rotation.getDegrees(),
-                0, 
-                0, 
-                0, 
-                0,
-                0
-            );
+            // LimelightHelpers.SetRobotOrientation(
+            //     "limelight-three",
+            //     rotation.getDegrees(),
+            //     0, 
+            //     0, 
+            //     0, 
+            //     0,
+            //     0
+            // );
 
-            PoseEstimate limelightPoseEstimate =
-                LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(
-                    "limelight-three"
-                );
+            // PoseEstimate limelightPoseEstimate =
+            //     LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(
+            //         "limelight-three"
+            //     );
 
-            if (limelightPoseEstimate != null && limelightPoseEstimate.tagCount > 0) {
-                visionMeasurements.add(
-                    new VisionMeasurement(
-                        limelightPoseEstimate.pose,
-                        limelightPoseEstimate.timestampSeconds
-                    )
-                );
-            }
+            // if (limelightPoseEstimate != null && limelightPoseEstimate.tagCount > 0) {
+            //     visionMeasurements.add(
+            //         new VisionMeasurement(
+            //             limelightPoseEstimate.pose,
+            //             limelightPoseEstimate.timestampSeconds
+            //         )
+            //     );
+            // }
             LimelightHelpers.SetRobotOrientation(
                 "limelight-four",
                 rotation.getDegrees(),
@@ -141,6 +141,7 @@ public class Vision extends SubsystemBase{
                 0,
                 0
             );
+            LimelightHelpers.SetIMUMode("limelight-four", 1);
 
             PoseEstimate limelightFourPoseEstimate =
                 LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(

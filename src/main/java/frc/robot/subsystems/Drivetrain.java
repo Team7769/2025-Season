@@ -337,8 +337,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private void updateOdometry() {
         ArrayList<VisionMeasurement> visionMeasurements = _vision
                 .getVisionMeasurements(getPigeon2().getRotation2d().plus(this.getOperatorForwardDirection()));
+        // ArrayList<VisionMeasurement> visionMeasurements = _vision
+        //         .getVisionMeasurements(this.getPose().getRotation());
 
-        this.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 3.14));
+        this.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
         for (VisionMeasurement visionMeasurement : visionMeasurements) {
             this.addVisionMeasurement(
                     visionMeasurement.pose, Utils.fpgaToCurrentTime(visionMeasurement.timestamp));
