@@ -10,6 +10,7 @@ import frc.robot.enums.LocationTarget;
 import static edu.wpi.first.units.Units.Rotation;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
@@ -78,14 +79,14 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private int targetReefFace = 4;
     private AprilTagFieldLayout _fieldLayout;
 
-    private double coralPoseLeftOffsetX = 0.164;
-    private double coralPoseLeftOffsetY = 0.446;
+    private double coralPoseLeftOffsetY = 0.164;
+    private double coralPoseLeftOffsetX = 0.446;
     
-    private double coralPoseRightOffsetX = 0.164;
-    private double coralPoseRightOffsetY = 0.446;
+    private double coralPoseRightOffsetY = 0.164;
+    private double coralPoseRightOffsetX = 0.446;
 
-    private double algaePoseOffsetX = 0.08;
-    private double algaePoseOffsetY = 0.446;
+    private double algaePoseOffsetY = 0.08;
+    private double algaePoseOffsetX = 0.446;
 
     private DrivetrainState _currentState = DrivetrainState.AUTO;
     private DrivetrainState _previousState = DrivetrainState.IDLE;
@@ -340,7 +341,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         // ArrayList<VisionMeasurement> visionMeasurements = _vision
         //         .getVisionMeasurements(this.getPose().getRotation());
 
-        this.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+        this.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, Math.PI));
         for (VisionMeasurement visionMeasurement : visionMeasurements) {
             this.addVisionMeasurement(
                     visionMeasurement.pose, Utils.fpgaToCurrentTime(visionMeasurement.timestamp));
@@ -520,16 +521,24 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                     : Constants.FieldConstants.kBlueSourceBottom;
         }
 
-        Pose2d closestPoint = new Pose2d();
-        Translation2d currentTranslation = currentPose.getTranslation();
-        for (Pose2d position : _sourcePositionArray) {
-            var positionDistance = position.getTranslation().getDistance(currentTranslation);
-            var closestPointDistance = closestPoint.getTranslation().getDistance(currentTranslation);
-            if (positionDistance < closestPointDistance) {
-                closestPoint = position;
-            }
+        var redAlliance = isRedAlliance.get();
+        var sourceTag = new Pose2d();
+        if (currentPose.getTranslation().getY() > FieldConstants.kHalfFieldWidth){
+            sourceTag = redAlliance ? _fieldLayout.getTagPose(2).get().toPose2d() : _fieldLayout.getTagPose(13).get().toPose2d();
+        } else {
+            sourceTag = redAlliance ? _fieldLayout.getTagPose(1).get().toPose2d() : _fieldLayout.getTagPose(12).get().toPose2d();
         }
-        _target = closestPoint;
+
+        var leftSide = sourceTag.transformBy(
+            new Transform2d(new Translation2d(coralPoseLeftOffsetX, -.61), new Rotation2d(0)));
+        var rightSide = sourceTag.transformBy(
+            new Transform2d(new Translation2d(coralPoseLeftOffsetX, .61), new Rotation2d(0)));
+        
+        var poseList = new ArrayList<Pose2d>();
+        poseList.add(leftSide);
+        poseList.add(rightSide);
+
+        _target = currentPose.nearest(poseList);
     }
 
     public void targetProcessor(Supplier<Boolean> isRedAlliance) {
@@ -584,13 +593,13 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         switch (poleTarget) {
             case 1:
                 return tagPose.transformBy(
-                        new Transform2d(new Translation2d(algaePoseOffsetX, -algaePoseOffsetY), new Rotation2d(0)));
+                        new Transform2d(new Translation2d(algaePoseOffsetX, algaePoseOffsetY), new Rotation2d(0)));
             case 2:
                 return tagPose.transformBy(
-                        new Transform2d(new Translation2d(coralPoseRightOffsetX, -coralPoseRightOffsetY), new Rotation2d(0)));
+                        new Transform2d(new Translation2d(coralPoseRightOffsetX, coralPoseRightOffsetY), new Rotation2d(0)));
             default:
                 return tagPose.transformBy(
-                        new Transform2d(new Translation2d(-coralPoseLeftOffsetX, -coralPoseLeftOffsetY), new Rotation2d(0)));
+                        new Transform2d(new Translation2d(coralPoseLeftOffsetX, -coralPoseLeftOffsetY), new Rotation2d(0)));
         }
     }
 
@@ -625,6 +634,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                 //     .withRotationalRate(targetRotation *
                 //             DrivetrainConstants.MaxAngularRate));
                 // }
+                if (_targetFollowController.atReference()){
+                    _currentState = DrivetrainState.OPEN_LOOP;
+                }
+                
                 if (GeometryUtil.isRedAlliance()) {
                     return applyRequest(() -> drive.withVelocityX(xFollow *
                             DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(yFollow *

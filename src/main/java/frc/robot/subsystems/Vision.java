@@ -141,7 +141,7 @@ public class Vision extends SubsystemBase{
                 0,
                 0
             );
-            LimelightHelpers.SetIMUMode("limelight-four", 1);
+            LimelightHelpers.SetIMUMode("limelight-four", 0);
 
             PoseEstimate limelightFourPoseEstimate =
                 LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(
