@@ -17,6 +17,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -44,7 +45,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private final SwerveRequest.ApplyRobotSpeeds test = new SwerveRequest.ApplyRobotSpeeds();
     public final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.03).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.03)
+            .withDeadband(DrivetrainConstants.kSpeedAt12VoltsMps * 0.05).withRotationalDeadband(DrivetrainConstants.MaxAngularRate * 0.05)
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     public final SwerveRequest idle = new SwerveRequest.Idle();
     public final SwerveRequest.ApplyRobotSpeeds chassisDrive = new SwerveRequest.ApplyRobotSpeeds();
@@ -241,6 +242,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             .getVisionMeasurements(getPigeon2().getRotation2d().plus(this.getOperatorForwardDirection())
         );
 
+        this.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 3.14));
         for (VisionMeasurement visionMeasurement : visionMeasurements) {
             this.addVisionMeasurement(
                 visionMeasurement.pose, Utils.fpgaToCurrentTime(visionMeasurement.timestamp)

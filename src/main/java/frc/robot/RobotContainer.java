@@ -150,8 +150,8 @@ public class RobotContainer {
     _driverController.leftTrigger().onTrue(doinator(null));
     _driverController.start().onTrue(_drivetrain.resetGyro());
     // _driverController.a().onTrue(_claw.hasAlgae() ? goHomeinatorWithAlgae(): goHomeinator());
-    // _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
-    // .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
+    _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
+    .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
     _driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
     _driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
