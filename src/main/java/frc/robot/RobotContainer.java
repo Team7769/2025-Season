@@ -18,6 +18,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevatinator;
 import frc.robot.utilities.*;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -40,7 +41,9 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -147,9 +150,19 @@ public class RobotContainer {
         _drivetrain.applyRequest(() -> _drivetrain.drive.withVelocityX(0).withVelocityY(0).withRotationalRate(0)));
 
     _driverController.rightTrigger().onTrue(scoreinator()).onFalse(goHomeinator());
-    _driverController.leftTrigger().onTrue(doinator(null));
+    _driverController.leftTrigger().onTrue(
+      _drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW)
+      .andThen(Commands.waitUntil(_ascendinator::isReady))
+      .andThen(doinator(null))
+      .andThen(Commands.waitUntil(_ascendinator::isReady))
+      .andThen(scoreinator())
+      .andThen(goHomeinator())
+      .withInterruptBehavior(InterruptionBehavior.kCancelSelf)
+      .until(_driverController.a()));
+
     _driverController.start().onTrue(_drivetrain.resetGyro());
-    _driverController.a().onTrue(_claw.hasAlgae() ? goHomeinatorWithAlgae(): goHomeinator());
+    _driverController.a().onTrue(
+      new DeferredCommand(this::getReturnCommand, Set.of(_claw)));
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
@@ -262,6 +275,10 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
   return _autoChooser.getSelected();
+  }
+
+  public Command getReturnCommand(){
+    return _claw.hasAlgae() ? goHomeinatorWithAlgae(): goHomeinator();
   }
 
   public Command goHomeinator() {

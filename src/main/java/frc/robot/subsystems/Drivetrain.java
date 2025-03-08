@@ -19,12 +19,18 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.controller.HolonomicDriveController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.ExponentialProfile.Constraints;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -94,6 +100,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             1, DCMotor.getFalcon500(1), TunerConstants.kCurrentLimit, 1);
     private RobotConfig config = new RobotConfig(38.2832, 38.6771362, moduleConfig, TunerConstants.kFrontLeftOffset,
             TunerConstants.kFrontRightOffset, TunerConstants.kBackLeftOffset, TunerConstants.kBackRightOffset);
+    private HolonomicDriveController _targetFollowController;
 
     private static class PeriodicIO {
         double VxCmd;
@@ -114,6 +121,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
         SmartDashboard.putData("Field", m_field);
 
+        _targetFollowController = new HolonomicDriveController(new PIDController(0.25, 0, 0), new PIDController(0.25, 0, 0), new ProfiledPIDController(0.25, 0, 0, new TrapezoidProfile.Constraints(Math.PI, Math.PI)));
+        _targetFollowController.setTolerance(new Pose2d(.0127, .0127, Rotation2d.fromDegrees(1)));
         try {
             AutoBuilder.configure(() -> getState().Pose, this::resetPose, () -> getState().Speeds,
                     (speeds, feedforwards) -> setControl(
@@ -255,11 +264,12 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         updateOdometry();
 
         if (_currentState != DrivetrainState.AUTO) {
-            if (_currentState == DrivetrainState.TRAJECTORY_FOLLOW && _currentTarget == LocationTarget.REEF){
-                targetTag();
-            } else {
-                targetPeriodic();
-            }
+            // if (_currentState == DrivetrainState.TRAJECTORY_FOLLOW && _currentTarget == LocationTarget.REEF){
+            //     targetTag();
+            // } else {
+            //     targetPeriodic();
+            // }
+            targetPeriodic();
             handleCurrentState().schedule();
         }
 
@@ -346,37 +356,27 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         switch (_currentTarget) {
             case CORAL_SOURCE:
                 targetSource(GeometryUtil::isRedAlliance);
-                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees())
-                        / 50;
                 break;
             case PROCESSOR:
                 targetProcessor(GeometryUtil::isRedAlliance);
-                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees())
-                        / 50;
                 break;
             case CAGE:
                 targetCage();
-                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees())
-                        / 50;
                 break;
             case REEF:
                 targetReef(GeometryUtil::isRedAlliance);
-                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees())
-                        / 50;
                 break;
             case BARGE:
                 targetBarge(GeometryUtil::isRedAlliance);
-                targetRotation = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees())
-                        / 50;
                 break;
             case NONE:
                 break;
             default:
-                targetRotation = GeometryUtil.getAngleToTarget(_target.getTranslation(), this::getPose,
-                        _isFollowingFront) / 50;
                 break;
         }
 
+        // var kRotationP = 0.02;
+        var zDifference = GeometryUtil.getRotationDifference(this::getPose, _target.getRotation().getDegrees());
         var xDifference = _currentTarget == LocationTarget.REEF ? GeometryUtil.getXDifference(_target, _vision::getFrontLimelightPose) : GeometryUtil.getXDifference(_target, this::getPose);
         var yDifference = _currentTarget == LocationTarget.REEF ? GeometryUtil.getYDifference(_target, _vision::getFrontLimelightPose) : GeometryUtil.getYDifference(_target, this::getPose);
 
@@ -384,35 +384,62 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("YDiff", yDifference);
         SmartDashboard.putString("currentTarget", getCurrentTarget().name());
 
-        if (Math.abs(xDifference) < 1 && Math.abs(yDifference) < 1) {
-            followP = .7;
-        } else if (Math.abs(xDifference) < 1 && _followType == FollowType.LINE) {
-            followP = .7;
-        } else {
-            followP = 4;
-        }
+        // if (Math.abs(xDifference) < 1 && Math.abs(yDifference) < 1) {
+        //     followP = .7;
+        // } else if (Math.abs(xDifference) < 1 && _followType == FollowType.LINE) {
+        //     followP = .7;
+        // } else {
+        //     followP = 0.25;
+        // }
+        // followP = 0.25;
 
-        xFollow = xDifference / followP;
-        yFollow = yDifference / followP;
+        // xFollow = xDifference * followP;
+        // yFollow = yDifference * followP;
 
-        if (Math.abs(yFollow) > .25) {
+        xFollow = _targetFollowController.getXController().calculate(xDifference);
+        yFollow = _targetFollowController.getYController().calculate(yDifference);
+        targetRotation = _targetFollowController.getThetaController().calculate(zDifference);
+
+        // if (Math.abs(yFollow) > .25) {
+        //     if (yFollow > 0)
+        //         yFollow = .25;
+        //     else
+        //         yFollow = -.25;
+        // }
+        // if (Math.abs(xFollow) > .25) {
+        //     if (xFollow > 0)
+        //         xFollow = .25;
+        //     else
+        //         xFollow = -.25;
+        // }
+
+        // if (Math.abs(targetRotation) >= .5) {
+        //     if (targetRotation > 0) {
+        //         targetRotation = .5;
+        //     } else {
+        //         targetRotation = -0.5;
+        //     }
+        // }
+
+        if (Math.abs(yFollow) < 0.05) {
             if (yFollow > 0)
-                yFollow = .25;
+                yFollow = 0.05;
             else
-                yFollow = -.25;
-        }
-        if (Math.abs(xFollow) > .25) {
-            if (xFollow > 0)
-                xFollow = .25;
-            else
-                xFollow = -.25;
+                yFollow = -0.05;
         }
 
-        if (Math.abs(targetRotation) >= .5) {
+        if (Math.abs(xFollow) < 0.05) {
+            if (xFollow > 0)
+                xFollow = 0.05;
+            else
+                xFollow = -0.05;
+        }
+
+        if (Math.abs(targetRotation) < 0.05) {
             if (targetRotation > 0) {
-                targetRotation = .5;
+                targetRotation = 0.05;
             } else {
-                targetRotation = -0.5;
+                targetRotation = -0.05;
             }
         }
 
@@ -421,7 +448,15 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putNumber("Target X", _target.getX());
         SmartDashboard.putNumber("Target Y", _target.getY());
         SmartDashboard.putString("Follow Type", _followType.name());
+        SmartDashboard.putNumber("Follow X", xFollow);
+        SmartDashboard.putNumber("Follow Y", yFollow);
+        SmartDashboard.putNumber("Follow Z", targetRotation);
+        SmartDashboard.putBoolean("Is At Target", isAtTarget());
         targetPosePublisher.set(_target);
+    }
+
+    public boolean isAtTarget() {
+        return _targetFollowController.atReference();
     }
 
     // #region State logic
@@ -574,13 +609,13 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                         .withRotationalRate(targetRotation *
                                 DrivetrainConstants.MaxAngularRate));
             default:
-                if (_currentTarget == LocationTarget.REEF){
-                    return applyRequest(() -> robotDrive.withVelocityX(xFollow *
-                    DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(yFollow *
-                            DrivetrainConstants.kSpeedAt12VoltsMps)
-                    .withRotationalRate(targetRotation *
-                            DrivetrainConstants.MaxAngularRate));
-                }
+                // if (_currentTarget == LocationTarget.REEF){
+                //     return applyRequest(() -> robotDrive.withVelocityX(xFollow *
+                //     DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(yFollow *
+                //             DrivetrainConstants.kSpeedAt12VoltsMps)
+                //     .withRotationalRate(targetRotation *
+                //             DrivetrainConstants.MaxAngularRate));
+                // }
                 if (GeometryUtil.isRedAlliance()) {
                     return applyRequest(() -> drive.withVelocityX(xFollow *
                             DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(yFollow *
