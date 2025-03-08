@@ -150,28 +150,14 @@ public class RobotContainer {
         _drivetrain.applyRequest(() -> _drivetrain.drive.withVelocityX(0).withVelocityY(0).withRotationalRate(0)));
 
     _driverController.rightTrigger().onTrue(scoreinator()).onFalse(goHomeinator());
-    _driverController.leftTrigger().onTrue(
-      _drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW)
-      .andThen(Commands.waitUntil(_ascendinator::isReady))
-      .andThen(doinator(null))
-      .andThen(Commands.waitUntil(_ascendinator::isReady))
-      .andThen(scoreinator())
-      .andThen(goHomeinator())
-      .withInterruptBehavior(InterruptionBehavior.kCancelSelf)
-      .until(_driverController.a()));
+    _driverController.leftTrigger().onTrue(doinator(null));
 
     _driverController.start().onTrue(_drivetrain.resetGyro());
-    _driverController.a().onTrue(
-      new DeferredCommand(this::getReturnCommand, Set.of(_claw)));
+    _driverController.a().onTrue(goHomeinator());
+    _driverController.b().onTrue(goHomeinatorWithAlgae());
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
-    _driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    _driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
-    _driverController.y().whileTrue(_drivetrain.sysIdQuasistatic(Direction.kForward));
-    _driverController.b().whileTrue(_drivetrain.sysIdQuasistatic(Direction.kReverse));
-    _driverController.a().whileTrue(_drivetrain.sysIdDynamic(Direction.kForward));
-    _driverController.x().whileTrue(_drivetrain.sysIdDynamic(Direction.kReverse));
     _driverController.povUp().onTrue(Commands.parallel
     (_ascendinator.setWantedState(CageState.DEPLOY)
      , _ledinator.setWantedState(LEDinatorState.CAGE),
@@ -184,16 +170,16 @@ public class RobotContainer {
 
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
-    // new
-    // Trigger(_claw::doesNotHaveAlgae).and(_driverController.rightBumper()).onTrue(Commands.sequence(new InstantCommand(()->{
-    //   _targetClawState = ClawState.FLOOR_INTAKE;
-    //   _elevatinator.setPositioninator(Constants.ElevatinatorConstants.kAlgaePickup);
-    // }), Commands.parallel(
-    //   _claw.setWantedState(ClawState.FLOOR_INTAKE), 
-    //   _calsificationinator.setWantedState(CalsificationinatorState.PICKUP),
-    //   _elevatinator.setWantedState(ElavatinatorState.HOLD))));
+    new
+    Trigger(_claw::doesNotHaveAlgae).and(_driverController.rightBumper()).onTrue(Commands.sequence(new InstantCommand(()->{
+      _targetClawState = ClawState.FLOOR_INTAKE;
+      _elevatinator.setPositioninator(Constants.ElevatinatorConstants.kAlgaePickup);
+    }), Commands.parallel(
+      _claw.setWantedState(ClawState.FLOOR_INTAKE), 
+      _calsificationinator.setWantedState(CalsificationinatorState.PICKUP),
+      _elevatinator.setWantedState(ElavatinatorState.HOLD))));
 
-    // new Trigger(_driverController.rightBumper()).negate().and(_claw::doesNotHaveAlgae).onTrue(Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.ALGAE)));
+    //new Trigger(_driverController.rightBumper()).negate().and(_claw::doesNotHaveAlgae).onTrue(Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.ALGAE)));
     new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
     
     new Trigger(_calsificationinator::hasCoralinator).and(DriverStation::isTeleopEnabled)
@@ -204,7 +190,7 @@ public class RobotContainer {
     //   _elevatinator.setWantedState(ElavatinatorState.HOLD), _claw.setWantedState(ClawState.FLOOR_INTAKE), _ledinator.setWantedState(LEDinatorState.ALGAE), _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
     //   .onFalse(_claw.hasAlgae() ? Commands.parallel(goHomeinatorWithAlgae(), _ledinator.setWantedState(LEDinatorState.ALGAE)) : Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.CORAL)));
 
-    new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
+    //new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
 
     if (!_ascendinator.isReady()){
       new Trigger(_calsificationinator::hasCoralinator).and(DriverStation::isTeleopEnabled)
@@ -212,12 +198,6 @@ public class RobotContainer {
       .onFalse(_calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
     }
   
-    // _operatorController.y()
-    //     .onTrue(algaeSetinator(ElevatinatorConstants.kAlgaeNet, CalsificationinatorState.PICKUP, ClawState.PREP_NET));
-    // _operatorController.x().onTrue(
-    //     algaeSetinator(ElevatinatorConstants.kAlgaeProcessor, CalsificationinatorState.PICKUP, ClawState.PREP_PROCESSOR));
-    //_operatorController.b()
-    //    .onTrue(doinator(ClawState.IDLE, CalsificationinatorState.PICKUP, LEDinatorState.CORAL));
     _reefController.rightBumper().onTrue(new InstantCommand(() -> 
     {
       _drivetrain.setReefTargetFace(1);
@@ -279,6 +259,17 @@ public class RobotContainer {
 
   public Command getReturnCommand(){
     return _claw.hasAlgae() ? goHomeinatorWithAlgae(): goHomeinator();
+  }
+
+  public Command doThing(){
+    return _drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW)
+    .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
+    .andThen(doinator(null))
+    .andThen(Commands.waitUntil(_elevatinator::isReady))
+    .andThen(scoreinator())
+    .andThen(goHomeinator())
+    .withInterruptBehavior(InterruptionBehavior.kCancelSelf)
+    .until(_driverController.a()).andThen(goHomeinator());
   }
 
   public Command goHomeinator() {

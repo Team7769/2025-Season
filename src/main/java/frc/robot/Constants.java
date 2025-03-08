@@ -344,19 +344,19 @@ public final class Constants {
         public static final int kCalsificationDetectinatorChanel = 0;
         public static final int kCalsificationDetectinatorTwoChanel = 1;
         public static final double kIdlePosition = 0;
-        public static final double kPickUpPosition = .78;
-        public static final double kL4Position = -.20;
-        public static final double kL3Position = -.20;
-        public static final double kL2Position = -.20;
-        public static final double kL1Position = -.20;
-        public static final double kPrepClimb = .76;
+        public static final double kPickUpPosition = .876;
+        public static final double kL4Position = -.11;
+        public static final double kL3Position = -.11;
+        public static final double kL2Position = -.11;
+        public static final double kL1Position = -.11;
+        public static final double kPrepClimb = .876;
     }
 
     public static class ElevatinatorConstants {
       public static final int kLifinatorMotor = 15;
       public static final double kAlgaeNet = 71.46;
-      public static final double kL4Coral = 71.46;
-      public static final double kL3Coral = 37.96;
+      public static final double kL4Coral = 70.5;
+      public static final double kL3Coral = 37;
       public static final double kL3Algae = 55;
       public static final double kL2Coral = 16.17;
       public static final double kL2Algae = 34;
