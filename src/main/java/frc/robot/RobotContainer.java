@@ -24,8 +24,10 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.events.Event;
 import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
@@ -97,6 +99,7 @@ public class RobotContainer {
     registerEventTriggersForAuto();
     registerNamedCommandsForAuto();
     _autoChooser = AutoBuilder.buildAutoChooser();
+    _autoChooser.addOption("Test Auto TF - Custom", getTestAuto());
     SmartDashboard.putData("AutoChooser", _autoChooser);
     configureBindings();
   }
@@ -151,8 +154,8 @@ public class RobotContainer {
         _drivetrain.applyRequest(() -> _drivetrain.drive.withVelocityX(0).withVelocityY(0).withRotationalRate(0)));
 
     _driverController.rightTrigger().onTrue(scoreinator()).onFalse(goHomeinator());
-    _driverController.leftTrigger().onTrue(doinator(null));
-    //_driverController.leftTrigger().onTrue(Commands.defer(this::doThing, null));
+    //_driverController.leftTrigger().onTrue(doinator(null));
+    _driverController.leftTrigger().onTrue(Commands.defer(this::doThing, null));
 
     _driverController.start().onTrue(_drivetrain.resetGyro());
     _driverController.a().onTrue(goHomeinator());
@@ -259,12 +262,17 @@ public class RobotContainer {
   public Command doThing(){
     return 
     Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW))
+    .andThen(Commands.runOnce(() -> System.out.println("Waiting for drive at target.")))
     .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
+    .andThen(Commands.runOnce(() -> System.out.println("Do.")))
     .andThen(doinator(null))
+    .andThen(Commands.runOnce(() -> System.out.println("Waiting for elevator at target.")))
     .andThen(Commands.waitUntil(_elevatinator::isReady))
-    .andThen(scoreinator())
-    .andThen(Commands.waitSeconds(1))
+    .andThen(Commands.runOnce(() -> System.out.println("Scoring")))
+    .andThen(scoreSequence())
+    .andThen(Commands.runOnce(() -> System.out.println("Go home.")))
     .andThen(goHomeinator())
+    .handleInterrupt(() -> System.out.println("Interrupted doThing."))
     .until(_driverController.a()).andThen(goHomeinator());
   }
 
@@ -380,5 +388,39 @@ public class RobotContainer {
 
   public Command scoreinator() {
     return Commands.parallel(_claw.setWantedState(ClawState.SCORE), _calsificationinator.setWantedState(CalsificationinatorState.SCORE));
+  }
+
+  public Command targetReef() {
+    return Commands.sequence(
+      Commands.runOnce(() -> {
+        _drivetrain.setReefTargetFace(2);
+        _drivetrain.setReefTargetSide(ReefConstants.kReefLeft);
+        _drivetrain.setWantedTargetNormal(LocationTarget.REEF);
+        _drivetrain.targetReef(GeometryUtil::isRedAlliance);
+        _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW);
+      }),
+      Commands.waitUntil(_drivetrain::isAtTarget)
+    );
+  }
+
+  public Command scoreSequence() {
+    return Commands.sequence(
+      Commands.waitUntil(_elevatinator::isReady),
+      _calsificationinator.setWantedState(CalsificationinatorState.SCORE),
+      Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator),
+      _claw.setWantedState(ClawState.IDLE)
+    );
+  }
+
+  public Command getTestAuto() {
+    return Commands.sequence(
+      Commands.runOnce(() -> System.out.println("Begin Test Auto")),
+      _drivetrain.getPathCommand("Bottom Start to Reef 3"),
+      targetReef(),
+      doinator(null),
+      scoreSequence(),
+      _drivetrain.getPathCommand("Bottom Start to Coral TF"),
+      Commands.runOnce(() -> System.out.println("Done"))
+    );
   }
 }
