@@ -106,24 +106,8 @@ public class RobotContainer {
 
   private void registerNamedCommandsForAuto()
   {
-    NamedCommands.registerCommand("Score Coral", Commands.sequence(Commands.waitUntil(_elevatinator::isReady), _calsificationinator.setWantedState(CalsificationinatorState.SCORE),
-      Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator), Commands.parallel(
-        _claw.setWantedState(ClawState.IDLE),
-        _calsificationinator.setWantedState(CalsificationinatorState.PICKUP))));
-    NamedCommands.registerCommand("Wait For Coral", Commands.sequence(Commands.waitUntil(_calsificationinator::hasCoralinator), _calsificationinator.setWantedState(CalsificationinatorState.IDLE)));
-    NamedCommands.registerCommand("Target Reef 3 Left", Commands.sequence(
-      Commands.runOnce(() -> {
-        _drivetrain.setReefTargetFace(2);
-        _drivetrain.setReefTargetSide(ReefConstants.kReefLeft);
-        _drivetrain.setWantedTargetNormal(LocationTarget.REEF);
-        _drivetrain.targetReef(GeometryUtil::isRedAlliance);
-        _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW);
-      })
-      ).withTimeout(2).andThen(Commands.runOnce(() -> 
-      _drivetrain.setWantedStateNormal(DrivetrainState.AUTO))));
-    NamedCommands.registerCommand("Prep Coral", Commands.sequence(
-      new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL4Coral), _elevatinator),
-      _elevatinator.setWantedState(ElavatinatorState.HOLD)));
+    NamedCommands.registerCommand("Score Coral", scoreSequence());
+    NamedCommands.registerCommand("Wait For Coral", waitForCoral());
   }
 
   private void registerEventTriggersForAuto() {
@@ -408,8 +392,24 @@ public class RobotContainer {
       Commands.waitUntil(_elevatinator::isReady),
       _calsificationinator.setWantedState(CalsificationinatorState.SCORE),
       Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator),
-      _claw.setWantedState(ClawState.IDLE)
+      Commands.parallel(
+        _claw.setWantedState(ClawState.IDLE),
+        _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)
+        )
     );
+  }
+
+  public Command waitForCoral() {
+    return Commands.sequence(
+      Commands.waitUntil(_calsificationinator::hasCoralinator), 
+      _calsificationinator.setWantedState(CalsificationinatorState.IDLE)
+    );
+  }
+
+  public Command prepCoralL4() {
+    return Commands.sequence(
+      new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL4Coral), _elevatinator),
+      _elevatinator.setWantedState(ElavatinatorState.HOLD));
   }
 
   public Command getTestAuto() {
@@ -417,9 +417,10 @@ public class RobotContainer {
       Commands.runOnce(() -> System.out.println("Begin Test Auto")),
       _drivetrain.getPathCommand("Bottom Start to Reef 3"),
       targetReef(),
-      doinator(null),
+      prepCoralL4(),
       scoreSequence(),
       _drivetrain.getPathCommand("Bottom Start to Coral TF"),
+      waitForCoral(),
       Commands.runOnce(() -> System.out.println("Done"))
     );
   }
