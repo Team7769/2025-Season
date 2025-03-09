@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.018578767123288,
-        "y": 5.234567636986301
+        "x": 4.986,
+        "y": 5.214
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.328021340742422,
-        "y": 5.693326017804138
+        "x": 4.295442573619134,
+        "y": 5.672758380817837
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef 1 Right"
     },
     {
       "anchor": {
@@ -74,7 +74,7 @@
   "folder": "Top Cr B",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 57.524
+    "rotation": 60.90480856229032
   },
   "useDefaultConstraints": true
 }

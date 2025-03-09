@@ -10,5 +10,6 @@ public enum ClawState implements IState {
     PREP_PROCESSOR,
     SCORE,
     TARGET,
-    PREP_CLIMB
+    PREP_CLIMB,
+    NONE
 }

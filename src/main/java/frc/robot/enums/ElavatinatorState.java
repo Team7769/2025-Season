@@ -11,5 +11,6 @@ public enum ElavatinatorState implements IState {
     L4Coral,
     HOME,
     DEALGIFY,
-    HOMEWITHALGAE
+    HOMEWITHALGAE,
+    NONE
 }

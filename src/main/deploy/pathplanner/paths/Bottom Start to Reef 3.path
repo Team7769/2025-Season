@@ -3,42 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.572945205479453,
-        "y": 6.151134417808219
+        "x": 7.576229508196722,
+        "y": 2.9640881147540985
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.310787671232877,
-        "y": 6.151134417808219
+        "x": 6.892930327868852,
+        "y": 2.6763831967213116
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.986,
-        "y": 5.214
+        "x": 5.370491803278688,
+        "y": 2.520543032786885
       },
       "prevControl": {
-        "x": 5.545606164383562,
-        "y": 5.904749143835617
+        "x": 5.945901639344262,
+        "y": 2.4246413934426223
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef 1 Right"
+      "linkedName": "Reef 3"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Prep For Coral",
-      "waypointRelativePos": 1.0,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
     "maxAcceleration": 4.0,
@@ -49,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 60.90480856229032
+    "rotation": -60.42216131873873
   },
   "reversed": false,
-  "folder": "Top Cr B",
+  "folder": "TF Test",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
