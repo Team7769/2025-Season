@@ -43,6 +43,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -155,7 +156,8 @@ public class RobotContainer {
     //_driverController.leftTrigger().onTrue(Commands.defer(this::doThing, null));
 
     _driverController.start().onTrue(_drivetrain.resetGyro());
-    _driverController.a().onTrue(goHomeinator());
+    new Trigger(_claw::hasAlgae).and(_driverController.a()).onTrue(goHomeinatorWithAlgae());
+    new Trigger(_claw::doesNotHaveAlgae).and(_driverController.a()).onTrue(goHomeinator());
     _driverController.b().onTrue(goHomeinatorWithAlgae());
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
@@ -171,10 +173,6 @@ public class RobotContainer {
 
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
-    new Trigger(_calsificationinator::hasCoralinator).and(DriverStation::isTeleopEnabled)
-        .onTrue(_calsificationinator.setWantedState(CalsificationinatorState.IDLE))
-        .onFalse(_calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
-
     _driverController.rightBumper().onTrue(
       Commands.parallel(
         new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaePickup)), 
@@ -182,7 +180,7 @@ public class RobotContainer {
       _claw.setWantedState(ClawState.FLOOR_INTAKE), 
       _ledinator.setWantedState(LEDinatorState.ALGAE), 
       _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
-      .onFalse(Commands.defer(this::getReturnCommand, null));
+      .onFalse(Commands.defer(this::getReturnCommand, Set.of()));
 
     new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
 
@@ -252,8 +250,8 @@ public class RobotContainer {
   }
 
   public Command getReturnCommand(){
-    return _claw.hasAlgae() ? Commands.parallel(goHomeinatorWithAlgae(), _ledinator.setWantedState(LEDinatorState.ALGAE))
-                            : Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.CORAL));
+    return _claw.hasAlgae() ? new ParallelCommandGroup(goHomeinatorWithAlgae(), _ledinator.setWantedState(LEDinatorState.ALGAE))
+                            : new ParallelCommandGroup(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.CORAL));
   }
 
   public Command doThing(){

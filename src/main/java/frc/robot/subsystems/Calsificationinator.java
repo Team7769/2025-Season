@@ -130,7 +130,7 @@ public class Calsificationinator extends SubsystemBase {
                 if (_previousState == CalsificationinatorState.L1) {
                     _suckinator.set(0.05);
                 } else {
-                    _suckinator.set(0.175);
+                    _suckinator.set(0.25);
                 }
                 break;
             case NOTHING:
@@ -162,11 +162,11 @@ public class Calsificationinator extends SubsystemBase {
     }
 
     public boolean hasCoralinator() {
-        return _hasCoralinator || _hasCoralinatorTwo;
+        return _hasCoralinator;
     }
 
     public boolean doesNotHaveCoralinator() {
-        return !_hasCoralinator && !_hasCoralinatorTwo;
+        return !_hasCoralinator;
     }
 
     private void handleCoral() {

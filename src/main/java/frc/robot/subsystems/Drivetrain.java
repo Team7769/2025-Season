@@ -104,7 +104,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private double xFollow;
     private double yFollow;
     private Debouncer _targetFollowDebouncer;
-    private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(2, 0, 0),
+    private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(2.5, 0, 0),
             new PIDConstants(1.5, 0, 0));
     private ModuleConfig moduleConfig = new ModuleConfig(TunerConstants.kWheelRadiusMeters,
             TunerConstants.kSpeedAt12Volts,
@@ -633,13 +633,13 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             case LINE:
                 // X axis movement is set to a point, Y axis movement is free
                 if (GeometryUtil.isRedAlliance()) {
-                    return applyRequest(() -> drive.withVelocityX(xFollow *
+                    return applyRequest(() -> drive.withVelocityX(-xFollow *
                             DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
                                     DrivetrainConstants.kSpeedAt12VoltsMps)
                             .withRotationalRate(targetRotation *
                                     DrivetrainConstants.MaxAngularRate));
                 } else {
-                    return applyRequest(() -> drive.withVelocityX(-xFollow *
+                    return applyRequest(() -> drive.withVelocityX(xFollow *
                             DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
                                     DrivetrainConstants.kSpeedAt12VoltsMps)
                             .withRotationalRate(targetRotation *
