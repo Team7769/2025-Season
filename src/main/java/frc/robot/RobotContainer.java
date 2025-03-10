@@ -104,6 +104,7 @@ public class RobotContainer {
     // NamedCommands.registerCommand("Go Home", Commands.parallel(
     //   _claw.setWantedState(ClawState.IDLE),
     //   _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)));
+    NamedCommands.registerCommand("Pick up Top Algae", Commands.sequence(null));
   }
 
   private void registerEventTriggersForAuto() {
