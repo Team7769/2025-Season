@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "Prep For Coral",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.8982630272952865,
       "endWaypointRelativePos": null,
       "command": null
     }

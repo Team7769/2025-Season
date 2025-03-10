@@ -33,6 +33,7 @@ public final class Constants {
     public static final double kFieldLength = 17.548;
     public static final double kFieldWidth = 8.052;
     public static final double kHalfFieldWidth = 4.026;
+    public static final double kQuarterFieldWidth = 4.026/2;
     public static final double kHalfFieldLength = 8.774;
     public static final Translation2d kFieldCenter = new Translation2d(kHalfFieldLength, kHalfFieldWidth);
     // cage
@@ -115,6 +116,8 @@ public final class Constants {
     // the Y value will not be used for the Barge Pose2d coordinates
     public static final Pose2d kBlueBarge = new Pose2d(new Translation2d(7.6, 0), new Rotation2d(180 * (Math.PI / 180)));
     public static final Pose2d kRedBarge = new Pose2d(new Translation2d(10, 0), new Rotation2d(0 * (Math.PI / 180)));
+    public static final Translation2d kBlueBargeHalf = new Translation2d(kHalfFieldLength, kQuarterFieldWidth + kHalfFieldWidth);
+    public static final Translation2d kRedBargeHalf = GeometryUtil.mirrorReef(kBlueBargeHalf);
 
   }
 
@@ -345,7 +348,7 @@ public final class Constants {
         public static final int kCalsificationDetectinatorTwoChanel = 1;
         public static final double kIdlePosition = 0;
         public static final double kPickUpPosition = .876;
-        public static final double kL4Position = -.15;
+        public static final double kL4Position = -.1;
         public static final double kL3Position = -.11;
         public static final double kL2Position = -.11;
         public static final double kL1Position = -.11;
@@ -355,7 +358,7 @@ public final class Constants {
     public static class ElevatinatorConstants {
       public static final int kLifinatorMotor = 15;
       public static final double kAlgaeNet = 71.46;
-      public static final double kL4Coral = 70;
+      public static final double kL4Coral = 71.46;
       public static final double kL3Coral = 37;
       public static final double kL3Algae = 55;
       public static final double kL2Coral = 16.17;
