@@ -162,7 +162,7 @@ public class Claw extends SubsystemBase {
                 _topRollinator.set(-.5);
                 break;
             case DEALGIFY:
-                _pivotinator.setControl(_request.withPosition(0.25));
+                _pivotinator.setControl(_request.withPosition(0.28));
                 _topRollinator.set(-.5);
                 break;
             case PREP_NET:
@@ -264,6 +264,11 @@ public class Claw extends SubsystemBase {
     public void setTargetState(ClawState clawState)
     {
         _targetClawState = clawState;
+    }
+
+    public ClawState getTargetState()
+    {
+        return _targetClawState;
     }
 
     public ClawState getCurrentState()

@@ -502,6 +502,12 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     }
 
     public boolean isAtTarget() {
+        if (_followType == FollowType.LINE){
+            return _targetFollowDebouncer.calculate(
+            _targetFollowControllerX.atSetpoint()
+            && _targetFollowControllerZ.atSetpoint());
+        }
+        
         return _targetFollowDebouncer.calculate(
             _targetFollowControllerX.atSetpoint()
             && _targetFollowControllerY.atSetpoint()
