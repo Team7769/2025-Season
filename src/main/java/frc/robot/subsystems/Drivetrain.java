@@ -109,7 +109,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private double yFollow;
     private Debouncer _targetFollowDebouncer;
     private PPHolonomicDriveController autoController = new PPHolonomicDriveController(new PIDConstants(2.5, 0, 0),
-            new PIDConstants(1.5, 0, 0));
+            new PIDConstants(2, 0, 0));
     private ModuleConfig moduleConfig = new ModuleConfig(TunerConstants.kWheelRadiusMeters,
             TunerConstants.kSpeedAt12Volts,
             1, DCMotor.getKrakenX60(1), TunerConstants.kCurrentLimit, 1);

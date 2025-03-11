@@ -100,9 +100,9 @@ public final class Constants {
 
     public static final Pose2d[] kRedSourceBottom = { kRedSourceBottom_A, kRedSourceBottom_C };
 
-    public static final Pose2d kBlueProcessor = new Pose2d(new Translation2d(6.356, 0.592),
+    public static final Pose2d kBlueProcessor = new Pose2d(new Translation2d(6, 0.52),
         new Rotation2d(90 * (Math.PI / 180)));
-    public static final Pose2d kRedProcessor = new Pose2d(new Translation2d(11.525, 7.525),
+    public static final Pose2d kRedProcessor = new Pose2d(GeometryUtil.mirrorReef(kBlueProcessor.getTranslation()),
         new Rotation2d(270 * (Math.PI / 180)));
 
     public static final ReefFace[] kBlueReefFaces = { ReefConstants.kBlueReefFace1, ReefConstants.kBlueReefFace2,
@@ -367,7 +367,7 @@ public final class Constants {
       public static final double kHumanPlayer = 3;
       public static final double kAlgaePickup = 15;
       public static final double kAlgaeProcessor = 8;
-      public static final double kAlgaeHold = 21;
+      public static final double kAlgaeHold = 18;
       public static final double kHome = 0;
       public static final double kLiftinatorMaxHeight = 74;
     }
