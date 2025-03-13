@@ -155,14 +155,18 @@ public class Claw extends SubsystemBase {
                 // } else {                    
                 //     _topRollinator.set(0);
                 // }
-                _topRollinator.set(-.2);
+                _topRollinator.set(0);
                 break;
+            case IDLE_WITH_ALGAE:
+                _pivotinator.setControl(_request.withPosition(0.0));
+                _topRollinator.set(-.2);
+            break;
             case FLOOR_INTAKE:
                 _pivotinator.setControl(_request.withPosition(0.375));
                 _topRollinator.set(-.5);
                 break;
             case DEALGIFY:
-                _pivotinator.setControl(_request.withPosition(0.25));
+                _pivotinator.setControl(_request.withPosition(0.28));
                 _topRollinator.set(-.5);
                 break;
             case PREP_NET:
@@ -178,7 +182,7 @@ public class Claw extends SubsystemBase {
                     _topRollinator.set(.7);
                 }
                 if (_previousState == ClawState.PREP_PROCESSOR) {
-                    _topRollinator.set(.5);
+                    _topRollinator.set(.3);
                 }
                 break;
             case TARGET:
@@ -266,9 +270,21 @@ public class Claw extends SubsystemBase {
         _targetClawState = clawState;
     }
 
+    public ClawState getTargetState()
+    {
+        return _targetClawState;
+    }
+
     public ClawState getCurrentState()
     {
         return _currentState;
     }
 
+    public Boolean isProcceorReady() {
+        return (Math.abs(.18 - _pivotinator.getPosition().getValueAsDouble()) < .3);
+    }
+
+    public Boolean isIdle() {
+        return (Math.abs(0 - _pivotinator.getPosition().getValueAsDouble()) < .3);
+    }
 }

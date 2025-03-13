@@ -70,7 +70,7 @@ public class Calsificationinator extends SubsystemBase {
         _pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
         _calsificationDebouncinator = new Debouncer(.1);
-        _calsificationDebouncinatorTwo = new Debouncer(.1);
+        _calsificationDebouncinatorTwo = new Debouncer(.02);
         Slot0Configs slot0 = _pivotConfig.Slot0;
         slot0.kS = 0.24; // Add 0.25 V output to overcome static friction
         slot0.kV = 1.4; // A velocity target of 1 rps results in 0.12 V output
@@ -130,7 +130,7 @@ public class Calsificationinator extends SubsystemBase {
                 if (_previousState == CalsificationinatorState.L1) {
                     _suckinator.set(0.05);
                 } else {
-                    _suckinator.set(0.3);
+                    _suckinator.set(0.25);
                 }
                 break;
             case NOTHING:
@@ -158,24 +158,22 @@ public class Calsificationinator extends SubsystemBase {
         SmartDashboard.putString("Calcificationator Target State", _targetState.name());
         SmartDashboard.putString("Calcificationator Current State", _currentState.name());
         SmartDashboard.putBoolean("Top Coral Detected", _hasCoralinator);
-        SmartDashboard.putBoolean("Bottom Coral Detected", _hasCoralinatorTwo);
+        SmartDashboard.putBoolean("Reef Pole Detected", _hasCoralinatorTwo);
     }
 
     public boolean hasCoralinator() {
-        return _hasCoralinator || _hasCoralinatorTwo;
+        return _hasCoralinator;
     }
 
     public boolean doesNotHaveCoralinator() {
-        return !_hasCoralinator && !_hasCoralinatorTwo;
+        return !_hasCoralinator;
     }
 
     private void handleCoral() {
-        if (_hasCoralinatorTwo) {
+        if (_hasCoralinator) {
             _suckinator.set(.0);
-        } else if (_hasCoralinator) {
-            _suckinator.set(0.05);
         } else {
-            _suckinator.set(0.2);
+            _suckinator.set(0.1);
         }
     }
 

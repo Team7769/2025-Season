@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.587970890410959,
-        "y": 1.8988655821917804
+        "x": 7.132684426229508,
+        "y": 3.002
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.566224315068493,
-        "y": 1.8988655821917806
+        "x": 6.221618852459016,
+        "y": 2.4606045081967203
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.304066780821918,
-        "y": 3.0257919520547945
+        "x": 5.27,
+        "y": 3.002
       },
       "prevControl": {
-        "x": 5.578698630136985,
-        "y": 2.21517123287671
+        "x": 5.885963114754098,
+        "y": 2.604456967213115
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "Prep For Coral",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.8982630272952865,
       "endWaypointRelativePos": null,
       "command": null
     }

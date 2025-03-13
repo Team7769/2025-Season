@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.0,
-        "y": 0.51859631147541
+        "x": 7.576229508196722,
+        "y": 2.9640881147540985
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.0,
-        "y": 0.51859631147541
+        "x": 6.892930327868852,
+        "y": 2.6763831967213116
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.063655821917808,
-        "y": 2.845483732876712
+        "x": 5.370491803278688,
+        "y": 2.520543032786885
       },
       "prevControl": {
-        "x": 4.063655821917811,
-        "y": 2.845483732876712
+        "x": 5.945901639344262,
+        "y": 2.4246413934426223
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef 3"
     }
   ],
   "rotationTargets": [],
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 126.05452798915594
+    "rotation": -60.42216131873873
   },
   "reversed": false,
-  "folder": null,
+  "folder": "TF Test",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 89.06080905426448
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

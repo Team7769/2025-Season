@@ -33,10 +33,11 @@ public final class Constants {
     public static final double kFieldLength = 17.548;
     public static final double kFieldWidth = 8.052;
     public static final double kHalfFieldWidth = 4.026;
+    public static final double kQuarterFieldWidth = 4.026/2;
     public static final double kHalfFieldLength = 8.774;
     public static final Translation2d kFieldCenter = new Translation2d(kHalfFieldLength, kHalfFieldWidth);
     // cage
-    public static final Pose2d kCage = new Pose2d();
+    public static final Pose2d kCage = new Pose2d(0,0, Rotation2d.fromDegrees(90));
 
     // public static final Translation2d kBlueSourceTop = new Translation2d(1, 7);
     // public static final Translation2d kBlueSourceLow = new Translation2d(1, .9);
@@ -99,9 +100,9 @@ public final class Constants {
 
     public static final Pose2d[] kRedSourceBottom = { kRedSourceBottom_A, kRedSourceBottom_C };
 
-    public static final Pose2d kBlueProcessor = new Pose2d(new Translation2d(6.356, 0.592),
+    public static final Pose2d kBlueProcessor = new Pose2d(new Translation2d(6, 0.52),
         new Rotation2d(90 * (Math.PI / 180)));
-    public static final Pose2d kRedProcessor = new Pose2d(new Translation2d(11.525, 7.525),
+    public static final Pose2d kRedProcessor = new Pose2d(GeometryUtil.mirrorReef(kBlueProcessor.getTranslation()),
         new Rotation2d(270 * (Math.PI / 180)));
 
     public static final ReefFace[] kBlueReefFaces = { ReefConstants.kBlueReefFace1, ReefConstants.kBlueReefFace2,
@@ -115,6 +116,8 @@ public final class Constants {
     // the Y value will not be used for the Barge Pose2d coordinates
     public static final Pose2d kBlueBarge = new Pose2d(new Translation2d(7.6, 0), new Rotation2d(180 * (Math.PI / 180)));
     public static final Pose2d kRedBarge = new Pose2d(new Translation2d(10, 0), new Rotation2d(0 * (Math.PI / 180)));
+    public static final Translation2d kBlueBargeHalf = new Translation2d(kHalfFieldLength, kQuarterFieldWidth + kHalfFieldWidth);
+    public static final Translation2d kRedBargeHalf = GeometryUtil.mirrorReef(kBlueBargeHalf);
 
   }
 
@@ -329,8 +332,9 @@ public final class Constants {
       public static final int kDebouncinatorTime = 0;
       public static final int kAscendinatorDetectinatorChannel = 3;
       public static final double kIdle = 0;
-      public static final double kPrepClimb = .25;
-      public static final double kEndClimb = .82;
+      // public static final double kPrepClimb = .47;
+      public static final double kPrepClimb = .57;
+      public static final double kEndClimb = .79;
     }
     public static class CalsificationinatorConstants {
       public static final int kCalsificationatorCANcoderID = 30;
@@ -344,19 +348,19 @@ public final class Constants {
         public static final int kCalsificationDetectinatorChanel = 0;
         public static final int kCalsificationDetectinatorTwoChanel = 1;
         public static final double kIdlePosition = 0;
-        public static final double kPickUpPosition = .78;
-        public static final double kL4Position = -.20;
-        public static final double kL3Position = -.20;
-        public static final double kL2Position = -.20;
-        public static final double kL1Position = -.20;
-        public static final double kPrepClimb = .76;
+        public static final double kPickUpPosition = .876;
+        public static final double kL4Position = -.1;
+        public static final double kL3Position = -.11;
+        public static final double kL2Position = -.11;
+        public static final double kL1Position = -.11;
+        public static final double kPrepClimb = .876;
     }
 
     public static class ElevatinatorConstants {
       public static final int kLifinatorMotor = 15;
       public static final double kAlgaeNet = 71.46;
       public static final double kL4Coral = 71.46;
-      public static final double kL3Coral = 37.96;
+      public static final double kL3Coral = 37;
       public static final double kL3Algae = 55;
       public static final double kL2Coral = 16.17;
       public static final double kL2Algae = 34;
@@ -364,7 +368,7 @@ public final class Constants {
       public static final double kHumanPlayer = 3;
       public static final double kAlgaePickup = 15;
       public static final double kAlgaeProcessor = 8;
-      public static final double kAlgaeHold = 21;
+      public static final double kAlgaeHold = 18;
       public static final double kHome = 0;
       public static final double kLiftinatorMaxHeight = 74;
     }
