@@ -348,7 +348,7 @@ public final class Constants {
         public static final int kCalsificationDetectinatorChanel = 0;
         public static final int kCalsificationDetectinatorTwoChanel = 1;
         public static final double kIdlePosition = 0;
-        public static final double kPickUpPosition = .876;
+        public static final double kPickUpPosition = .87;
         public static final double kL4Position = -.1;
         public static final double kL3Position = -.11;
         public static final double kL2Position = -.11;
