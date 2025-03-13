@@ -350,6 +350,7 @@ public class RobotContainer {
     return Commands.parallel(new InstantCommand(()-> {
       _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeNet);
       _claw.setTargetState(ClawState.PREP_NET);
+      _ledinator.setWantedState(LEDinatorState.ALGAE);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
     }), _drivetrain.setWantedTarget(LocationTarget.BARGE));
     // return Commands.sequence(new InstantCommand(() -> {
@@ -366,6 +367,7 @@ public class RobotContainer {
     return Commands.parallel(new InstantCommand(()-> {
       _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeProcessor);
       _claw.setTargetState(ClawState.PREP_PROCESSOR);
+      _ledinator.setWantedState(LEDinatorState.ALGAE);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
     }), _drivetrain.setWantedTarget(LocationTarget.PROCESSOR));
     // return Commands.sequence(new InstantCommand(() -> {
