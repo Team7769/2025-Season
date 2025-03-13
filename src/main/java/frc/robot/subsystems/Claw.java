@@ -155,8 +155,12 @@ public class Claw extends SubsystemBase {
                 // } else {                    
                 //     _topRollinator.set(0);
                 // }
-                _topRollinator.set(-.2);
+                _topRollinator.set(0);
                 break;
+            case IDLE_WITH_ALGAE:
+                _pivotinator.setControl(_request.withPosition(0.0));
+                _topRollinator.set(-.2);
+            break;
             case FLOOR_INTAKE:
                 _pivotinator.setControl(_request.withPosition(0.375));
                 _topRollinator.set(-.5);
@@ -178,7 +182,7 @@ public class Claw extends SubsystemBase {
                     _topRollinator.set(.7);
                 }
                 if (_previousState == ClawState.PREP_PROCESSOR) {
-                    _topRollinator.set(.5);
+                    _topRollinator.set(.3);
                 }
                 break;
             case TARGET:

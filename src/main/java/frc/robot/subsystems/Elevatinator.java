@@ -39,7 +39,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState> {
     //private Claw _claw;
     public Elevatinator() {
         //_claw = claw;
-        _manualPositioninator = 0;
+        _manualPositioninator = ElevatinatorConstants.kHome;
         _talonFXConfiginator = new TalonFXConfiguration();
         _talonFXConfiginator.Feedback.SensorToMechanismRatio = 1;
         _PIDConfiginator = _talonFXConfiginator.Slot0;

@@ -37,7 +37,7 @@ public final class Constants {
     public static final double kHalfFieldLength = 8.774;
     public static final Translation2d kFieldCenter = new Translation2d(kHalfFieldLength, kHalfFieldWidth);
     // cage
-    public static final Pose2d kCage = new Pose2d();
+    public static final Pose2d kCage = new Pose2d(0,0, Rotation2d.fromDegrees(90));
 
     // public static final Translation2d kBlueSourceTop = new Translation2d(1, 7);
     // public static final Translation2d kBlueSourceLow = new Translation2d(1, .9);
@@ -332,8 +332,9 @@ public final class Constants {
       public static final int kDebouncinatorTime = 0;
       public static final int kAscendinatorDetectinatorChannel = 3;
       public static final double kIdle = 0;
-      public static final double kPrepClimb = .25;
-      public static final double kEndClimb = .82;
+      // public static final double kPrepClimb = .47;
+      public static final double kPrepClimb = .57;
+      public static final double kEndClimb = .79;
     }
     public static class CalsificationinatorConstants {
       public static final int kCalsificationatorCANcoderID = 30;
