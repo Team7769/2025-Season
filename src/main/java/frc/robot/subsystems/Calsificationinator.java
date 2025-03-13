@@ -130,7 +130,7 @@ public class Calsificationinator extends SubsystemBase {
                 if (_previousState == CalsificationinatorState.L1) {
                     _suckinator.set(0.05);
                 } else {
-                    _suckinator.set(0.175);
+                    _suckinator.set(0.25);
                 }
                 break;
             case NOTHING:
@@ -158,15 +158,15 @@ public class Calsificationinator extends SubsystemBase {
         SmartDashboard.putString("Calcificationator Target State", _targetState.name());
         SmartDashboard.putString("Calcificationator Current State", _currentState.name());
         SmartDashboard.putBoolean("Top Coral Detected", _hasCoralinator);
-        SmartDashboard.putBoolean("Bottom Coral Detected", _hasCoralinatorTwo);
+        SmartDashboard.putBoolean("Reef Pole Detected", _hasCoralinatorTwo);
     }
 
     public boolean hasCoralinator() {
-        return _hasCoralinator || _hasCoralinatorTwo;
+        return _hasCoralinator;
     }
 
     public boolean doesNotHaveCoralinator() {
-        return !_hasCoralinator && !_hasCoralinatorTwo;
+        return !_hasCoralinator;
     }
 
     private void handleCoral() {

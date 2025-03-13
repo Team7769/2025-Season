@@ -76,7 +76,7 @@ public class Ascendinator extends SubsystemBase {
                     _ascendinator.set(0);
                     _readyToClimb = true;
                 } else {
-                    _ascendinator.set(0.4);
+                    _ascendinator.set(0.8);
                 }
                 break;
 
@@ -85,7 +85,7 @@ public class Ascendinator extends SubsystemBase {
                     _ascendinator.set(0);
                     _currentState = CageState.IDLE;
                 } else {
-                    _ascendinator.set(0.4);
+                    _ascendinator.set(0.5);
                 }
                 break;
             default:
