@@ -1,0 +1,56 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Start to Reef 3"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Target Reef 3 Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Prep Coral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Score Coral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom Start to Coral TF"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Wait For Coral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": false,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.370491803278688,
-        "y": 2.520543032786885
+        "x": 3.993,
+        "y": 2.83
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5843237704918027,
-        "y": 1.9331454918032782
+        "x": 2.865061475409836,
+        "y": 2.0650102459016386
       },
       "isLocked": false,
-      "linkedName": "Reef 3"
+      "linkedName": "Reef 4 Right"
     },
     {
       "anchor": {
@@ -20,8 +20,8 @@
         "y": 1.0724529109589036
       },
       "prevControl": {
-        "x": 2.3975409836065573,
-        "y": 1.7413422131147547
+        "x": 2.2057377049180324,
+        "y": 1.6454405737704905
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "TF Test",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -60.42216131873873
+    "rotation": -123.024
   },
   "useDefaultConstraints": true
 }

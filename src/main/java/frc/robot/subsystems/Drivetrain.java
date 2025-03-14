@@ -162,6 +162,16 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         }
     }
 
+    public void resetPoseToPath(String pathName){
+        try {
+            this.resetPose(PathPlannerPath.fromPathFile(pathName).getStartingHolonomicPose().get());
+        }
+        catch (Exception ex) {
+            DriverStation.reportError("Failed to reset pose for path: " + pathName,
+                    ex.getStackTrace());
+        }
+    }
+
     public FollowPathCommand getPathCommand(String pathName){
         try {
             return new FollowPathCommand(PathPlannerPath.fromPathFile(pathName), () -> getState().Pose, () -> getState().Speeds, (speeds, feedforwards) -> setControl(
