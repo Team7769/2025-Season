@@ -93,7 +93,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private double coralPoseRightOffsetX = 0.446;
 
     private double algaePoseOffsetY = 0.08;
-    private double algaePoseOffsetX = 0.446;
+    // private double algaePoseOffsetX = 0.446;
+    private double algaePoseOffsetX = 0.42;
 
     private double coralStationOffsetY = 0.61;
 

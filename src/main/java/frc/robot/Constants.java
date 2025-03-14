@@ -359,7 +359,7 @@ public final class Constants {
     public static class ElevatinatorConstants {
       public static final int kLifinatorMotor = 15;
       public static final double kAlgaeNet = 71.46;
-      public static final double kL4Coral = 71.46;
+      public static final double kL4Coral = 70;
       public static final double kL3Coral = 37;
       public static final double kL3Algae = 55;
       public static final double kL2Coral = 16.17;

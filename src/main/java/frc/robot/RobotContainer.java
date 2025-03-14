@@ -323,6 +323,7 @@ public class RobotContainer {
         ),
         _claw.setWantedState(ClawState.IDLE_WITH_ALGAE),
         _elevatinator.setWantedState(ElavatinatorState.HOMEWITHALGAE),
+        _ledinator.setWantedState(LEDinatorState.ALGAE),
         _calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
   }
 
