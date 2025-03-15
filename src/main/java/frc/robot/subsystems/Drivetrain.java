@@ -100,7 +100,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
     private DrivetrainState _currentState = DrivetrainState.AUTO;
     private DrivetrainState _previousState = DrivetrainState.IDLE;
-    private LocationTarget _currentTarget = LocationTarget.NONE;
+    private LocationTarget _currentTarget = LocationTarget.REEF;
     private FollowType _followType = FollowType.POINT;
     private Pose2d _target = new Pose2d();
     private Pose2d _tagPoseTarget = new Pose2d();

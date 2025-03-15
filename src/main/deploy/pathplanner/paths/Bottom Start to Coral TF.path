@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.370491803278688,
-        "y": 2.520543032786885
+        "x": 5.364169520547945,
+        "y": 2.5149186643835617
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.5843237704918027,
-        "y": 1.9331454918032782
+        "x": 3.578001487761059,
+        "y": 1.9275211233999547
       },
       "isLocked": false,
       "linkedName": "Reef 3"
@@ -45,7 +45,7 @@
     "rotation": -128.991
   },
   "reversed": false,
-  "folder": "TF Test",
+  "folder": "TF Test Right",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -60.42216131873873

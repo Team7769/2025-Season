@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.70922131147541,
+        "x": 2.7092213114754093,
         "y": 2.244825819672131
       },
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": -128.991
   },
   "reversed": false,
-  "folder": "TF Test",
+  "folder": "TF Test Right",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -119.02399999999999

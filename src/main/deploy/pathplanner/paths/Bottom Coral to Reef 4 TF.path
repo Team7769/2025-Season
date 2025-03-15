@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.6202868852459016,
-        "y": 2.4486168032786884
+        "x": 3.425856164383562,
+        "y": 2.3947131849315064
       },
       "prevControl": {
-        "x": 2.84108606557377,
-        "y": 2.02904713114754
+        "x": 2.6466553447114305,
+        "y": 1.9751435128003583
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,11 +41,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
+    "velocity": 0.5,
     "rotation": -120.55596427550776
   },
   "reversed": false,
-  "folder": "TF Test",
+  "folder": "TF Test Right",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -128.991
