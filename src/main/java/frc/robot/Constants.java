@@ -334,7 +334,7 @@ public final class Constants {
       public static final double kIdle = 0;
       // public static final double kPrepClimb = .47;
       public static final double kPrepClimb = .57;
-      public static final double kEndClimb = .79;
+      public static final double kEndClimb = .81;
     }
     public static class CalsificationinatorConstants {
       public static final int kCalsificationatorCANcoderID = 30;
