@@ -101,8 +101,8 @@ public class RobotContainer {
     registerEventTriggersForAuto();
     registerNamedCommandsForAuto();
     _autoChooser = AutoBuilder.buildAutoChooser();
-    _autoChooser.addOption("Test Auto TF - Right", getTestAutoRight());
-    _autoChooser.addOption("Test Auto TF - Left", getTestAutoLeft());
+    _autoChooser.addOption("RCH Special", getTestAutoRight());
+    _autoChooser.addOption("LGHP Special", getTestAutoLeft());
     SmartDashboard.putData("AutoChooser", _autoChooser);
     configureBindings();
   }
