@@ -1,0 +1,70 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.572945205479453,
+        "y": 6.091031678082191
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.4159674657534245,
+        "y": 6.00087756849315
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.019,
+        "y": 5.234567636986301
+      },
+      "prevControl": {
+        "x": 5.72478595890411,
+        "y": 5.850620719178083
+      },
+      "nextControl": null,
+      "isLocked": false,
+  "constraintZones": [
+    {
+      "minWaypointRelativePos": 0.7322033898305084,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Prep For Coral",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 58.3924977537512
+  },
+  "reversed": false,
+  "folder": "Top Cr B",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.24127782495061062
+  },
+  "useDefaultConstraints": true
+}

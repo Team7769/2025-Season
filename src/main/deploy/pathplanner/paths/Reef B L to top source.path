@@ -1,0 +1,75 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.993,
+        "y": 5.214
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.252472448976538,
+        "y": 5.934040415961452
+      },
+      "isLocked": false,
+      "linkedName": "Reef 6 Left"
+    },
+    {
+      "anchor": {
+        "x": 1.247,
+        "y": 7.068
+      },
+      "prevControl": {
+        "x": 1.6844707418186913,
+        "y": 6.659934872079525
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.6711864406779666,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.5,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Go Home Elevator",
+      "waypointRelativePos": 0.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 125.53800000000001
+  },
+  "reversed": false,
+  "folder": "Top Cr B",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 120.33226448539487
+  },
+  "useDefaultConstraints": true
+}

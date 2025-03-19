@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.370491803278688,
+        "y": 2.520543032786885
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.5843237704918027,
+        "y": 1.9331454918032782
+      },
+      "isLocked": false,
+      "linkedName": "Reef 3"
+    },
+    {
+      "anchor": {
+        "x": 1.2321061643835618,
+        "y": 1.0724529109589036
+      },
+      "prevControl": {
+        "x": 2.3975409836065573,
+        "y": 1.7413422131147547
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Coral Station"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "Go Home Elevator",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -128.991
+  },
+  "reversed": false,
+  "folder": "TF Test",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -60.42216131873873
+  },
+  "useDefaultConstraints": true
+}
