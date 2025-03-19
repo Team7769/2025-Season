@@ -3,7 +3,8 @@
   "robotLength": 0.889,
   "holonomicMode": true,
   "pathFolders": [
-    "TF Test",
+    "TF Test Left",
+    "TF Test Right",
     "Top Cr B"
   ],
   "autoFolders": [],

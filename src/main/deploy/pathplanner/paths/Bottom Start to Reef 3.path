@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.576229508196722,
-        "y": 2.9640881147540985
+        "x": 7.1566598360655735,
+        "y": 2.976075819672131
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.892930327868852,
-        "y": 2.6763831967213116
+        "x": 6.473360655737704,
+        "y": 2.688370901639344
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.370491803278688,
-        "y": 2.520543032786885
+        "x": 5.364169520547945,
+        "y": 2.5149186643835617
       },
       "prevControl": {
-        "x": 5.945901639344262,
-        "y": 2.4246413934426223
+        "x": 5.939579356613518,
+        "y": 2.419017025039299
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,11 +41,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": -60.42216131873873
   },
   "reversed": false,
-  "folder": "TF Test",
+  "folder": "TF Test Right",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

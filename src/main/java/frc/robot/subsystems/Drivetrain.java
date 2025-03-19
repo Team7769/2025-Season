@@ -93,13 +93,14 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private double coralPoseRightOffsetX = 0.446;
 
     private double algaePoseOffsetY = 0.08;
-    private double algaePoseOffsetX = 0.446;
+    // private double algaePoseOffsetX = 0.446;
+    private double algaePoseOffsetX = 0.42;
 
     private double coralStationOffsetY = 0.61;
 
     private DrivetrainState _currentState = DrivetrainState.AUTO;
     private DrivetrainState _previousState = DrivetrainState.IDLE;
-    private LocationTarget _currentTarget = LocationTarget.NONE;
+    private LocationTarget _currentTarget = LocationTarget.REEF;
     private FollowType _followType = FollowType.POINT;
     private Pose2d _target = new Pose2d();
     private Pose2d _tagPoseTarget = new Pose2d();
@@ -157,6 +158,16 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                     autoController, RobotConfig.fromGUISettings(), GeometryUtil::isRedAlliance, this);
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder",
+                    ex.getStackTrace());
+        }
+    }
+
+    public void resetPoseToPath(String pathName){
+        try {
+            this.resetPose(PathPlannerPath.fromPathFile(pathName).getStartingHolonomicPose().get());
+        }
+        catch (Exception ex) {
+            DriverStation.reportError("Failed to reset pose for path: " + pathName,
                     ex.getStackTrace());
         }
     }
