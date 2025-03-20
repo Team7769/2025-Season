@@ -46,7 +46,7 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState> {
         _PIDConfiginator.withGravityType(GravityTypeValue.Elevator_Static);
         _PIDConfiginator.kG = 0.37009;
         _PIDConfiginator.kS = 0.060989;
-        _PIDConfiginator.kV = 0.1204;
+        _PIDConfiginator.kV = 0.2;
         _PIDConfiginator.kP = 4; 
         _PIDConfiginator.kI = 0; 
         _PIDConfiginator.kD = 0.05;
