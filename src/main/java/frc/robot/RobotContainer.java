@@ -257,6 +257,7 @@ public class RobotContainer {
           .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
           .andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
           .handleInterrupt(() -> System.out.println("Interrupted doThing."))
+          .until(_driverController.leftTrigger().or(_driverController.b())).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
           .until(_driverController.a()).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
         } else {
           return 
@@ -265,6 +266,7 @@ public class RobotContainer {
           .andThen(doinator(null))
           .andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
           .handleInterrupt(() -> System.out.println("Interrupted doThing."))
+          .until(_driverController.leftTrigger().or(_driverController.b())).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
           .until(_driverController.a()).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
         }
       } else if (_claw.getTargetState() == ClawState.DEALGIFY){
@@ -288,6 +290,7 @@ public class RobotContainer {
       .andThen(scoreSequence())
       .andThen(goHomeinator().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))))
       .handleInterrupt(() -> System.out.println("Interrupted doThing."))
+      .until(_driverController.leftTrigger().or(_driverController.b())).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
       .until(_driverController.a()).andThen(goHomeinator().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
       );
     } else {
