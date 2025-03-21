@@ -29,6 +29,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -138,7 +139,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         _vision = vision;
         m_field = new Field2d();
         _fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded);
-        _targetFollowDebouncer = new Debouncer(.1, DebounceType.kRising);
+        _targetFollowDebouncer = new Debouncer(.2, DebounceType.kRising);
         SmartDashboard.putData("Field", m_field);
 
         _targetFollowControllerX = new PIDController(0.85, 0, 0);
@@ -457,6 +458,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         yFollow = _targetFollowControllerY.calculate(currentPose.getY());
         targetRotation = _targetFollowControllerZ.calculate(currentPose.getRotation().getDegrees());
 
+        xFollow = MathUtil.clamp(xFollow, -.35, .35);
+        yFollow = MathUtil.clamp(yFollow, -.35, .35);
         // if (Math.abs(yFollow) > .25) {
         //     if (yFollow > 0)
         //         yFollow = .25;
@@ -523,6 +526,10 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             _targetFollowControllerX.atSetpoint()
             && _targetFollowControllerY.atSetpoint()
             && _targetFollowControllerZ.atSetpoint());
+    }
+
+    public boolean isNearTarget() {
+        return GeometryUtil.getDistanceToTarget(_target.getTranslation(), this::getPose) < 1.05;
     }
 
     // #region State logic
