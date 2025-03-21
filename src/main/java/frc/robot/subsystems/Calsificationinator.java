@@ -127,8 +127,8 @@ public class Calsificationinator extends SubsystemBase {
                 handleCoral();
                 break;
             case SCORE:
-                if (_previousState == CalsificationinatorState.L1) {
-                    _suckinator.set(0.05);
+                if (_previousState == CalsificationinatorState.L2) {
+                    _suckinator.set(0.2);
                 } else {
                     _suckinator.set(0.25);
                 }
