@@ -302,6 +302,7 @@ public class RobotContainer {
         }
         //,  _elevatinator, _drivetrain
         ),
+        _drivetrain.setWantedState(DrivetrainState.OPEN_LOOP),
         _drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE),
         _ledinator.setWantedState(LEDinatorState.CORAL),
         _claw.setWantedState(ClawState.IDLE),
