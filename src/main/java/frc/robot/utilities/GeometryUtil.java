@@ -85,6 +85,19 @@ public class GeometryUtil {
             .minus(currentPose.get().getRotation())
             .getDegrees();
     }
+    
+    /**
+     * Gets the rotation difference between a provided angle.
+     * @param currentPose Supplier for the current pose to evaluate from. This should usually be the pose from the pose estimator.
+     * @param angle The angle to evaluate the rotation to.
+     * @return The difference between the supplied pose and the provided angle.
+     */
+    public static double getRotationDifference(Pose2d currentPose, double angle) {
+        return Rotation2d
+            .fromDegrees(angle)
+            .minus(currentPose.getRotation())
+            .getDegrees();
+    }
 
     /**
      * Gets the distance across the x-axis to the target translation (point).
@@ -97,6 +110,16 @@ public class GeometryUtil {
     }
 
     /**
+     * Gets the distance across the x-axis to the target translation (point).
+     * @param targetTranslation The target translation (point) on the field.
+     * @param currentPose Supplier for the current pose to evaluate from. This should usually be the pose from the pose estimator.
+     * @return The x, in meters, to the target translation (point).
+     */
+    public static double getXDifference(Pose2d targetPose, Pose2d currentPose) {
+        return currentPose.getTranslation().getX() - targetPose.getTranslation().getX();
+    }
+
+    /**
      * Gets the distance across the y-axis to the target translation (point).
      * @param targetTranslation The target translation (point) on the field.
      * @param currentPose Supplier for the current pose to evaluate from. This should usually be the pose from the pose estimator.
@@ -104,5 +127,15 @@ public class GeometryUtil {
      */
     public static double getYDifference(Pose2d targetPose, Supplier<Pose2d> currentPose) {
         return currentPose.get().getTranslation().getY() - targetPose.getTranslation().getY();
+    }
+    
+    /**
+     * Gets the distance across the y-axis to the target translation (point).
+     * @param targetTranslation The target translation (point) on the field.
+     * @param currentPose Supplier for the current pose to evaluate from. This should usually be the pose from the pose estimator.
+     * @return The y, in meters, to the target translation (point).
+     */
+    public static double getYDifference(Pose2d targetPose, Pose2d currentPose) {
+        return currentPose.getTranslation().getY() - targetPose.getTranslation().getY();
     }
 }

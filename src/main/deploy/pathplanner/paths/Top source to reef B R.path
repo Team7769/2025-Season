@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.666267123287671,
-        "y": 5.054259417808219
+        "x": 3.709,
+        "y": 5.05
       },
       "prevControl": {
-        "x": 2.9771246624290213,
-        "y": 5.7604898385983
+        "x": 3.0198575391413502,
+        "y": 5.7562304207900805
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef 6 Right"
     }
   ],
   "rotationTargets": [],
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "Prep For Coral",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.9,
       "endWaypointRelativePos": null,
       "command": null
     }
@@ -63,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 120.33226448539487
+    "rotation": 120.332
   },
   "reversed": false,
   "folder": "Top Cr B",

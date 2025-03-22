@@ -253,22 +253,22 @@ public class LEDinator extends SubsystemBase {
             }
                 break;
             case CAGE:
-            if(_ascendinator.getCurrentState() == CageState.ASCEND && _ascendinator.hasCage())
+            if(_ascendinator.getCurrentState() == CageState.ASCEND)
             {
                 setEpicClimbAnimation();
             }
-            else if(_ascendinator.getCurrentState() == CageState.ASCEND && !_ascendinator.hasCage())
-            {
-                setImplosionAnimation();
-            }
-            else if(_ascendinator.getCurrentState() == CageState.DEPLOY && _ascendinator.hasCage())
-            {
-                setHasCageAnimation();
-            }
-            else if(_ascendinator.getCurrentState() == CageState.DEPLOY && !_ascendinator.hasCage())
+            // else if(_ascendinator.getCurrentState() == CageState.ASCEND && !_ascendinator.hasCage())
+            // {
+            //     setImplosionAnimation();
+            // }
+            else if(_ascendinator.getCurrentState() == CageState.DEPLOY)
             {
                 setWaitingForCageAnimation();
             }
+            // else if(_ascendinator.getCurrentState() == CageState.DEPLOY)
+            // {
+            //     setHasCageAnimation();
+            // }
             else
             {
                 setEpicClimbAnimation();

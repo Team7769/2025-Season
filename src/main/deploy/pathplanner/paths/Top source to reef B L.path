@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.936729452054794,
-        "y": 5.234567636986301
+        "x": 3.993,
+        "y": 5.214
       },
       "prevControl": {
-        "x": 3.1481489726027396,
-        "y": 5.857265410958904
+        "x": 3.2044195205479453,
+        "y": 5.836697773972603
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Reef 6 Left"
     }
   ],
   "rotationTargets": [],
@@ -48,7 +48,7 @@
   "eventMarkers": [
     {
       "name": "Prep For Coral",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0.9,
       "endWaypointRelativePos": null,
       "command": null
     }

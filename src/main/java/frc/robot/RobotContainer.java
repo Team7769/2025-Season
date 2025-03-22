@@ -18,13 +18,16 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Elevatinator;
 import frc.robot.utilities.*;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.events.Event;
 import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
@@ -40,7 +43,11 @@ import frc.robot.subsystems.Claw;
 import frc.robot.subsystems.Vision;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -86,45 +93,32 @@ public class RobotContainer {
     _ledinator = new
     LEDinator(_calsificationinator,_claw,_elevatinator,_ascendinator);
 
+    SmartDashboard.putData(_elevatinator);
+    SmartDashboard.putData(_claw);
+    SmartDashboard.putData(_calsificationinator);
+    SmartDashboard.putData(_ascendinator);
+
     registerEventTriggersForAuto();
     registerNamedCommandsForAuto();
     _autoChooser = AutoBuilder.buildAutoChooser();
+    _autoChooser.addOption("RCH Special", getTestAutoRight());
+    _autoChooser.addOption("LGHP Special", getTestAutoLeft());
     SmartDashboard.putData("AutoChooser", _autoChooser);
     configureBindings();
   }
 
   private void registerNamedCommandsForAuto()
   {
-    // NamedCommands.registerCommand("Wait Until Coral Scored", Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator).andThen(goHomeinator()));
-    NamedCommands.registerCommand("Score Coral", Commands.sequence(Commands.waitUntil(_elevatinator::isReady), _calsificationinator.setWantedState(CalsificationinatorState.SCORE),
-      Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator), Commands.parallel(
-        _claw.setWantedState(ClawState.IDLE),
-        _calsificationinator.setWantedState(CalsificationinatorState.PICKUP))));
-    NamedCommands.registerCommand("Wait For Coral", Commands.sequence(Commands.waitUntil(_calsificationinator::hasCoralinator), _calsificationinator.setWantedState(CalsificationinatorState.IDLE)));
-    // NamedCommands.registerCommand("Go Home", Commands.parallel(
-    //   _claw.setWantedState(ClawState.IDLE),
-    //   _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)));
+    NamedCommands.registerCommand("Score Coral", scoreSequence());
+    NamedCommands.registerCommand("Wait For Coral", waitForCoral());
   }
 
   private void registerEventTriggersForAuto() {
-    // new EventTrigger("Score Coral").onTrue(
-    //   Commands.sequence(Commands.waitUntil(_elevatinator::isReady), _calsificationinator.setWantedState(CalsificationinatorState.SCORE), Commands.waitSeconds(.4))
-    // );
-    // new EventTrigger("Prep For Coral").onTrue(
-    //   Commands.sequence(
-    //     new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL4Coral), _elevatinator),
-    //     _elevatinator.setWantedState(ElavatinatorState.HOLD),
-    //     _calsificationinator.setWantedState(CalsificationinatorState.L4)));
     new EventTrigger("Prep For Coral").onTrue(
       Commands.sequence(
         new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL4Coral), _elevatinator),
         _elevatinator.setWantedState(ElavatinatorState.HOLD)));
-    // new EventTrigger("Go Home").onTrue(
-    //   Commands.parallel(
-    //     _claw.setWantedState(ClawState.IDLE),
-    //     _elevatinator.setWantedState(ElavatinatorState.HOME),
-    //     _calsificationinator.setWantedState(CalsificationinatorState.PICKUP))
-    // );  
+        
     new EventTrigger("Go Home Elevator").onTrue(_elevatinator.setWantedState(ElavatinatorState.HOME));
   }
 
@@ -147,64 +141,47 @@ public class RobotContainer {
         _drivetrain.applyRequest(() -> _drivetrain.drive.withVelocityX(0).withVelocityY(0).withRotationalRate(0)));
 
     _driverController.rightTrigger().onTrue(scoreinator()).onFalse(goHomeinator());
-    _driverController.leftTrigger().onTrue(doinator(null));
+    //_driverController.leftTrigger().onTrue(doinator(null));
+    _driverController.leftTrigger().onTrue(Commands.defer(this::doThing, Set.of()));
+
     _driverController.start().onTrue(_drivetrain.resetGyro());
-    _driverController.a().onTrue(_claw.hasAlgae() ? goHomeinatorWithAlgae(): goHomeinator());
+    new Trigger(_claw::hasAlgae).and(_driverController.a()).onTrue(goHomeinatorWithAlgae());
+    new Trigger(_claw::doesNotHaveAlgae).and(_driverController.a()).onTrue(goHomeinator());
+    _driverController.b().onTrue(doinator(null));
     _driverController.leftBumper().onTrue(_drivetrain.setWantedState(DrivetrainState.TARGET_FOLLOW))
     .onFalse(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
-    // _driverController.leftBumper().onTrue(Commands.runOnce(SignalLogger::start));
-    // _driverController.rightBumper().onTrue(Commands.runOnce(SignalLogger::stop));
-    // _driverController.y().whileTrue(_drivetrain.sysIdQuasistatic(Direction.kForward));
-    // _driverController.b().whileTrue(_drivetrain.sysIdQuasistatic(Direction.kReverse));
-    // _driverController.a().whileTrue(_drivetrain.sysIdDynamic(Direction.kForward));
-    // _driverController.x().whileTrue(_drivetrain.sysIdDynamic(Direction.kReverse));
     _driverController.povUp().onTrue(Commands.parallel
-    (_ascendinator.setWantedState(CageState.DEPLOY)
-     , _ledinator.setWantedState(LEDinatorState.CAGE),
+    (_drivetrain.setWantedTarget(LocationTarget.CAGE),
+      _ascendinator.setWantedState(CageState.DEPLOY),
+      _ledinator.setWantedState(LEDinatorState.CAGE),
      _calsificationinator.setWantedState(CalsificationinatorState.PICKUP),
      _claw.setWantedState(ClawState.PREP_CLIMB)
     ));
-    new
-    Trigger(_ascendinator::isReady).and(_driverController.back()).onTrue(Commands.parallel(_ascendinator.setWantedState(CageState.ASCEND), 
+    new Trigger(_ascendinator::isReady).and(_driverController.back()).onTrue(Commands.parallel(_ascendinator.setWantedState(CageState.ASCEND), 
     _claw.setWantedState(ClawState.PREP_CLIMB), _calsificationinator.setWantedState(CalsificationinatorState.PREP_CLIMB), _elevatinator.setWantedState(ElavatinatorState.HOME)));
 
     new Trigger(DriverStation::isTeleopEnabled).onTrue(_drivetrain.setWantedState(DrivetrainState.OPEN_LOOP));
 
-    // new
-    // Trigger(_claw::doesNotHaveAlgae).and(_driverController.rightBumper()).onTrue(Commands.sequence(new InstantCommand(()->{
-    //   _targetClawState = ClawState.FLOOR_INTAKE;
-    //   _elevatinator.setPositioninator(Constants.ElevatinatorConstants.kAlgaePickup);
-    // }), Commands.parallel(
-    //   _claw.setWantedState(ClawState.FLOOR_INTAKE), 
-    //   _calsificationinator.setWantedState(CalsificationinatorState.PICKUP),
-    //   _elevatinator.setWantedState(ElavatinatorState.HOLD))));
-
-    new Trigger(_driverController.rightBumper()).negate().and(_claw::doesNotHaveAlgae).onTrue(Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.ALGAE)));
-    new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
     
-    new Trigger(_calsificationinator::hasCoralinator).and(DriverStation::isTeleopEnabled)
-        .onTrue(_calsificationinator.setWantedState(CalsificationinatorState.IDLE))
-        .onFalse(_calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
 
-    _driverController.rightBumper().onTrue(Commands.parallel(new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaePickup)), 
-      _elevatinator.setWantedState(ElavatinatorState.HOLD), _claw.setWantedState(ClawState.FLOOR_INTAKE), _ledinator.setWantedState(LEDinatorState.ALGAE), _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
-      .onFalse(_claw.hasAlgae() ? Commands.parallel(goHomeinatorWithAlgae(), _ledinator.setWantedState(LEDinatorState.ALGAE)) : Commands.parallel(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.CORAL)));
-
+    _driverController.rightBumper().onTrue(
+      Commands.parallel(
+        new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaePickup)), 
+      _elevatinator.setWantedState(ElavatinatorState.HOLD), 
+      _claw.setWantedState(ClawState.FLOOR_INTAKE), 
+      _ledinator.setWantedState(LEDinatorState.ALGAE), 
+      _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)));
+      
     new Trigger(_claw::hasAlgae).onTrue(goHomeinatorWithAlgae());
+    new Trigger(_driverController.rightBumper().negate()).and(_claw::doesNotHaveAlgae).onTrue(goHomeinatorForFloorPickup());
 
     if (!_ascendinator.isReady()){
       new Trigger(_calsificationinator::hasCoralinator).and(DriverStation::isTeleopEnabled)
       .onTrue(_calsificationinator.setWantedState(CalsificationinatorState.IDLE))
       .onFalse(_calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
     }
-  
-    // _operatorController.y()
-    //     .onTrue(algaeSetinator(ElevatinatorConstants.kAlgaeNet, CalsificationinatorState.PICKUP, ClawState.PREP_NET));
-    // _operatorController.x().onTrue(
-    //     algaeSetinator(ElevatinatorConstants.kAlgaeProcessor, CalsificationinatorState.PICKUP, ClawState.PREP_PROCESSOR));
-    //_operatorController.b()
-    //    .onTrue(doinator(ClawState.IDLE, CalsificationinatorState.PICKUP, LEDinatorState.CORAL));
+    
     _reefController.rightBumper().onTrue(new InstantCommand(() -> 
     {
       _drivetrain.setReefTargetFace(1);
@@ -230,18 +207,17 @@ public class RobotContainer {
       _drivetrain.setReefTargetFace(0);
       _elevatinator.setAlgaePosition(0);
     }));
-
-    _reefController.povLeft().onTrue(reefSetinator(ElevatinatorConstants.kL4Coral, ReefConstants.kReefLeft,
+    _reefController.povLeft().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL4Coral, ReefConstants.kReefLeft,
         CalsificationinatorState.L4, ClawState.IDLE, ScoringTarget.REEF));
-    _reefController.leftStick().onTrue(reefSetinator(ElevatinatorConstants.kL4Coral, ReefConstants.kReefRight,
+    _reefController.leftStick().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL4Coral, ReefConstants.kReefRight,
         CalsificationinatorState.L4, ClawState.IDLE, ScoringTarget.REEF));
-    _reefController.back().onTrue(reefSetinator(ElevatinatorConstants.kL3Coral, ReefConstants.kReefLeft,
+    _reefController.back().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL3Coral, ReefConstants.kReefLeft,
         CalsificationinatorState.L3, ClawState.IDLE, ScoringTarget.REEF));
-    _reefController.rightStick().onTrue(reefSetinator(ElevatinatorConstants.kL3Coral, ReefConstants.kReefRight,
+    _reefController.rightStick().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL3Coral, ReefConstants.kReefRight,
         CalsificationinatorState.L3, ClawState.IDLE, ScoringTarget.REEF));
-    _reefController.start().onTrue(reefSetinator(ElevatinatorConstants.kL2Coral, ReefConstants.kReefLeft,
+    _reefController.start().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL2Coral, ReefConstants.kReefLeft,
         CalsificationinatorState.L2, ClawState.IDLE, ScoringTarget.REEF));
-    _reefController.povUp().onTrue(reefSetinator(ElevatinatorConstants.kL2Coral, ReefConstants.kReefRight,
+    _reefController.povUp().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL2Coral, ReefConstants.kReefRight,
         CalsificationinatorState.L2, ClawState.IDLE, ScoringTarget.REEF));
     // _reefController.povRight().onTrue(reefSetinator(ElevatinatorConstants.kL1Coral,
     // ReefConstants.kReefAlgae, CalsificationinatorState.L1, ClawState.IDLE,
@@ -264,6 +240,61 @@ public class RobotContainer {
   return _autoChooser.getSelected();
   }
 
+  public Command getReturnCommand(){
+    return _claw.hasAlgae() ? new ParallelCommandGroup(goHomeinatorWithAlgae(), _ledinator.setWantedState(LEDinatorState.ALGAE))
+                            : new ParallelCommandGroup(goHomeinatorForFloorPickup(), _ledinator.setWantedState(LEDinatorState.CORAL));
+  }
+
+  public Command doThing(){
+    if (_drivetrain.getCurrentTarget() != LocationTarget.CORAL_SOURCE && _drivetrain.getCurrentTarget() != LocationTarget.CAGE)
+    {
+      if (_claw.hasAlgae()){
+        SmartDashboard.putString("Current Action", "Claw has algae for DoThing");
+        if (_drivetrain.getCurrentTarget() == LocationTarget.PROCESSOR) {
+          return 
+          Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW))
+          .andThen(doinator(null))
+          .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
+          .andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
+          .handleInterrupt(() -> System.out.println("Interrupted doThing."))
+          .until(_driverController.a()).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
+        } else {
+          return 
+          Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW))
+          .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
+          .andThen(doinator(null))
+          .andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
+          .handleInterrupt(() -> System.out.println("Interrupted doThing."))
+          .until(_driverController.a()).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
+        }
+      } else if (_claw.getTargetState() == ClawState.DEALGIFY){
+        SmartDashboard.putString("Current Action", "Claw is dealgifying for DoThing");
+        return Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW))
+        .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
+        .andThen(doinator(null))
+        .andThen(Commands.waitUntil(_claw::hasAlgae))
+        .andThen(goHomeinatorWithAlgae().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))))
+        .handleInterrupt(() -> System.out.println("Interrupted doThing."))
+        .until(_driverController.a()).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))
+        );
+      }
+      SmartDashboard.putString("Current Action", "Coral for DoThing");
+      return 
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW))
+      .andThen(Commands.waitUntil(_drivetrain::isNearTarget))
+      .andThen(doinator(null))
+      .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
+      .andThen(Commands.waitUntil(_elevatinator::isReady))
+      .andThen(scoreSequence())
+      .andThen(goHomeinator().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))))
+      .handleInterrupt(() -> System.out.println("Interrupted doThing."))
+      .until(_driverController.a()).andThen(goHomeinator().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
+      );
+    } else {
+      return new InstantCommand();
+    }
+  }
+
   public Command goHomeinator() {
     return Commands.parallel(
         new InstantCommand(() -> {
@@ -272,6 +303,7 @@ public class RobotContainer {
         }
         //,  _elevatinator, _drivetrain
         ),
+        _drivetrain.setWantedState(DrivetrainState.OPEN_LOOP),
         _drivetrain.setWantedTarget(LocationTarget.CORAL_SOURCE),
         _ledinator.setWantedState(LEDinatorState.CORAL),
         _claw.setWantedState(ClawState.IDLE),
@@ -289,34 +321,30 @@ public class RobotContainer {
     return Commands.parallel(
         new InstantCommand(() -> {
           _elevatinator.setHoldAlgaePosition(false);
-          _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeHold);
+          // _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeHold);
         }
         ),
-        _claw.setWantedState(ClawState.IDLE),
+        _claw.setWantedState(ClawState.IDLE_WITH_ALGAE),
         _elevatinator.setWantedState(ElavatinatorState.HOMEWITHALGAE),
+        _ledinator.setWantedState(LEDinatorState.ALGAE),
         _calsificationinator.setWantedState(CalsificationinatorState.PICKUP));
   }
 
-  // public Command doinator(ClawState clawinator,
-  //     CalsificationinatorState calsificationinatorState, LEDinatorState ledinatorState) {
-  //   return Commands.parallel(
-  //     //_claw.setWantedState(clawinator),
-  //     _elevatinator.setWantedState(ElavatinatorState.HOLD),
-  //     _calsificationinator.setWantedState(CalsificationinatorState.L4)
-  //     // _ledinator.setWantedState(ledinatorState)
-  //     );
-  // }
-
   public Command doinator(LEDinatorState ledinatorState) {
-    return Commands.parallel(
-      _claw.setWantedState(ClawState.TARGET),
-      _elevatinator.setWantedState(ElavatinatorState.HOLD),
-      _calsificationinator.setWantedState(CalsificationinatorState.TARGET)
-      // _claw.setWantedState(ClawState.IDLE),
-      // _elevatinator.setWantedState(ElavatinatorState.HOLD),
-      // _calsificationinator.setWantedState(CalsificationinatorState.L4)
-      // _ledinator.setWantedState(ledinatorState)
-    );
+    if(_drivetrain.getCurrentTarget() != LocationTarget.PROCESSOR) {
+      return Commands.parallel(
+        _claw.setWantedState(ClawState.TARGET),
+        _elevatinator.setWantedState(ElavatinatorState.HOLD),
+        _calsificationinator.setWantedState(CalsificationinatorState.TARGET)
+      );
+    } else {
+      return Commands.sequence(
+        _claw.setWantedState(ClawState.TARGET),
+        Commands.waitUntil(_claw::isProcceorReady),
+        _elevatinator.setWantedState(ElavatinatorState.HOLD),
+        _calsificationinator.setWantedState(CalsificationinatorState.TARGET)
+      );
+    }
   }
 
   public Command dealgifyHigh(LEDinatorState ledinatorState) {
@@ -337,55 +365,30 @@ public class RobotContainer {
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
       _drivetrain.setReefTargetSide(ReefConstants.kReefAlgae);
     }), _drivetrain.setWantedTarget(LocationTarget.REEF));
-    // return Commands.sequence(new InstantCommand(() -> {
-    //   _elevatinator.setPositioninator(ElevatinatorConstants.kL2Algae);
-    // }), Commands.parallel(
-    //   _claw.setWantedState(ClawState.DEALGIFY),
-    //   _elevatinator.setWantedState(ElavatinatorState.HOLD),
-    //   _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)
-      // _ledinator.setWantedState(ledinatorState)));
   }
   
   public Command algaeNet(LEDinatorState ledinatorState) {
     return Commands.parallel(new InstantCommand(()-> {
       _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeNet);
       _claw.setTargetState(ClawState.PREP_NET);
+      _ledinator.setWantedState(LEDinatorState.ALGAE);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
     }), _drivetrain.setWantedTarget(LocationTarget.BARGE));
-    // return Commands.sequence(new InstantCommand(() -> {
-    //   _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeNet);
-    // }), Commands.parallel(
-    //   _claw.setWantedState(ClawState.PREP_NET),
-    //   _elevatinator.setWantedState(ElavatinatorState.HOLD),
-    //   _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)
-      // _ledinator.setWantedState(ledinatorState)
-    // ));
   }
   
   public Command algaeProcessor(LEDinatorState ledinatorState) {
     return Commands.parallel(new InstantCommand(()-> {
       _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeProcessor);
       _claw.setTargetState(ClawState.PREP_PROCESSOR);
+      _ledinator.setWantedState(LEDinatorState.ALGAE);
       _calsificationinator.setTargetState(CalsificationinatorState.PICKUP);
     }), _drivetrain.setWantedTarget(LocationTarget.PROCESSOR));
-    // return Commands.sequence(new InstantCommand(() -> {
-    //   _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaeProcessor);
-    // }), Commands.parallel(
-    //   _claw.setWantedState(ClawState.PREP_PROCESSOR),
-    //   _elevatinator.setWantedState(ElavatinatorState.HOLD),
-    //   _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)
-    //   // _ledinator.setWantedState(ledinatorState)
-    // ));
   }
 
   public Command L1() {
     return Commands.parallel(new InstantCommand(
       ()->_calsificationinator.setTargetState(CalsificationinatorState.L4)
     ), _elevatinator.setWantedState(ElavatinatorState.HOLD)
-        // _claw.setWantedState(clawinator),
-        // _elevatinator.setWantedState(ElavatinatorState.HOLD),
-        // _calsificationinator.setWantedState(CalsificationinatorState.L4)
-    // _ledinator.setWantedState(ledinatorState)
     );
   }
 
@@ -416,22 +419,236 @@ public class RobotContainer {
   }
 
   public Command scoreinator() {
-    // switch (scoringTarget.get()) {
-    //   case PROCESSOR:
-    //   case NET:
-    //   default:
-    //     return _claw.setWantedState(ClawState.SCORE);
-    //     return _calsificationinator.setWantedState(CalsificationinatorState.SCORE);
-    // }
-
     return Commands.parallel(_claw.setWantedState(ClawState.SCORE), _calsificationinator.setWantedState(CalsificationinatorState.SCORE));
   }
 
-  private ScoringTarget GetDesiredScoringTarget() {
-    return _targetScore;
+  public Command targetReef3Left() {
+    return Commands.runOnce(() -> {
+      _drivetrain.setReefTargetFace(2);
+      _drivetrain.setReefTargetSide(ReefConstants.kReefLeft);
+      _drivetrain.setWantedTargetNormal(LocationTarget.REEF);
+      _drivetrain.targetReef(GeometryUtil::isRedAlliance);
+      _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW);
+    });
+  }
+  
+  public Command targetReef4Right() {
+    return Commands.runOnce(() -> {
+      _drivetrain.setReefTargetFace(3);
+      _drivetrain.setReefTargetSide(ReefConstants.kReefRight);
+      _drivetrain.setWantedTargetNormal(LocationTarget.REEF);
+      _drivetrain.targetReef(GeometryUtil::isRedAlliance);
+      _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW);
+    });
   }
 
-  private ClawState GetDesiredClawState() {
-    return _targetClawState;
+  public Command targetReef4Left() {
+    return Commands.runOnce(() -> {
+      _drivetrain.setReefTargetFace(3);
+      _drivetrain.setReefTargetSide(ReefConstants.kReefLeft);
+      _drivetrain.setWantedTargetNormal(LocationTarget.REEF);
+      _drivetrain.targetReef(GeometryUtil::isRedAlliance);
+      _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW);
+    });
+  }
+
+  public Command targetReef1Right() {
+    return Commands.runOnce(() -> {
+      _drivetrain.setReefTargetFace(0);
+      _drivetrain.setReefTargetSide(ReefConstants.kReefRight);
+      _drivetrain.setWantedTargetNormal(LocationTarget.REEF);
+      _drivetrain.targetReef(GeometryUtil::isRedAlliance);
+      _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW);
+    });
+  }
+
+  public Command targetReef6Left() {
+    return Commands.runOnce(() -> {
+      _drivetrain.setReefTargetFace(5);
+      _drivetrain.setReefTargetSide(ReefConstants.kReefLeft);
+      _drivetrain.setWantedTargetNormal(LocationTarget.REEF);
+      _drivetrain.targetReef(GeometryUtil::isRedAlliance);
+      _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW);
+    });
+  }
+
+  public Command targetReef6Right() {
+    return Commands.runOnce(() -> {
+      _drivetrain.setReefTargetFace(5);
+      _drivetrain.setReefTargetSide(ReefConstants.kReefRight);
+      _drivetrain.setWantedTargetNormal(LocationTarget.REEF);
+      _drivetrain.targetReef(GeometryUtil::isRedAlliance);
+      _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW);
+    });
+  }
+
+  public Command scoreSequence() {
+    return Commands.sequence(
+      Commands.waitUntil(_elevatinator::isReady),
+      _calsificationinator.setWantedState(CalsificationinatorState.SCORE),
+      Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator),
+      Commands.parallel(
+        _claw.setWantedState(ClawState.IDLE),
+        _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)
+        // _elevatinator.setWantedState(ElavatinatorState.HOME)
+      )
+    );
+  }
+
+  public Command waitForCoral() {
+    return Commands.sequence(
+      Commands.waitUntil(_calsificationinator::hasCoralinator), 
+      _calsificationinator.setWantedState(CalsificationinatorState.IDLE)
+    );
+  }
+
+  public Command prepCoralL4() {
+    return Commands.sequence(
+      new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL4Coral), _elevatinator),
+      _elevatinator.setWantedState(ElavatinatorState.HOLD));
+  }
+
+  public Command homeElevator() {
+    return _elevatinator.setWantedState(ElavatinatorState.HOME);
+  }
+
+  public Command getTestAutoRight() {
+    return Commands.sequence(
+      Commands.runOnce(() -> {
+        SmartDashboard.putBoolean("Auto Interrupted", false);
+        SmartDashboard.putString("Current Auto Step", "Begin Test Auto");
+      }),
+      _drivetrain.getPathCommand("Bottom Start to Reef 3").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 3 Left")),
+      targetReef3Left(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
+      // Commands.waitSeconds(1),
+      Commands.waitUntil(_drivetrain::isNearTarget).withTimeout(.75),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
+      prepCoralL4(),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
+      scoreSequence(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
+      homeElevator(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
+      _drivetrain.getPathCommand("Bottom Start to Coral TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
+      waitForCoral(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Bottom Coral to Reef 4 Right TF")),
+      _drivetrain.getPathCommand("Bottom Coral to Reef 4 TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 4 Right")),
+      targetReef4Right(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
+      // Commands.waitSeconds(1),
+      
+      Commands.waitUntil(_drivetrain::isNearTarget).withTimeout(.75),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
+      prepCoralL4(),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
+      scoreSequence(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
+      homeElevator(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
+      _drivetrain.getPathCommand("Bottom Reef 4 Right to Coral TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
+      waitForCoral(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Bottom Coral to Reef 4 TF")),
+      _drivetrain.getPathCommand("Bottom Coral to Reef 4 Left TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 4 Left")),
+      targetReef4Left(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
+      // Commands.waitSeconds(1),
+      Commands.waitUntil(_drivetrain::isNearTarget).withTimeout(.75),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
+      prepCoralL4(),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
+      scoreSequence(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
+      homeElevator(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
+      _drivetrain.getPathCommand("Bottom Reef 4 Left to Coral TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
+      waitForCoral(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Done"))
+    ).handleInterrupt(() -> {
+      SmartDashboard.putBoolean("Auto Interrupted", true);
+    });
+  }
+
+  public Command getTestAutoLeft() {
+    return Commands.sequence(
+      Commands.runOnce(() -> {
+        SmartDashboard.putBoolean("Auto Interrupted", false);
+        SmartDashboard.putString("Current Auto Step", "Begin Test Auto");
+      }),
+      _drivetrain.getPathCommand("Top Start to Reef 1 TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 1 Right")),
+      targetReef1Right(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
+      // Commands.waitSeconds(1),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
+      prepCoralL4(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
+      scoreSequence(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
+      homeElevator(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
+      _drivetrain.getPathCommand("Top Start to Coral TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
+      waitForCoral(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Top Coral to Reef 6 TF")),
+      _drivetrain.getPathCommand("Top Coral to Reef 6 TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Left")),
+      targetReef6Left(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
+      // Commands.waitSeconds(1),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
+      prepCoralL4(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
+      scoreSequence(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
+      homeElevator(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
+      _drivetrain.getPathCommand("Top Reef 6 Left to Coral TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
+      waitForCoral(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Top Coral to Reef 6 TF")),
+      _drivetrain.getPathCommand("Top Coral to Reef 6 Right TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Right")),
+      targetReef6Right(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
+      // Commands.waitSeconds(1),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
+      prepCoralL4(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
+      scoreSequence(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
+      homeElevator(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
+      _drivetrain.getPathCommand("Top Reef 6 Right to Coral TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
+      waitForCoral(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Done"))
+    ).handleInterrupt(() -> {
+      SmartDashboard.putBoolean("Auto Interrupted", true);
+    });
   }
 }
