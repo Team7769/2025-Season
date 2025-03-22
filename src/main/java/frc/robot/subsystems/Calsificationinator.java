@@ -69,7 +69,7 @@ public class Calsificationinator extends SubsystemBase {
         _pivotConfig.Feedback.FeedbackRemoteSensorID = 0;
         _pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
-        _calsificationDebouncinator = new Debouncer(.1);
+        _calsificationDebouncinator = new Debouncer(.05);
         _calsificationDebouncinatorTwo = new Debouncer(.02);
         Slot0Configs slot0 = _pivotConfig.Slot0;
         slot0.kS = 0.24; // Add 0.25 V output to overcome static friction
@@ -122,6 +122,11 @@ public class Calsificationinator extends SubsystemBase {
                 break;
 
             case L4:
+                _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL4Position));
+
+                handleCoral();
+                break;
+            case L4_WITH_DEALGIFY:
                 _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL4Position));
 
                 handleCoral();
@@ -201,5 +206,13 @@ public class Calsificationinator extends SubsystemBase {
                 _currentState = state;
             }
         }, this);
+    }
+
+    public CalsificationinatorState getCurrentState() {
+        return _currentState;
+    }
+
+    public CalsificationinatorState getTargetState() {
+        return _targetState;
     }
 }

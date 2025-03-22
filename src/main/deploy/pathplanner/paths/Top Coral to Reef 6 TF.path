@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.19375,
-        "y": 6.511750856164383
+        "x": 2.38875,
+        "y": 6.51125
       },
       "isLocked": false,
       "linkedName": "Top Coral Station"
     },
     {
       "anchor": {
-        "x": 3.35655737704918,
-        "y": 5.757223360655737
+        "x": 3.6172500000000003,
+        "y": 5.67275
       },
       "prevControl": {
-        "x": 2.3949135414327416,
-        "y": 6.253070963395463
+        "x": 2.83725,
+        "y": 6.238250000000001
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef 6"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -41,7 +41,7 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
+    "velocity": 1.5,
     "rotation": 120.10130456559972
   },
   "reversed": false,
