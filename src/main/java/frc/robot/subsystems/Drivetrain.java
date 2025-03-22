@@ -108,6 +108,30 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
     }
+    private String getReefLetter(){
+        switch(targetReefFace) {
+            default:
+            return"NULL";
+            
+            case 0:
+            return"C";
+
+            case 1:
+            return "D";
+
+            case 2:
+            return "E";
+
+            case 3:
+            return "F";
+
+            case 4:
+            return "A";
+
+            case 5:
+            return"B";
+        }
+    }
 
     private ChassisSpeeds getSpeeds() {
         return this.getState().Speeds;
@@ -257,6 +281,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putString("Drive Train current state", getCurrentState());
         SmartDashboard.putString("Drive Train previous state", getPreviousState());
         SmartDashboard.putString("Drive Train current target", getCurrentTarget().name());
+        SmartDashboard.putString("", getReefLetter());
         SmartDashboard.putNumber("speed", getState().Speeds.vxMetersPerSecond);
     }
 
