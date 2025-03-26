@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.540266393442623,
-        "y": 3.971055327868852
+        "x": 5.790061475409836,
+        "y": 3.9950307377049183
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.773053278688525,
-        "y": 3.983043032786885
+        "x": 6.521311475409835,
+        "y": 3.8272028688524586
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.06577868852459,
-        "y": 3.971055327868852
+        "x": 7.564241803278687,
+        "y": 4.354661885245902
       },
       "prevControl": {
-        "x": 6.521311475409835,
-        "y": 3.9590676229508195
+        "x": 6.988831967213113,
+        "y": 4.00701844262295
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "barge 1"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -159.30454926593669
   },
   "reversed": false,
   "folder": "Middle Algae",
