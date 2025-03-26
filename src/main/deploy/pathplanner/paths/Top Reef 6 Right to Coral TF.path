@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6610342465753427,
-        "y": 5.851903253424657
+        "x": 2.700750000000001,
+        "y": 5.90675
       },
       "isLocked": false,
       "linkedName": "Reef 6 Right"
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 120.332
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
