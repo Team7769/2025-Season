@@ -522,7 +522,7 @@ public class RobotContainer {
     return _elevatinator.setWantedState(ElavatinatorState.HOME);
   }
 
-  public Command homeWithAlgae()
+  public Command homeElevatorWithAlgae()
   {
     return _elevatinator.setWantedState(ElavatinatorState.HOMEWITHALGAE);
   }
@@ -748,20 +748,22 @@ public class RobotContainer {
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
       prepDealgifyLow(),
-      homeWithAlgae(),
+      homeElevatorWithAlgae(),
       _drivetrain.getPathCommand("Dealgify to barge 1").asProxy(),
       prepBarge(),
       scoreBarge(),
+      homeElevator(),
       _drivetrain.getPathCommand("Barge 1 to reef 3").asProxy(),
       targetReef3Algae(),
       Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
       prepDealgifyHigh(),
-      homeWithAlgae(),
+      homeElevatorWithAlgae(),
       _drivetrain.getPathCommand("Dealgify to barge 2").asProxy(),
       prepBarge(),
       scoreBarge(),
+      homeElevator()
 
 
 
