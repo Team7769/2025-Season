@@ -224,9 +224,9 @@ public class RobotContainer {
     // ReefConstants.kReefAlgae, CalsificationinatorState.L1, ClawState.IDLE,
     // ScoringTarget.REEF));
     _operatorController.leftBumper().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL4Coral, ReefConstants.kReefRight,
-        CalsificationinatorState.L4_WITH_DEALGIFY, ClawState.IDLE, ScoringTarget.REEF));
+        CalsificationinatorState.KILL_MODE, ClawState.IDLE, ScoringTarget.REEF));
     _operatorController.rightBumper().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL4Coral, ReefConstants.kReefLeft,
-        CalsificationinatorState.L4_WITH_DEALGIFY, ClawState.IDLE, ScoringTarget.REEF));
+        CalsificationinatorState.KILL_MODE, ClawState.IDLE, ScoringTarget.REEF));
     // _operatorController.x().onTrue(dealgifyLow(null));
     // _operatorController.b().onTrue(dealgifyHigh(null)); 
     _operatorController.b().onTrue(dealgify()); 
@@ -283,7 +283,7 @@ public class RobotContainer {
         .until(_driverController.a()).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))
         );
       }
-      if (_calsificationinator.getTargetState() != CalsificationinatorState.L4_WITH_DEALGIFY) {
+      if (_calsificationinator.getTargetState() != CalsificationinatorState.KILL_MODE) {
       SmartDashboard.putString("Current Action", "Coral for DoThing");
       return 
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW))

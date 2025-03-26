@@ -126,7 +126,7 @@ public class Calsificationinator extends SubsystemBase {
 
                 handleCoral();
                 break;
-            case L4_WITH_DEALGIFY:
+            case KILL_MODE:
                 _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kL4Position));
 
                 handleCoral();
