@@ -170,7 +170,7 @@ public class Claw extends SubsystemBase {
                 _topRollinator.set(-.5);
                 break;
             case PREP_NET:
-                _pivotinator.setControl(_request.withPosition(0));
+                _pivotinator.setControl(_request.withPosition(0.05));
                 _topRollinator.set(-.2);
                 break;
             case PREP_PROCESSOR:
@@ -179,7 +179,7 @@ public class Claw extends SubsystemBase {
                 break;
             case SCORE:
                 if (_previousState == ClawState.PREP_NET) {
-                    _topRollinator.set(.7);
+                    _topRollinator.set(.65);
                 }
                 if (_previousState == ClawState.PREP_PROCESSOR) {
                     _topRollinator.set(.3);

@@ -616,13 +616,15 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     public void targetBarge(Supplier<Boolean> isRedAlliance) {
         _followType = FollowType.LINE;
         // _target = isRedAlliance.get() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
-        var _bargeTargetNoAngle = isRedAlliance.get() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
-        var _halfBarge = isRedAlliance.get() ? FieldConstants.kRedBargeHalf : FieldConstants.kBlueBargeHalf;
-        if (getPoseY() > _halfBarge.getY()) {
-            _target = _bargeTargetNoAngle.transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(isRedAlliance.get() ? 20: -20)));
-        } else {
-            _target = _bargeTargetNoAngle.transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(isRedAlliance.get() ? -20: 20)));
-        }
+         var _bargeTargetNoAngle = isRedAlliance.get() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
+        // var _halfBarge = isRedAlliance.get() ? FieldConstants.kRedBargeHalf : FieldConstants.kBlueBargeHalf;
+        // if (getPoseY() > _halfBarge.getY()) {
+        //     _target = _bargeTargetNoAngle.transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(isRedAlliance.get() ? 20: -20)));
+        // } else {
+        //     _target = _bargeTargetNoAngle.transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(isRedAlliance.get() ? -20: 20)));
+        // }
+
+        _target = _bargeTargetNoAngle;
     }
 
     public void targetCage(Supplier<Boolean> isRedAlliance) {

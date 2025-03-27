@@ -372,7 +372,7 @@ public final class Constants {
       // public static final double kHome = 0;
       // public static final double kLiftinatorMaxHeight = 74;
       public static final int kLifinatorMotor = 15;
-      public static final double kAlgaeNet = 71.46 * .6;
+      public static final double kAlgaeNet = 73 * .6;
       public static final double kL4Coral = 70 * .6;
       public static final double kL3Coral = 37 * .6;
       public static final double kL3Algae = 55 * .6;
