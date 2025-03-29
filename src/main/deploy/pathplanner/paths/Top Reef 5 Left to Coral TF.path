@@ -3,57 +3,52 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.232,
-        "y": 7.0
+        "x": 3.16875,
+        "y": 4.17125
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0475,
-        "y": 5.63375
+        "x": 2.40825,
+        "y": 5.1365
       },
       "isLocked": false,
-      "linkedName": "Top Coral Station"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.7007500000000007,
-        "y": 4.5905
+        "x": 1.232,
+        "y": 7.0
       },
       "prevControl": {
-        "x": 2.173290983606558,
-        "y": 5.52546106557377
+        "x": 1.95975,
+        "y": 5.86775
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef 5 Left"
+      "linkedName": "Top Coral Station"
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": -178.98333748643938
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.5,
-    "rotation": -178.91907581333922
+    "velocity": 0,
+    "rotation": 126.49233184640934
   },
   "reversed": false,
   "folder": "TF Test Left",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 126.49233184640934
+    "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
