@@ -357,20 +357,34 @@ public final class Constants {
     }
 
     public static class ElevatinatorConstants {
+      // public static final int kLifinatorMotor = 15;
+      // public static final double kAlgaeNet = 71.46;
+      // public static final double kL4Coral = 70;
+      // public static final double kL3Coral = 37;
+      // public static final double kL3Algae = 55;
+      // public static final double kL2Coral = 16.17;
+      // public static final double kL2Algae = 34;
+      // public static final double kL1Coral = 0;
+      // public static final double kHumanPlayer = 3;
+      // public static final double kAlgaePickup = 15;
+      // public static final double kAlgaeProcessor = 8;
+      // public static final double kAlgaeHold = 18;
+      // public static final double kHome = 0;
+      // public static final double kLiftinatorMaxHeight = 74;
       public static final int kLifinatorMotor = 15;
-      public static final double kAlgaeNet = 71.46;
-      public static final double kL4Coral = 70;
-      public static final double kL3Coral = 37;
-      public static final double kL3Algae = 55;
-      public static final double kL2Coral = 16.17;
-      public static final double kL2Algae = 34;
+      public static final double kAlgaeNet = 71.46 * .6;
+      public static final double kL4Coral = 70 * .6;
+      public static final double kL3Coral = 37 * .6;
+      public static final double kL3Algae = 55 * .6;
+      public static final double kL2Coral = 16.17 * .6;
+      public static final double kL2Algae = 34 * .6;
       public static final double kL1Coral = 0;
-      public static final double kHumanPlayer = 3;
-      public static final double kAlgaePickup = 15;
-      public static final double kAlgaeProcessor = 8;
-      public static final double kAlgaeHold = 18;
+      public static final double kHumanPlayer = 3 * .6;
+      public static final double kAlgaePickup = 15 * .6;
+      public static final double kAlgaeProcessor = 8 * .6;
+      public static final double kAlgaeHold = 18 * .6;
       public static final double kHome = 0;
-      public static final double kLiftinatorMaxHeight = 74;
+      public static final double kLiftinatorMaxHeight = 74 * .6;
     }
 
     public static class LEDinatorConstants
