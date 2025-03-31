@@ -44,9 +44,12 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState> {
         _talonFXConfiginator.Feedback.SensorToMechanismRatio = 1;
         _PIDConfiginator = _talonFXConfiginator.Slot0;
         _PIDConfiginator.withGravityType(GravityTypeValue.Elevator_Static);
-        _PIDConfiginator.kG = 0.37009;
-        _PIDConfiginator.kS = 0.060989;
-        _PIDConfiginator.kV = 0.2;
+        // _PIDConfiginator.kG = 0.37009;
+        // _PIDConfiginator.kS = 0.060989;
+        // _PIDConfiginator.kV = 0.2;
+        _PIDConfiginator.kG = 0.37009 * .6;
+        _PIDConfiginator.kS = 0.060989 * .6;
+        _PIDConfiginator.kV = 0.2 * .6;
         _PIDConfiginator.kP = 4; 
         _PIDConfiginator.kI = 0; 
         _PIDConfiginator.kD = 0.05;
@@ -59,6 +62,8 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState> {
         _liftMotorinator = new TalonFX(ElevatinatorConstants.kLifinatorMotor);
         _currentState = ElavatinatorState.HOME;
         _previousState = ElavatinatorState.HOLD;
+        _talonFXConfiginator.CurrentLimits.StatorCurrentLimit = 120;
+        _talonFXConfiginator.CurrentLimits.StatorCurrentLimitEnable = true;
         _liftMotorinator.getConfigurator().apply(_talonFXConfiginator);
         _liftMotorinator.setNeutralMode(NeutralModeValue.Brake);
     }

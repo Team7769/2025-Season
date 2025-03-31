@@ -3,32 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.232,
-        "y": 7.0
+        "x": 1.2321061643835618,
+        "y": 1.0724529109589036
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.38875,
-        "y": 6.51125
+        "x": 1.58925,
+        "y": 2.0067499999999994
       },
       "isLocked": false,
-      "linkedName": "Top Coral Station"
+      "linkedName": "Coral Station"
     },
     {
       "anchor": {
-        "x": 3.6172500000000003,
-        "y": 5.67275
+        "x": 2.6520000000000006,
+        "y": 3.50825
       },
       "prevControl": {
-        "x": 2.83725,
-        "y": 6.238250000000001
+        "x": 1.9402500000000007,
+        "y": 2.6209999999999996
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": -178.86313486932104
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -41,14 +46,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.5,
-    "rotation": 120.10130456559972
+    "velocity": 1.7,
+    "rotation": 179.30130561701657
   },
   "reversed": false,
-  "folder": "TF Test Left",
+  "folder": "TF Test Right",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 126.49233184640934
+    "rotation": -128.991
   },
   "useDefaultConstraints": true
 }
