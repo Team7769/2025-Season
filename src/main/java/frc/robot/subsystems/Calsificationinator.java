@@ -71,7 +71,7 @@ public class Calsificationinator extends SubsystemBase {
         _pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
         _calsificationDebouncinator = new Debouncer(.05, DebounceType.kRising);
-        _calsificationDebouncinatorTwo = new Debouncer(.02);
+        _calsificationDebouncinatorTwo = new Debouncer(.05);
         Slot0Configs slot0 = _pivotConfig.Slot0;
         slot0.kS = 0.24; // Add 0.25 V output to overcome static friction
         slot0.kV = 1.4; // A velocity target of 1 rps results in 0.12 V output
@@ -135,6 +135,8 @@ public class Calsificationinator extends SubsystemBase {
             case SCORE:
                 if (_previousState == CalsificationinatorState.L2) {
                     _suckinator.set(0.2);
+                } else if (_previousState == CalsificationinatorState.L1) {
+                    _suckinator.set(0.28);
                 } else {
                     _suckinator.set(0.25);
                 }

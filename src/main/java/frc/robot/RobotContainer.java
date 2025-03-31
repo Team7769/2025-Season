@@ -228,11 +228,12 @@ public class RobotContainer {
         CalsificationinatorState.KILL_MODE, ClawState.IDLE, ScoringTarget.REEF));
     _operatorController.rightBumper().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL4Coral, ReefConstants.kReefLeft,
         CalsificationinatorState.KILL_MODE, ClawState.IDLE, ScoringTarget.REEF));
-    // _operatorController.x().onTrue(dealgifyLow(null));
+    _operatorController.x().onTrue(algaeNet(null));
     // _operatorController.b().onTrue(dealgifyHigh(null)); 
     _operatorController.b().onTrue(dealgify()); 
-    _operatorController.y().onTrue(algaeNet(null));
-    _operatorController.a().onTrue(algaeProcessor(null));
+    _operatorController.y().onTrue(algaeProcessor(null));
+    _operatorController.a().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL1Coral, ReefConstants.kReefAlgae,
+    CalsificationinatorState.L1, ClawState.IDLE, ScoringTarget.REEF));
     _reefController.povDown().onTrue(reefSetinator(ElevatinatorConstants.kHome, ReefConstants.kReefAlgae,
         CalsificationinatorState.IDLE, ClawState.DEALGIFY, ScoringTarget.REEF));
   }
