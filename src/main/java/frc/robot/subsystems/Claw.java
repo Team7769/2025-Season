@@ -281,10 +281,15 @@ public class Claw extends SubsystemBase {
     }
 
     public Boolean isProcceorReady() {
-        return (Math.abs(.18 - _pivotinator.getPosition().getValueAsDouble()) < .3);
+        return (Math.abs(.18 - _pivotinator.getPosition().getValueAsDouble()) < .05);
     }
 
     public Boolean isIdle() {
-        return (Math.abs(0 - _pivotinator.getPosition().getValueAsDouble()) < .3);
+        return (Math.abs(0 - _pivotinator.getPosition().getValueAsDouble()) < .05);
+    }
+
+    public Boolean isReadytoShoot()
+    {
+        return (Math.abs(0.05 - _pivotinator.getPosition().getValueAsDouble()) < .05);
     }
 }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.576229508196722,
-        "y": 5.625358606557377
+        "x": 7.144672131147541,
+        "y": 5.649334016393442
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.7251024590163935,
-        "y": 5.6613217213114755
+        "x": 6.533299180327869,
+        "y": 5.889088114754099
       },
       "isLocked": false,
       "linkedName": "barge 2"
@@ -20,8 +20,8 @@
         "y": 5.373616803278688
       },
       "prevControl": {
-        "x": 6.185655737704918,
-        "y": 5.6613217213114755
+        "x": 6.029815573770492,
+        "y": 5.63734631147541
       },
       "nextControl": null,
       "isLocked": false,
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.5,
     "rotation": 59.036243467926546
   },
   "reversed": false,
   "folder": "Middle Algae",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -179.20427644726067
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
