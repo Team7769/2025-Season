@@ -8,6 +8,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -69,8 +70,8 @@ public class Calsificationinator extends SubsystemBase {
         _pivotConfig.Feedback.FeedbackRemoteSensorID = 0;
         _pivotConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
 
-        _calsificationDebouncinator = new Debouncer(.05);
-        _calsificationDebouncinatorTwo = new Debouncer(.02);
+        _calsificationDebouncinator = new Debouncer(.05, DebounceType.kRising);
+        _calsificationDebouncinatorTwo = new Debouncer(.05);
         Slot0Configs slot0 = _pivotConfig.Slot0;
         slot0.kS = 0.24; // Add 0.25 V output to overcome static friction
         slot0.kV = 1.4; // A velocity target of 1 rps results in 0.12 V output
@@ -134,6 +135,8 @@ public class Calsificationinator extends SubsystemBase {
             case SCORE:
                 if (_previousState == CalsificationinatorState.L2) {
                     _suckinator.set(0.2);
+                } else if (_previousState == CalsificationinatorState.L1) {
+                    _suckinator.set(0.28);
                 } else {
                     _suckinator.set(0.25);
                 }
@@ -167,15 +170,19 @@ public class Calsificationinator extends SubsystemBase {
     }
 
     public boolean hasCoralinator() {
-        return _hasCoralinator;
+        return _hasCoralinatorTwo;
+    }
+
+    public boolean hasScored() {
+        return !_hasCoralinator && !_hasCoralinatorTwo;
     }
 
     public boolean doesNotHaveCoralinator() {
-        return !_hasCoralinator;
+        return !_hasCoralinatorTwo;
     }
 
     private void handleCoral() {
-        if (_hasCoralinator) {
+        if (_hasCoralinatorTwo) {
             _suckinator.set(.0);
         } else {
             _suckinator.set(0.1);

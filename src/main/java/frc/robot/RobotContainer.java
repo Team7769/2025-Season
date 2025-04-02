@@ -104,6 +104,7 @@ public class RobotContainer {
     _autoChooser.addOption("RCH Special", RCHSpecial());
     _autoChooser.addOption("LGHP Special", LGHPSpecial());
     _autoChooser.addOption("Left test", getTestAutoLeft());
+    _autoChooser.addOption("Right test", getTestAutoRight());
     SmartDashboard.putData("AutoChooser", _autoChooser);
     configureBindings();
   }
@@ -141,7 +142,7 @@ public class RobotContainer {
     _drivetrain.setDefaultCommand(
         _drivetrain.applyRequest(() -> _drivetrain.drive.withVelocityX(0).withVelocityY(0).withRotationalRate(0)));
 
-    _driverController.rightTrigger().onTrue(scoreinator()).onFalse(goHomeinator());
+    _driverController.rightTrigger().onTrue(Commands.defer(this::scoreinator, Set.of())).onFalse(goHomeinator());
     //_driverController.leftTrigger().onTrue(doinator(null));
     _driverController.leftTrigger().onTrue(Commands.defer(this::doThing, Set.of()));
 
@@ -227,11 +228,12 @@ public class RobotContainer {
         CalsificationinatorState.KILL_MODE, ClawState.IDLE, ScoringTarget.REEF));
     _operatorController.rightBumper().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL4Coral, ReefConstants.kReefLeft,
         CalsificationinatorState.KILL_MODE, ClawState.IDLE, ScoringTarget.REEF));
-    // _operatorController.x().onTrue(dealgifyLow(null));
+    _operatorController.x().onTrue(algaeNet(null));
     // _operatorController.b().onTrue(dealgifyHigh(null)); 
     _operatorController.b().onTrue(dealgify()); 
-    _operatorController.y().onTrue(algaeNet(null));
-    _operatorController.a().onTrue(algaeProcessor(null));
+    _operatorController.y().onTrue(algaeProcessor(null));
+    _operatorController.a().and(_calsificationinator::hasCoralinator).onTrue(reefSetinator(ElevatinatorConstants.kL1Coral, ReefConstants.kReefAlgae,
+    CalsificationinatorState.L1, ClawState.IDLE, ScoringTarget.REEF));
     _reefController.povDown().onTrue(reefSetinator(ElevatinatorConstants.kHome, ReefConstants.kReefAlgae,
         CalsificationinatorState.IDLE, ClawState.DEALGIFY, ScoringTarget.REEF));
   }
@@ -262,7 +264,7 @@ public class RobotContainer {
           .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
           .andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
           .handleInterrupt(() -> System.out.println("Interrupted doThing."))
-          .until(_driverController.a()).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
+          .until(_driverController.a().or(_driverController.rightTrigger())).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
         } else {
           return 
           Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW))
@@ -270,12 +272,12 @@ public class RobotContainer {
           .andThen(doinator(null))
           .andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
           .handleInterrupt(() -> System.out.println("Interrupted doThing."))
-          .until(_driverController.a()).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
+          .until(_driverController.a().or(_driverController.rightTrigger())).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
         }
       } else if (_claw.getTargetState() == ClawState.DEALGIFY){
         SmartDashboard.putString("Current Action", "Claw is dealgifying for DoThing");
         return Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW))
-        .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
+        .andThen(Commands.waitUntil(_drivetrain::isNearTarget))
         .andThen(doinator(null))
         .andThen(Commands.waitUntil(_claw::hasAlgae))
         .andThen(goHomeinatorWithAlgae().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))))
@@ -294,7 +296,8 @@ public class RobotContainer {
       .andThen(scoreSequence())
       .andThen(goHomeinator().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))))
       .handleInterrupt(() -> System.out.println("Interrupted doThing."))
-      .until(_driverController.a()).andThen(goHomeinator().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
+      // .until(_driverController.a().or(_driverController.rightTrigger())).andThen(goHomeinator().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
+      .until(_driverController.a().or(_driverController.rightTrigger())).andThen(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)
       );
     } else {
       SmartDashboard.putString("Current Action", "Coral and Dealgify for DoThing");
@@ -310,7 +313,7 @@ public class RobotContainer {
       .andThen(Commands.waitUntil(_claw::hasAlgae))
       .andThen(goHomeinatorWithAlgae().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))))
       .handleInterrupt(() -> System.out.println("Interrupted doThing."))
-      .until(_driverController.a()).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
+      .until(_driverController.a().or(_driverController.rightTrigger())).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
     }
     } else {
       return new InstantCommand();
@@ -451,7 +454,11 @@ public class RobotContainer {
   }
 
   public Command scoreinator() {
-    return Commands.parallel(_claw.setWantedState(ClawState.SCORE), _calsificationinator.setWantedState(CalsificationinatorState.SCORE));
+    if(_elevatinator.getPositioninator() == ElevatinatorConstants.kAlgaeProcessor || _elevatinator.getPositioninator() == ElevatinatorConstants.kAlgaeNet) {
+      return _claw.setWantedState(ClawState.SCORE);
+    } else {
+      return _calsificationinator.setWantedState(CalsificationinatorState.SCORE);
+    }
   }
 
   public Command targetReef3Left() {
@@ -545,7 +552,7 @@ public class RobotContainer {
     return Commands.sequence(
       Commands.waitUntil(_elevatinator::isReady),
       _calsificationinator.setWantedState(CalsificationinatorState.SCORE),
-      Commands.waitUntil(_calsificationinator::doesNotHaveCoralinator),
+      Commands.waitUntil(_calsificationinator::hasScored),
       Commands.parallel(
         _claw.setWantedState(ClawState.IDLE),
         _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)
@@ -588,6 +595,11 @@ public class RobotContainer {
       new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL3Coral), _elevatinator),
       _elevatinator.setWantedState(ElavatinatorState.HOLD));
   }
+  public Command prepCoralL2() {
+    return Commands.sequence(
+      new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kL2Coral), _elevatinator),
+      _elevatinator.setWantedState(ElavatinatorState.HOLD));
+  }
 
   public Command prepDealgify() {
     return Commands.sequence(
@@ -618,7 +630,7 @@ public class RobotContainer {
       // Commands.waitSeconds(1),
       Commands.waitUntil(_drivetrain::isNearTarget),
       prepCoralL4(),
-      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.325),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.32),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
@@ -632,6 +644,24 @@ public class RobotContainer {
       // waitForCoral(),
       prepCoralL3(),
       prepArm(),
+      _drivetrain.getPathCommand("Bottom Coral to Reef 5 Right TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Right")),
+      targetReef5Right(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
+      // Commands.waitSeconds(1),
+      // Commands.waitUntil(_drivetrain::isNearTarget),
+      prepCoralL4(),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.50),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
+      scoreSequence(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
+      homeElevator(),
+      _drivetrain.getPathCommand("Bottom Reef 5 Right to Coral TF").asProxy(),
+      prepCoralL3(),
+      prepArm(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Top Coral to Reef 6 TF")),
       _drivetrain.getPathCommand("Bottom Coral to Reef 4 TF").asProxy(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Left")),
@@ -640,7 +670,7 @@ public class RobotContainer {
       // Commands.waitSeconds(1),
       Commands.waitUntil(_drivetrain::isNearTarget),
       prepCoralL4(),
-      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.39),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.38),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
@@ -662,36 +692,19 @@ public class RobotContainer {
       // Commands.waitSeconds(1),
       Commands.waitUntil(_drivetrain::isNearTarget),
       prepCoralL4(),
-      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.43),
-      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
-      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
-      scoreSequence(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
-      homeElevator(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
-      _drivetrain.getPathCommand("Bottom Reef 4 Left to Coral TF").asProxy(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
-      // waitForCoral(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Done")),
-      prepCoralL3(),
-      prepArm(),
-      _drivetrain.getPathCommand("Bottom Coral to Reef 5 Right TF").asProxy(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Right")),
-      targetReef5Right(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
-      // Commands.waitSeconds(1),
-      // Commands.waitUntil(_drivetrain::isNearTarget),
-      prepCoralL4(),
-      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.50),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.42),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
       scoreSequenceDontWait(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
-      homeElevator()
+      homeElevator(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
+      _drivetrain.getPathCommand("Bottom Reef 4 Left to Coral TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
+      // waitForCoral(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Done"))
     ).handleInterrupt(() -> {
       SmartDashboard.putBoolean("Auto Interrupted", true);
     });
@@ -780,7 +793,7 @@ public class RobotContainer {
       // Commands.waitSeconds(1),
       Commands.waitUntil(_drivetrain::isNearTarget),
       prepCoralL4(),
-      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.325),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.31),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
@@ -792,6 +805,24 @@ public class RobotContainer {
       _drivetrain.getPathCommand("Top Start to Coral TF").asProxy(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
       // waitForCoral(),
+      prepCoralL3(),
+      prepArm(),
+      _drivetrain.getPathCommand("Top Coral to Reef 5 Left TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Right")),
+      targetReef5Left(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
+      // Commands.waitSeconds(1),
+      // Commands.waitUntil(_drivetrain::isNearTarget),
+      prepCoralL4(),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.51),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
+      scoreSequence(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
+      homeElevator(),
+      _drivetrain.getPathCommand("Top Reef 5 Left to Coral TF").asProxy(),
       prepCoralL3(),
       prepArm(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Top Coral to Reef 6 TF")),
@@ -824,36 +855,19 @@ public class RobotContainer {
       // Commands.waitSeconds(1),
       Commands.waitUntil(_drivetrain::isNearTarget),
       prepCoralL4(),
-      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.43),
-      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
-      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
-      scoreSequence(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
-      homeElevator(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
-      _drivetrain.getPathCommand("Top Reef 6 Right to Coral TF").asProxy(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
-      // waitForCoral(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Done")),
-      prepCoralL3(),
-      prepArm(),
-      _drivetrain.getPathCommand("Top Coral to Reef 5 Left TF").asProxy(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Right")),
-      targetReef5Left(),
-      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
-      // Commands.waitSeconds(1),
-      // Commands.waitUntil(_drivetrain::isNearTarget),
-      prepCoralL4(),
-      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.51),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.41),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
       scoreSequenceDontWait(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
-      homeElevator()
+      homeElevator(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
+      _drivetrain.getPathCommand("Top Reef 6 Right to Coral TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
+      // waitForCoral(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Done"))
     ).handleInterrupt(() -> {
       SmartDashboard.putBoolean("Auto Interrupted", true);
     });
@@ -922,6 +936,79 @@ public class RobotContainer {
       prepDealgify(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
       _drivetrain.getPathCommand("Top Coral to Algae").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
+      autoDealgify(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Done")),
+      Commands.waitUntil(_claw::hasAlgae),
+      autoHomeAlgae()
+    ).handleInterrupt(() -> {
+      SmartDashboard.putBoolean("Auto Interrupted", true);
+    });
+  }
+
+  public Command getTestAutoRight() {
+    return Commands.sequence(
+      Commands.runOnce(() -> {
+        SmartDashboard.putBoolean("Auto Interrupted", false);
+        SmartDashboard.putString("Current Auto Step", "Begin Test Auto");
+      }),
+      _drivetrain.getPathCommand("Bottom Start to Reef 3").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 1 Right")),
+      targetReef3Left(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
+      // Commands.waitSeconds(1),
+      Commands.waitUntil(_drivetrain::isNearTarget),
+      prepCoralL4(),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
+      scoreSequence(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
+      homeElevator(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
+      _drivetrain.getPathCommand("Bottom Start to Coral TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
+      waitForCoral(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Top Coral to Reef 6 TF")),
+      _drivetrain.getPathCommand("Bottom Coral to Reef 4 TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Left")),
+      targetReef4Right(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
+      // Commands.waitSeconds(1),
+      Commands.waitUntil(_drivetrain::isNearTarget),
+      prepCoralL4(),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
+      scoreSequence(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
+      homeElevator(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
+      _drivetrain.getPathCommand("Bottom Reef 4 Right to Coral TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
+      waitForCoral(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Top Coral to Reef 6 TF")),
+      _drivetrain.getPathCommand("Bottom Coral to Reef 4 Left TF").asProxy(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Right")),
+      targetReef4Left(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting 1 second")),
+      // Commands.waitSeconds(1),
+      Commands.waitUntil(_drivetrain::isNearTarget),
+      prepCoralL4(),
+      Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
+      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Prep Coral L4")),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Score Sequence")),
+      scoreSequence(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Home Elevator")),
+      prepDealgify(),
+      Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
+      _drivetrain.getPathCommand("Bottom Coral to Algae").asProxy(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
       autoDealgify(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Done")),

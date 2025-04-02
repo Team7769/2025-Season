@@ -142,9 +142,9 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         _targetFollowDebouncer = new Debouncer(.2, DebounceType.kRising);
         SmartDashboard.putData("Field", m_field);
 
-        _targetFollowControllerX = new PIDController(0.85, 0, 0);
-        _targetFollowControllerY = new PIDController(0.85, 0, 0);
-        _targetFollowControllerZ = new PIDController(0.025, 0, 0);
+        _targetFollowControllerX = new PIDController(0.85, 0, 0.04);
+        _targetFollowControllerY = new PIDController(0.85, 0, 0.04);
+        _targetFollowControllerZ = new PIDController(0.025, 0, 0.001);
         _targetFollowControllerX.setTolerance(.05);
         _targetFollowControllerY.setTolerance(.05);
         _targetFollowControllerZ.setTolerance(2);
@@ -161,6 +161,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder",
                     ex.getStackTrace());
         }
+        getPigeon2().setYaw(0);
+        resetRotation(new Rotation2d());
     }
 
     public void resetPoseToPath(String pathName){
@@ -580,6 +582,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     @Override
     public InstantCommand setWantedState(DrivetrainState state) {
         return new InstantCommand(() -> {
+            if (state == DrivetrainState.TARGET_FOLLOW) {
+                _targetFollowControllerY.reset();
+                _targetFollowControllerZ.reset();
+                _targetFollowControllerX.reset();
+            }
             if (state != _currentState) {
                 _previousState = _currentState;
                 _currentState = state;
@@ -590,6 +597,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
     public void setWantedStateNormal(DrivetrainState state) {
         if (state != _currentState) {
+            if (state == DrivetrainState.TARGET_FOLLOW) {
+                _targetFollowControllerY.reset();
+                _targetFollowControllerZ.reset();
+                _targetFollowControllerX.reset();
+            }
             _previousState = _currentState;
             _currentState = state;
         }
