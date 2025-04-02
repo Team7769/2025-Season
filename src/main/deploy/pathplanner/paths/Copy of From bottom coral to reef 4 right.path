@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4193698630136993,
-        "y": 1.9585496575342454
+        "x": 2.9547225815275944,
+        "y": 2.187136969151405
       },
       "isLocked": false,
       "linkedName": "Coral Station"
@@ -20,8 +20,8 @@
         "y": 2.838
       },
       "prevControl": {
-        "x": 3.091458904109589,
-        "y": 2.26702397260274
+        "x": 3.664262339408088,
+        "y": 2.635933117737118
       },
       "nextControl": null,
       "isLocked": false,
@@ -54,8 +54,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

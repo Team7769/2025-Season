@@ -4,11 +4,14 @@
   "holonomicMode": true,
   "pathFolders": [
     "Middle Algae",
+    "Mid D & Alge",
+    "TF Test Left",
+    "TF Test Right",
     "Top Cr B"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 4.0,
-  "defaultMaxAccel": 4.0,
+  "defaultMaxVel": 4.5,
+  "defaultMaxAccel": 4.5,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.18063524590164,
-        "y": 5.097899590163934
+        "x": 1.187,
+        "y": 1.01
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.605225409836065,
-        "y": 5.361629098360655
+        "x": 3.181818955415779,
+        "y": 4.101427325261333
       },
       "isLocked": false,
-      "linkedName": "Top Start"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.4903688524590155,
-        "y": 5.565420081967212
+        "x": 2.978433098591548,
+        "y": 3.84075704225352
       },
       "prevControl": {
-        "x": 6.308889344262296,
-        "y": 5.699762295081967
+        "x": 2.560126145280682,
+        "y": 3.171561105560659
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef 1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 4.5,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 59.588918732874625
+    "velocity": 0,
+    "rotation": 179.17482343423455
   },
   "reversed": false,
-  "folder": "TF Test Left",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -128.991
   },
   "useDefaultConstraints": true
 }

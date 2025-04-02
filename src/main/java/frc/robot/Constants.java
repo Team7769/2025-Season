@@ -352,7 +352,7 @@ public final class Constants {
         public static final double kL4Position = -.1;
         public static final double kL3Position = -.11;
         public static final double kL2Position = -.11;
-        public static final double kL1Position = -.11;
+        public static final double kL1Position = -.50;
         public static final double kPrepClimb = .876;
     }
 
@@ -378,7 +378,7 @@ public final class Constants {
       public static final double kL3Algae = 55 * .6;
       public static final double kL2Coral = 16.17 * .6;
       public static final double kL2Algae = 34 * .6;
-      public static final double kL1Coral = 0;
+      public static final double kL1Coral = 5.7;
       public static final double kHumanPlayer = 3 * .6;
       public static final double kAlgaePickup = 15 * .6;
       public static final double kAlgaeProcessor = 8 * .6;
