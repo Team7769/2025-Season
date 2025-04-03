@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.164754098360655,
-        "y": 3.8631659836065575
+        "x": 7.144672131147541,
+        "y": 5.649334016393442
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.750204918032787,
-        "y": 1.9091700819672124
+        "x": 6.533299180327869,
+        "y": 5.889088114754099
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "barge 2"
     },
     {
       "anchor": {
-        "x": 1.2321061643835618,
-        "y": 1.0724529109589036
+        "x": 5.370491803278688,
+        "y": 5.373616803278688
       },
       "prevControl": {
-        "x": 1.6902663934426227,
-        "y": 1.7653176229508187
+        "x": 6.029815573770492,
+        "y": 5.63734631147541
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Coral Station"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -128.991
+    "velocity": 0.5,
+    "rotation": 59.036243467926546
   },
   "reversed": false,
-  "folder": "TF Test Right",
+  "folder": "Middle Algae",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.72454164386477
+    "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

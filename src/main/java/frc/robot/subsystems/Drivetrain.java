@@ -212,6 +212,30 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         }
     }
 
+    private String getSide() {
+        if (reefTarget == 0) {
+            return "R";
+        } else if (reefTarget == 1) {
+            return "A";
+        } else {
+            return "L";
+        }
+    }
+
+    private String getTarget() {
+        if(_currentTarget == LocationTarget.REEF) {
+            return getReefLetter() + getSide();
+        } else if (_currentTarget == LocationTarget.PROCESSOR) {
+            return "Processor";
+        } else if (_currentTarget == LocationTarget.BARGE) {
+            return "Barge";
+        } else if (_currentTarget == LocationTarget.CORAL_SOURCE) {
+            return "Coral Source";
+        } else {
+            return "Not Selected";
+        }
+    }
+
     private ChassisSpeeds getSpeeds() {
         return this.getState().Speeds;
     }
@@ -419,6 +443,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         }
         publisher.set(getPose());
         m_field.setRobotPose(getPose());
+        m_field.getObject("targetPose").setPose(_target);
         SmartDashboard.putNumber("pose x", getPoseX());
         SmartDashboard.putNumber("pose y", getPoseY());
         SmartDashboard.putNumber("angle", getDegrees());
@@ -428,7 +453,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         SmartDashboard.putString("Drive Train current state", getCurrentState());
         SmartDashboard.putString("Drive Train previous state", getPreviousState());
         SmartDashboard.putString("Drive Train current target", getCurrentTarget().name());
-        SmartDashboard.putString("Face", getReefLetter());
+        SmartDashboard.putString("Target", getTarget());
         SmartDashboard.putNumber("speed", getState().Speeds.vxMetersPerSecond);
     }
 
@@ -636,10 +661,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
         var leftSide = sourceTag.transformBy(
             new Transform2d(new Translation2d(coralPoseLeftOffsetX, -coralStationOffsetY), Rotation2d.fromDegrees(180)));
-        var rightSide = sourceTag.transformBy(
-            new Transform2d(new Translation2d(coralPoseLeftOffsetX, coralStationOffsetY), Rotation2d.fromDegrees(180)));
+        // var rightSide = sourceTag.transformBy(
+        //     new Transform2d(new Translation2d(coralPoseLeftOffsetX, coralStationOffsetY), Rotation2d.fromDegrees(180)));
         
-        var poseList = Arrays.asList(leftSide, rightSide);
+        // var poseList = Arrays.asList(leftSide, rightSide);
+        var poseList = Arrays.asList(leftSide);
         _target = currentPose.nearest(poseList);
     }
 
@@ -653,13 +679,15 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     public void targetBarge(Supplier<Boolean> isRedAlliance) {
         _followType = FollowType.LINE;
         // _target = isRedAlliance.get() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
-        var _bargeTargetNoAngle = isRedAlliance.get() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
-        var _halfBarge = isRedAlliance.get() ? FieldConstants.kRedBargeHalf : FieldConstants.kBlueBargeHalf;
-        if (getPoseY() > _halfBarge.getY()) {
-            _target = _bargeTargetNoAngle.transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(isRedAlliance.get() ? 20: -20)));
-        } else {
-            _target = _bargeTargetNoAngle.transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(isRedAlliance.get() ? -20: 20)));
-        }
+         var _bargeTargetNoAngle = isRedAlliance.get() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
+        // var _halfBarge = isRedAlliance.get() ? FieldConstants.kRedBargeHalf : FieldConstants.kBlueBargeHalf;
+        // if (getPoseY() > _halfBarge.getY()) {
+        //     _target = _bargeTargetNoAngle.transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(isRedAlliance.get() ? 20: -20)));
+        // } else {
+        //     _target = _bargeTargetNoAngle.transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(isRedAlliance.get() ? -20: 20)));
+        // }
+
+        _target = _bargeTargetNoAngle;
     }
 
     public void targetCage(Supplier<Boolean> isRedAlliance) {

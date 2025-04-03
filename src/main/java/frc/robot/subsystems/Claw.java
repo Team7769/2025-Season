@@ -170,7 +170,7 @@ public class Claw extends SubsystemBase {
                 _topRollinator.set(-.5);
                 break;
             case PREP_NET:
-                _pivotinator.setControl(_request.withPosition(0));
+                _pivotinator.setControl(_request.withPosition(0.05));
                 _topRollinator.set(-.2);
                 break;
             case PREP_PROCESSOR:
@@ -179,7 +179,7 @@ public class Claw extends SubsystemBase {
                 break;
             case SCORE:
                 if (_previousState == ClawState.PREP_NET) {
-                    _topRollinator.set(.7);
+                    _topRollinator.set(.65);
                 }
                 if (_previousState == ClawState.PREP_PROCESSOR) {
                     _topRollinator.set(.3);
@@ -281,10 +281,15 @@ public class Claw extends SubsystemBase {
     }
 
     public Boolean isProcceorReady() {
-        return (Math.abs(.18 - _pivotinator.getPosition().getValueAsDouble()) < .1);
+        return (Math.abs(.18 - _pivotinator.getPosition().getValueAsDouble()) < .05);
     }
 
     public Boolean isIdle() {
-        return (Math.abs(0 - _pivotinator.getPosition().getValueAsDouble()) < .3);
+        return (Math.abs(0 - _pivotinator.getPosition().getValueAsDouble()) < .05);
+    }
+
+    public Boolean isReadytoShoot()
+    {
+        return (Math.abs(0.05 - _pivotinator.getPosition().getValueAsDouble()) < .05);
     }
 }
