@@ -107,7 +107,7 @@ public class RobotContainer {
     _autoChooser.addOption("LGHP Safely Cheesy", left3CoralAlgae());
     _autoChooser.addOption( "MUFIC Special", getAutoMiddle());
     _autoChooser.addOption("Procesceor Special", processorAuto());
-
+    // _autoChooser.onChange
     SmartDashboard.putData("AutoChooser", _autoChooser);
     configureBindings();
   }

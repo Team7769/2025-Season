@@ -661,12 +661,16 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
         var leftSide = sourceTag.transformBy(
             new Transform2d(new Translation2d(coralPoseLeftOffsetX, -coralStationOffsetY), Rotation2d.fromDegrees(180)));
-        // var rightSide = sourceTag.transformBy(
-        //     new Transform2d(new Translation2d(coralPoseLeftOffsetX, coralStationOffsetY), Rotation2d.fromDegrees(180)));
-        
+        var rightSide = sourceTag.transformBy(
+            new Transform2d(new Translation2d(coralPoseLeftOffsetX, coralStationOffsetY), Rotation2d.fromDegrees(180)));
+        if (currentPose.getTranslation().getY() > FieldConstants.kHalfFieldWidth) {
+            _target = rightSide;
+        } else {
+            _target = leftSide;
+        }
         // var poseList = Arrays.asList(leftSide, rightSide);
-        var poseList = Arrays.asList(leftSide);
-        _target = currentPose.nearest(poseList);
+        // var poseList = Arrays.asList(leftSide);
+        // _target = currentPose.nearest(poseList);
     }
 
     public void targetProcessor(Supplier<Boolean> isRedAlliance) {
