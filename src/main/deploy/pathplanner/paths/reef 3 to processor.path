@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.164754098360655,
-        "y": 3.8631659836065575
+        "x": 5.322540983606557,
+        "y": 2.616444672131148
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.750204918032787,
-        "y": 1.9091700819672124
+        "x": 5.739811643835617,
+        "y": 1.8688142123287674
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "dealgify 3"
     },
     {
       "anchor": {
-        "x": 1.2321061643835618,
-        "y": 1.0724529109589036
+        "x": 5.995248287671233,
+        "y": 0.5465539383561645
       },
       "prevControl": {
-        "x": 1.6902663934426227,
-        "y": 1.7653176229508187
+        "x": 5.890068493150685,
+        "y": 1.508197773972603
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Coral Station"
+      "linkedName": "processor"
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.0,
+    "maxVelocity": 4.5,
+    "maxAcceleration": 4.5,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -128.991
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "TF Test Right",
+  "folder": "Processor Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.72454164386477
+    "rotation": -60.70863782901564
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

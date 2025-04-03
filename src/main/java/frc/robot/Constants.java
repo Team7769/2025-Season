@@ -114,8 +114,8 @@ public final class Constants {
         ReefConstants.kRedReefFace6 };
 
     // the Y value will not be used for the Barge Pose2d coordinates
-    public static final Pose2d kBlueBarge = new Pose2d(new Translation2d(7.6, 0), new Rotation2d(180 * (Math.PI / 180)));
-    public static final Pose2d kRedBarge = new Pose2d(new Translation2d(10, 0), new Rotation2d(0 * (Math.PI / 180)));
+    public static final Pose2d kBlueBarge = new Pose2d(new Translation2d(7.2, 0), new Rotation2d(180 * (Math.PI / 180)));
+    public static final Pose2d kRedBarge = new Pose2d(new Translation2d(10.4, 0), new Rotation2d(0 * (Math.PI / 180)));
     public static final Translation2d kBlueBargeHalf = new Translation2d(kHalfFieldLength, kQuarterFieldWidth + kHalfFieldWidth);
     public static final Translation2d kRedBargeHalf = GeometryUtil.mirrorReef(kBlueBargeHalf);
 

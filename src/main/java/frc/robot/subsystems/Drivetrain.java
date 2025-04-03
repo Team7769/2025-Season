@@ -419,6 +419,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         }
         publisher.set(getPose());
         m_field.setRobotPose(getPose());
+        m_field.getObject("targetPose").setPose(_target);
         SmartDashboard.putNumber("pose x", getPoseX());
         SmartDashboard.putNumber("pose y", getPoseY());
         SmartDashboard.putNumber("angle", getDegrees());
@@ -636,10 +637,11 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
         var leftSide = sourceTag.transformBy(
             new Transform2d(new Translation2d(coralPoseLeftOffsetX, -coralStationOffsetY), Rotation2d.fromDegrees(180)));
-        var rightSide = sourceTag.transformBy(
-            new Transform2d(new Translation2d(coralPoseLeftOffsetX, coralStationOffsetY), Rotation2d.fromDegrees(180)));
+        // var rightSide = sourceTag.transformBy(
+        //     new Transform2d(new Translation2d(coralPoseLeftOffsetX, coralStationOffsetY), Rotation2d.fromDegrees(180)));
         
-        var poseList = Arrays.asList(leftSide, rightSide);
+        // var poseList = Arrays.asList(leftSide, rightSide);
+        var poseList = Arrays.asList(leftSide);
         _target = currentPose.nearest(poseList);
     }
 

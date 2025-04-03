@@ -3,8 +3,9 @@
   "robotLength": 0.889,
   "holonomicMode": true,
   "pathFolders": [
-    "Middle Algae",
     "Mid D & Alge",
+    "Middle Algae",
+    "Processor Auto",
     "TF Test Left",
     "TF Test Right",
     "Top Cr B"
