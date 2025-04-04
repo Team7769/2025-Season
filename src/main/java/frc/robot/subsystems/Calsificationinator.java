@@ -149,6 +149,10 @@ public class Calsificationinator extends SubsystemBase {
             case PREP_CLIMB:
             _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kPrepClimb));
             break;
+            case IDLE_MIDDLE:
+                _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kMiddleIdle));
+                handleCoral();
+            break;
             default:
                 _pivotinator.setControl(_magicinator.withPosition(Constants.CalsificationinatorConstants.kIdlePosition));
 
