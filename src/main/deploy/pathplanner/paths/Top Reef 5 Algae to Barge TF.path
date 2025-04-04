@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.709,
-        "y": 5.05
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 3.8908822500264195,
-        "y": 5.22151923252314
-      },
-      "isLocked": false,
-      "linkedName": "Reef 6 Right"
-    },
-    {
-      "anchor": {
         "x": 3.8600409836065577,
         "y": 5.157838114754097
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.808219178082192,
+        "y": 5.970826198630136
+      },
+      "isLocked": false,
+      "linkedName": "Top Algae End"
+    },
+    {
+      "anchor": {
+        "x": 7.19730308219178,
+        "y": 5.970826198630136
+      },
       "prevControl": {
-        "x": 3.6584397346426316,
-        "y": 5.009997198847217
+        "x": 6.19730308219178,
+        "y": 5.970826198630136
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Top Algae End"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 120.332
+    "rotation": 179.33765055262782
   },
   "reversed": false,
   "folder": "TF Test Left",

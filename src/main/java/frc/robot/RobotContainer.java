@@ -1132,6 +1132,8 @@ public class RobotContainer {
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Done")),
       Commands.waitUntil(_claw::hasAlgae),
       autoHomeAlgae()
+      ,
+      _drivetrain.getPathCommand("Top Reef 5 Algae to Barge TF").asProxy()
     ).handleInterrupt(() -> {
       SmartDashboard.putBoolean("Auto Interrupted", true);
     });
