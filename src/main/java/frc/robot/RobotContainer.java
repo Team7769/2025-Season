@@ -177,12 +177,13 @@ public class RobotContainer {
     .onFalse(goHomeinatorForEmergencyPickup());
 
     _driverController.rightBumper().onTrue(
-      Commands.parallel(
+      Commands.sequence(
+        _calsificationinator.setWantedState(CalsificationinatorState.PICKUP),
+        Commands.waitUntil(_calsificationinator::isReady),
         new InstantCommand(() -> _elevatinator.setPositioninator(ElevatinatorConstants.kAlgaePickup)), 
       _elevatinator.setWantedState(ElavatinatorState.HOLD), 
       _claw.setWantedState(ClawState.FLOOR_INTAKE), 
-      _ledinator.setWantedState(LEDinatorState.ALGAE), 
-      _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)));
+      _ledinator.setWantedState(LEDinatorState.ALGAE)));
       
     new Trigger(_claw::hasAlgae).and(DriverStation::isTeleopEnabled).onTrue(goHomeinatorWithAlgae());
     new Trigger(_driverController.rightBumper().negate()).and(_claw::doesNotHaveAlgae).and(DriverStation::isTeleopEnabled).onTrue(goHomeinatorForFloorPickup());
@@ -296,9 +297,7 @@ public class RobotContainer {
         .handleInterrupt(() -> System.out.println("Interrupted doThing."))
         .until(_driverController.a()).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))
         );
-      }
-      if (_calsificationinator.getTargetState() != CalsificationinatorState.KILL_MODE) {
-      if (_calsificationinator.getTargetState() != CalsificationinatorState.KILL_MODE) {
+      } else if (_calsificationinator.getTargetState() != CalsificationinatorState.KILL_MODE) {
       SmartDashboard.putString("Current Action", "Coral for DoThing");
       return 
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW))
@@ -306,6 +305,7 @@ public class RobotContainer {
       .andThen(doinator(null))
       .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
       .andThen(Commands.waitUntil(_elevatinator::isReady))
+      .andThen(Commands.waitUntil(_calsificationinator::isReady))
       .andThen(scoreSequence())
       .andThen(goHomeinator().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))))
       .handleInterrupt(() -> System.out.println("Interrupted doThing."))
@@ -320,6 +320,7 @@ public class RobotContainer {
       .andThen(doinator(null))
       .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
       .andThen(Commands.waitUntil(_elevatinator::isReady))
+      .andThen(Commands.waitUntil(_calsificationinator::isReady))
       .andThen(scoreSequence())
       .andThen(dealgify())
       .andThen(doinator(null))
@@ -327,22 +328,6 @@ public class RobotContainer {
       .andThen(goHomeinatorWithAlgae().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))))
       .handleInterrupt(() -> System.out.println("Interrupted doThing."))
       .until(_driverController.a().or(_driverController.rightTrigger())).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
-    }
-    } else {
-      SmartDashboard.putString("Current Action", "Coral and Dealgify for DoThing");
-      return 
-      Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW))
-      .andThen(Commands.waitUntil(_drivetrain::isNearTarget))
-      .andThen(doinator(null))
-      .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
-      .andThen(Commands.waitUntil(_elevatinator::isReady))
-      .andThen(scoreSequence())
-      .andThen(dealgify())
-      .andThen(doinator(null))
-      .andThen(Commands.waitUntil(_claw::hasAlgae))
-      .andThen(goHomeinatorWithAlgae().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))))
-      .handleInterrupt(() -> System.out.println("Interrupted doThing."))
-      .until(_driverController.a()).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
     }
     } else {
       return new InstantCommand();

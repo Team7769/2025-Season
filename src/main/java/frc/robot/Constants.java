@@ -354,7 +354,7 @@ public final class Constants {
         public static final double kL2Position = -.11;
         public static final double kL1Position = -.50;
         public static final double kPrepClimb = .876;
-        public static final double kMiddleIdle = .35;
+        public static final double kMiddleIdle = .2;
     }
 
     public static class ElevatinatorConstants {

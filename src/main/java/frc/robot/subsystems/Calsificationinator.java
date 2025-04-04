@@ -171,6 +171,7 @@ public class Calsificationinator extends SubsystemBase {
         SmartDashboard.putString("Calcificationator Current State", _currentState.name());
         SmartDashboard.putBoolean("Top Coral Detected", _hasCoralinator);
         SmartDashboard.putBoolean("Reef Pole Detected", _hasCoralinatorTwo);
+        SmartDashboard.putBoolean("Cals Is Ready", isReady());
     }
 
     public boolean hasCoralinator() {
@@ -225,5 +226,9 @@ public class Calsificationinator extends SubsystemBase {
 
     public CalsificationinatorState getTargetState() {
         return _targetState;
+    }
+
+    public boolean isReady() {
+        return Math.abs(_magicinator.Position - _pivotinator.getPosition().getValueAsDouble()) < .1;
     }
 }
