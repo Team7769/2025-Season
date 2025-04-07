@@ -13,5 +13,6 @@ public enum CalsificationinatorState implements IState{
     NOTHING,
     TARGET,
     PREP_CLIMB,
-    KILL_MODE
+    KILL_MODE,
+    IDLE_MIDDLE
 }
