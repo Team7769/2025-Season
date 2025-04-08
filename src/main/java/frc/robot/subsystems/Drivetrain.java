@@ -121,6 +121,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     private PIDController _targetFollowControllerX;
     private PIDController _targetFollowControllerY;
     private PIDController _targetFollowControllerZ;
+    private  double _targetFollowLimit;
 
 
     private static class PeriodicIO {
@@ -149,6 +150,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         _targetFollowControllerY.setTolerance(.05);
         _targetFollowControllerZ.setTolerance(2);
         _targetFollowControllerZ.enableContinuousInput(-180, 180);
+        setPIDReef();
 
         try {
             AutoBuilder.configure(() -> getState().Pose, this::resetPose, () -> getState().Speeds,
@@ -510,8 +512,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         yFollow = _targetFollowControllerY.calculate(currentPose.getY());
         targetRotation = _targetFollowControllerZ.calculate(currentPose.getRotation().getDegrees());
 
-        xFollow = MathUtil.clamp(xFollow, -.35, .35);
-        yFollow = MathUtil.clamp(yFollow, -.35, .35);
+        xFollow = MathUtil.clamp(xFollow, -_targetFollowLimit, _targetFollowLimit);
+        yFollow = MathUtil.clamp(yFollow, -_targetFollowLimit, _targetFollowLimit);
         // if (Math.abs(yFollow) > .25) {
         //     if (yFollow > 0)
         //         yFollow = .25;
@@ -649,6 +651,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
 
     // #region setTargetFunctions
     public void targetSource(Supplier<Boolean> isRedAlliance) {
+        setPIDReef();
         _followType = FollowType.POINT;
         var currentPose = getPose();
         var redAlliance = isRedAlliance.get();
@@ -670,6 +673,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     }
 
     public void targetProcessor(Supplier<Boolean> isRedAlliance) {
+        setPIDReef();
         _followType = FollowType.POINT;
         _isFollowingFront = true;
         _target = isRedAlliance.get() ? Constants.FieldConstants.kRedProcessor
@@ -677,6 +681,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     }
 
     public void targetBarge(Supplier<Boolean> isRedAlliance) {
+        setPIDBarge();
         _followType = FollowType.LINE;
         // _target = isRedAlliance.get() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
          var _bargeTargetNoAngle = isRedAlliance.get() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
@@ -691,14 +696,34 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     }
 
     public void targetCage(Supplier<Boolean> isRedAlliance) {
+        setPIDReef();
         _followType = FollowType.ROTATION;
         _target = FieldConstants.kCage.transformBy(new Transform2d(0,0, isRedAlliance.get() ? Rotation2d.k180deg : Rotation2d.kZero));
     }
 
     public void targetReef(Supplier<Boolean> isRedAlliance) {
+        setPIDReef();
         _followType = FollowType.POINT;
         _target = getDesiredRobotPoseToTag(targetReefFace, reefTarget, isRedAlliance.get());
         _target.rotateBy(Rotation2d.fromDegrees(180));
+    }
+
+    public void setPIDReef()
+    {
+        _targetFollowControllerX.setP(0.85);
+        _targetFollowControllerX.setD(0.04);
+        _targetFollowControllerY.setP(0.85);
+        _targetFollowControllerY.setD(0.04);
+        _targetFollowLimit = .35;
+    }
+
+    public void setPIDBarge()
+    {
+        _targetFollowControllerX.setP(1.75);
+        _targetFollowControllerX.setD(0.04);
+        _targetFollowControllerY.setP(1.75);
+        _targetFollowControllerY.setD(0.04);
+        _targetFollowLimit = .35;
     }
 
     public Pose2d getDesiredRobotPoseToTag(int targetReefFace, int poleTarget, boolean isRedAlliance) {
