@@ -8,6 +8,7 @@ public enum ClawState implements IState {
     FLOOR_INTAKE,
     DEALGIFY,
     PREP_NET,
+    PREP_NET_AUTO,
     PREP_PROCESSOR,
     SCORE,
     TARGET,

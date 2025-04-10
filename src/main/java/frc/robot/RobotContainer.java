@@ -273,6 +273,8 @@ public class RobotContainer {
           Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW))
           .andThen(Commands.waitUntil(_drivetrain::isAtTarget))
           .andThen(doinator(null))
+          .andThen(scoreBarge())
+          .andThen(goHomeinator().alongWith(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP))))
           .andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)))
           .handleInterrupt(() -> System.out.println("Interrupted doThing."))
           .until(_driverController.a().or(_driverController.rightTrigger())).andThen(Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.OPEN_LOOP)));
@@ -483,12 +485,12 @@ public class RobotContainer {
     }
   }
 
-  public Command targetReef2Left()
+  public Command targetReef2Right()
   {
     return Commands.runOnce(()->
     {
       _drivetrain.setReefTargetFace(1);
-      _drivetrain.setReefTargetSide(ReefConstants.kReefLeft);
+      _drivetrain.setReefTargetSide(ReefConstants.kReefRight);
       _drivetrain.setWantedTargetNormal(LocationTarget.REEF);
       _drivetrain.targetReef(GeometryUtil::isRedAlliance);
       _drivetrain.setWantedStateNormal(DrivetrainState.TARGET_FOLLOW);
@@ -727,7 +729,7 @@ public class RobotContainer {
 
   public Command autoBarge()
   {
-    return _claw.setWantedState(ClawState.PREP_NET);
+    return _claw.setWantedState(ClawState.PREP_NET_AUTO);
   }
 
   public Command scoreBarge()
@@ -735,7 +737,7 @@ public class RobotContainer {
     return Commands.sequence(
       Commands.waitUntil(_elevatinator::isReady),
       Commands.runOnce(() -> SmartDashboard.putString("SCORE STEP", "Elevator ready")),
-      Commands.waitUntil(_claw::isReadytoShoot),
+      Commands.waitUntil(_claw::isReadytoShootAuto),
       Commands.runOnce(() -> SmartDashboard.putString("SCORE STEP", "Claw ready to shoot")),
       _claw.setWantedState(ClawState.SCORE),
       Commands.runOnce(() -> SmartDashboard.putString("SCORE STEP", "Claw set to score state")),
@@ -1189,7 +1191,7 @@ public class RobotContainer {
       _drivetrain.getPathCommand("Middle to Reef 2").asProxy(),
       prepCoralL4(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 2 Left")),
-      targetReef2Left(),
+      targetReef2Right(),
       Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
@@ -1204,44 +1206,49 @@ public class RobotContainer {
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
       Commands.waitUntil(_claw::hasAlgae),
-      retractClaw(),
-      homeElevatorWithAlgae(),
+      //retractClaw(),
       prepBarge(),
       autoBarge(),
       _drivetrain.getPathCommand("Dealgify to barge 1").asProxy(),
+      //homeElevatorWithAlgae(),
+      
       scoreBarge(),
-      homeElevator(),
-
-
-      _drivetrain.getPathCommand("Barge 1 to reef 3").asProxy(),
+      //homeElevator(),
       prepDealgifyHigh(),
       autoDealgify(),
+      _drivetrain.getPathCommand("Barge 1 to reef 3").asProxy(),
+      
       targetReef3Algae(),
       Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
       Commands.waitUntil(_claw::hasAlgae),
-      retractClaw(),
-      homeElevatorWithAlgae(),
-      _drivetrain.getPathCommand("Dealgify to barge 2").asProxy(),
       prepBarge(),
       autoBarge(),
+      _drivetrain.getPathCommand("Dealgify to barge 2").asProxy(),
+      
+      //retractClaw(),
+      //homeElevatorWithAlgae(),
+      
       scoreBarge(),
-      homeElevator(),
-
-      _drivetrain.getPathCommand("Barge 2 to reef 1").asProxy(),
+      //homeElevator(),
       prepDealgifyHigh(),
       autoDealgify(),
+
+      _drivetrain.getPathCommand("Barge 2 to reef 1").asProxy(),
+      
       targetReef1Algae(),
       Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),
       Commands.waitUntil(_claw::hasAlgae),
-      retractClaw(),
-      homeElevatorWithAlgae(),
-      _drivetrain.getPathCommand("Dealgify to barge 3").asProxy(),
       prepBarge(),
       autoBarge(),
+      _drivetrain.getPathCommand("Dealgify to barge 3").asProxy(),
+      
+      // retractClaw(),
+      // homeElevatorWithAlgae(),
+      
       scoreBarge(),
       homeElevator()
     ).handleInterrupt(() -> {
@@ -1260,7 +1267,7 @@ public class RobotContainer {
       _drivetrain.getPathCommand("Processor - Middle to Reef 2").asProxy(),
       prepCoralL4(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 2 Left")),
-      targetReef2Left(),
+      targetReef2Right(),
       Commands.waitUntil(_drivetrain::isAtTarget).withTimeout(.75),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.IDLE)),
       Commands.runOnce(() -> _drivetrain.setWantedStateNormal(DrivetrainState.AUTO)),

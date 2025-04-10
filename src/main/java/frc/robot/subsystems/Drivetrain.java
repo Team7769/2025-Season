@@ -684,7 +684,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
         setPIDBarge();
         _followType = FollowType.LINE;
         // _target = isRedAlliance.get() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
-         var _bargeTargetNoAngle = FieldConstants.kHalfFieldLength < getPoseX() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
+        var _bargeTargetNoAngle = FieldConstants.kHalfFieldLength < getPoseX() ? Constants.FieldConstants.kRedBarge : Constants.FieldConstants.kBlueBarge;
         // var _halfBarge = isRedAlliance.get() ? FieldConstants.kRedBargeHalf : FieldConstants.kBlueBargeHalf;
         // if (getPoseY() > _halfBarge.getY()) {
         //     _target = _bargeTargetNoAngle.transformBy(new Transform2d(0, 0, Rotation2d.fromDegrees(isRedAlliance.get() ? 20: -20)));
@@ -774,7 +774,7 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                     return applyRequest(() -> drive.withVelocityX(-xFollow *
                             DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
                                     DrivetrainConstants.kSpeedAt12VoltsMps)
-                            .withRotationalRate(this.periodicIO.WzCmd *
+                            .withRotationalRate(targetRotation *
                                     DrivetrainConstants.MaxAngularRate));
                 } else {
                     return applyRequest(() -> drive.withVelocityX(xFollow *
