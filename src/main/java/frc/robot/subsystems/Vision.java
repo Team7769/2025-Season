@@ -71,7 +71,9 @@ public class Vision extends SubsystemBase{
         if (DriverStation.isDisabled() && DriverStation.getAlliance().isPresent()){
             if (DriverStation.getAlliance().get() == Alliance.Red){
                 LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kRedTagIDs);
+                LimelightHelpers.SetFiducialIDFiltersOverride("limelight-three", FieldConstants.kRedTagIDs);
             } else {    
+                LimelightHelpers.SetFiducialIDFiltersOverride("limelight-three", FieldConstants.kBlueTagIDs);
                 LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kBlueTagIDs);
             }
         }
@@ -156,7 +158,7 @@ public class Vision extends SubsystemBase{
                         limelightFourPoseEstimate.timestampSeconds
                     )
                 );
-            } else if (limelightThreePoseEstimate != null&& limelightThreePoseEstimate.tagCount > 0) {
+            } else if (limelightThreePoseEstimate != null && limelightThreePoseEstimate.tagCount > 0) {
                 _limelightThreePoseEstimate = limelightThreePoseEstimate;
                 visionMeasurements.add(
                     new VisionMeasurement(

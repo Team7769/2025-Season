@@ -583,7 +583,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
     }
 
     public boolean isNearTarget() {
-        return GeometryUtil.getDistanceToTarget(_target.getTranslation(), this::getPose) < 1.05;
+        // return GeometryUtil.getDistanceToTarget(_target.getTranslation(), this::getPose) < 1.05;
+        return GeometryUtil.getDistanceToTarget(_target.getTranslation(), this::getPose) < 1.5;
     }
 
     // #region State logic
