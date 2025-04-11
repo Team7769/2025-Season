@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9180327868852458,
-        "y": 1.5255635245901635
+        "x": 2.139557853261615,
+        "y": 1.3696957309537128
       },
       "isLocked": false,
       "linkedName": "Coral Station"
     },
     {
       "anchor": {
-        "x": 3.573679577464788,
-        "y": 2.522711267605632
+        "x": 5.146830985915492,
+        "y": 2.5368838028169
       },
       "prevControl": {
-        "x": 2.7944787577926564,
-        "y": 2.103141595474484
+        "x": 4.358586317138195,
+        "y": 2.183335903277863
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef 4"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.5,
+    "maxVelocity": 5.0,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -41,8 +41,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.5,
-    "rotation": -120.55596427550776
+    "velocity": 1.0,
+    "rotation": -60.25511870305777
   },
   "reversed": false,
   "folder": "TF Test Right",
