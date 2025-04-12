@@ -387,6 +387,7 @@ public final class Constants {
       public static final double kHome = 0;
       public static final double kLiftinatorMaxHeight = 74 * .6;
       public static final double kAlgaeEmergency = 14 * .6;
+      public static final double kLolipop = 14 * .6;
     }
 
     public static class LEDinatorConstants

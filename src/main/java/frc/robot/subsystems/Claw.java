@@ -200,11 +200,15 @@ public class Claw extends SubsystemBase {
             case PREP_CLIMB:
                 _pivotinator.setControl(_request.withPosition(0));
                 _topRollinator.set(0);
-            break;
+                break;
             case EMERGENCY:
-            _pivotinator.setControl(_request.withPosition(.45));
-            _topRollinator.set(.5);
-            break;
+                _pivotinator.setControl(_request.withPosition(.45));
+                _topRollinator.set(.5);
+                break;
+            case PRAISE_BE_THE_ONE_TRUE_LORD:
+                _pivotinator.setControl(_request.withPosition(.18));
+                _topRollinator.set(-.5);
+                break;
             default:
                 _pivotinator.setControl(_request.withPosition(0));
                 _topRollinator.set(0);

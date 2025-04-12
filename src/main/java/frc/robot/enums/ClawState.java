@@ -14,5 +14,6 @@ public enum ClawState implements IState {
     TARGET,
     PREP_CLIMB,
     NONE,
-    EMERGENCY
+    EMERGENCY,
+    PRAISE_BE_THE_ONE_TRUE_LORD
 }
