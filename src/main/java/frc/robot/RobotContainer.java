@@ -182,8 +182,7 @@ public class RobotContainer {
     _elevatinator.setWantedState(ElavatinatorState.HOLD),
     _claw.setWantedState(ClawState.PRAISE_BE_THE_ONE_TRUE_LORD),
     _ledinator.setWantedState(LEDinatorState.ALGAE), 
-    _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)))
-    .onFalse(goHomeinatorForFloorPickup());
+    _calsificationinator.setWantedState(CalsificationinatorState.PICKUP)));
 
     _driverController.rightBumper().onTrue(
       Commands.sequence(

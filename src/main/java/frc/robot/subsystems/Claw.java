@@ -185,7 +185,7 @@ public class Claw extends SubsystemBase {
                 break;
             case SCORE:
                 if (_previousState == ClawState.PREP_NET) {
-                    _topRollinator.set(.50);
+                    _topRollinator.set(.55);
                 }
                 if (_previousState == ClawState.PREP_NET_AUTO) {
                     _topRollinator.set(.80);
@@ -206,7 +206,8 @@ public class Claw extends SubsystemBase {
                 _topRollinator.set(.5);
                 break;
             case PRAISE_BE_THE_ONE_TRUE_LORD:
-                _pivotinator.setControl(_request.withPosition(.18));
+                // _pivotinator.setControl(_request.withPosition(.18));
+                _pivotinator.setControl(_request.withPosition(.25));
                 _topRollinator.set(-.5);
                 break;
             default:
