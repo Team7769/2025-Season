@@ -97,6 +97,10 @@ public class Elevatinator extends StateBasedSubsystem<ElavatinatorState> {
         return (Math.abs(_manualPositioninator - _liftMotorinator.getPosition().getValueAsDouble()) < .5) && (_currentState != ElavatinatorState.HOME);
     }
 
+    public boolean isCloseEnough() {
+        return (Math.abs(_manualPositioninator - _liftMotorinator.getPosition().getValueAsDouble()) < 18) && (_currentState != ElavatinatorState.HOME);
+    }
+
     public InstantCommand zeroMotor() {
         return new InstantCommand(() -> _liftMotorinator.setControl(voltageOut.withOutput(0)), this);
     }

@@ -354,6 +354,7 @@ public final class Constants {
         public static final double kL2Position = -.11;
         public static final double kL1Position = -.50;
         public static final double kPrepClimb = .876;
+        public static final double kMiddleIdle = .2;
     }
 
     public static class ElevatinatorConstants {
@@ -385,6 +386,7 @@ public final class Constants {
       public static final double kAlgaeHold = 18 * .6;
       public static final double kHome = 0;
       public static final double kLiftinatorMaxHeight = 74 * .6;
+      public static final double kAlgaeEmergency = 14 * .6;
     }
 
     public static class LEDinatorConstants
