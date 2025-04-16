@@ -794,8 +794,8 @@ public class Drivetrain extends CommandSwerveDrivetrain implements IDrivetrain {
                     return applyRequest(() -> drive.withVelocityX(xFollow *
                             DrivetrainConstants.kSpeedAt12VoltsMps).withVelocityY(this.periodicIO.VyCmd *
                                     DrivetrainConstants.kSpeedAt12VoltsMps)
-                            .withRotationalRate(this.periodicIO.WzCmd *
-                                    this.periodicIO.WzCmd));
+                            .withRotationalRate(targetRotation *
+                            DrivetrainConstants.MaxAngularRate));
                 }
             case ROTATION:
                 return applyRequest(() -> drive.withVelocityX(this.periodicIO.VxCmd *
