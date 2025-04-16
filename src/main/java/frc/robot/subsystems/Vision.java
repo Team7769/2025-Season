@@ -68,15 +68,15 @@ public class Vision extends SubsystemBase{
     public void periodic() {
         _limelightThreePose = LimelightHelpers.getBotPose2d("limelight-three");
         _limelightFourPose = LimelightHelpers.getBotPose2d("limelight-four");
-        // if (DriverStation.isDisabled() && DriverStation.getAlliance().isPresent()){
-        //     if (DriverStation.getAlliance().get() == Alliance.Red){
-        //         LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kRedTagIDs);
-        //         LimelightHelpers.SetFiducialIDFiltersOverride("limelight-three", FieldConstants.kRedTagIDs);
-        //     } else {    
-        //         LimelightHelpers.SetFiducialIDFiltersOverride("limelight-three", FieldConstants.kBlueTagIDs);
-        //         LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kBlueTagIDs);
-        //     }
-        // }
+        if (DriverStation.isDisabled() && DriverStation.getAlliance().isPresent()){
+            if (DriverStation.getAlliance().get() == Alliance.Red){
+                LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kRedTagIDs);
+                LimelightHelpers.SetFiducialIDFiltersOverride("limelight-three", FieldConstants.kRedTagIDs);
+            } else {    
+                LimelightHelpers.SetFiducialIDFiltersOverride("limelight-three", FieldConstants.kBlueTagIDs);
+                LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kBlueTagIDs);
+            }
+        }
     }
 
     public Pose2d getLimelightThreePose() {
