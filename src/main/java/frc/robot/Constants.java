@@ -100,10 +100,10 @@ public final class Constants {
 
     public static final Pose2d[] kRedSourceBottom = { kRedSourceBottom_A, kRedSourceBottom_C };
 
-    public static final Pose2d kBlueProcessor = new Pose2d(new Translation2d(5.9, 0.52),
-        new Rotation2d(100 * (Math.PI / 180)));
+    public static final Pose2d kBlueProcessor = new Pose2d(new Translation2d(6.04, 0.53),
+        new Rotation2d(90 * (Math.PI / 180)));
     public static final Pose2d kRedProcessor = new Pose2d(GeometryUtil.mirrorReef(kBlueProcessor.getTranslation()),
-        new Rotation2d(280 * (Math.PI / 180)));
+        new Rotation2d(270 * (Math.PI / 180)));
 
     public static final ReefFace[] kBlueReefFaces = { ReefConstants.kBlueReefFace1, ReefConstants.kBlueReefFace2,
         ReefConstants.kBlueReefFace3, ReefConstants.kBlueReefFace4, ReefConstants.kBlueReefFace5,
@@ -114,8 +114,8 @@ public final class Constants {
         ReefConstants.kRedReefFace6 };
 
     // the Y value will not be used for the Barge Pose2d coordinates
-    public static final Pose2d kBlueBarge = new Pose2d(new Translation2d(7.2, 0), new Rotation2d(180 * (Math.PI / 180)));
-    public static final Pose2d kRedBarge = new Pose2d(new Translation2d(10.4, 0), new Rotation2d(0 * (Math.PI / 180)));
+    public static final Pose2d kBlueBarge = new Pose2d(new Translation2d(7.588, 0), new Rotation2d(180 * (Math.PI / 180)));
+    public static final Pose2d kRedBarge = new Pose2d(new Translation2d(9.977, 0), new Rotation2d(0 * (Math.PI / 180)));
     public static final Translation2d kBlueBargeHalf = new Translation2d(kHalfFieldLength, kQuarterFieldWidth + kHalfFieldWidth);
     public static final Translation2d kRedBargeHalf = GeometryUtil.mirrorReef(kBlueBargeHalf);
 
@@ -321,7 +321,7 @@ public final class Constants {
       // TODO: change the detectinator channel
       public static final int kClawAlgaeDetectinatorChannel = 2;
       // TODO: change debounce time
-      public static final double kClawAlgaeDebounceTime = .5;
+      public static final double kClawAlgaeDebounceTime = .05;
 
     }
 
@@ -387,6 +387,7 @@ public final class Constants {
       public static final double kHome = 0;
       public static final double kLiftinatorMaxHeight = 74 * .6;
       public static final double kAlgaeEmergency = 14 * .6;
+      public static final double kLolipop = 14 * .6;
     }
 
     public static class LEDinatorConstants

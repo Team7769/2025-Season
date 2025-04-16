@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.144672131147541,
-        "y": 3.9950307377049183
+        "x": 1.2321061643835618,
+        "y": 1.0724529109589036
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.377459016393442,
-        "y": 4.007018442622952
+        "x": 2.139557853261615,
+        "y": 1.3696957309537128
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Coral Station"
     },
     {
       "anchor": {
-        "x": 6.3708904109589035,
-        "y": 3.9874357876712327
+        "x": 5.146830985915492,
+        "y": 2.5368838028169
       },
       "prevControl": {
-        "x": 6.826423197844148,
-        "y": 3.9754480827532004
+        "x": 4.358586317138195,
+        "y": 2.183335903277863
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "reef 2 Left"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 1.0,
-    "rotation": 0.0
+    "rotation": -60.25511870305777
   },
   "reversed": false,
-  "folder": "Middle Algae",
+  "folder": "TF Test Right",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -128.991
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

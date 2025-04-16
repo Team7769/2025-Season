@@ -162,7 +162,7 @@ public class Claw extends SubsystemBase {
                 _topRollinator.set(-.2);
             break;
             case FLOOR_INTAKE:
-                _pivotinator.setControl(_request.withPosition(0.375));
+                _pivotinator.setControl(_request.withPosition(0.39));
                 _topRollinator.set(-.5);
                 break;
             case DEALGIFY:
@@ -170,16 +170,25 @@ public class Claw extends SubsystemBase {
                 _topRollinator.set(-.5);
                 break;
             case PREP_NET:
-                _pivotinator.setControl(_request.withPosition(0.05));
+                _pivotinator.setControl(_request.withPosition(0));
+                //0.05
                 _topRollinator.set(-.2);
                 break;
+            case PREP_NET_AUTO:
+            _pivotinator.setControl(_request.withPosition(0.05));
+            //0.05
+            _topRollinator.set(-.2);
+            break;
             case PREP_PROCESSOR:
                 _pivotinator.setControl(_request.withPosition(0.18));
                 _topRollinator.set(-.2);
                 break;
             case SCORE:
                 if (_previousState == ClawState.PREP_NET) {
-                    _topRollinator.set(.65);
+                    _topRollinator.set(.55);
+                }
+                if (_previousState == ClawState.PREP_NET_AUTO) {
+                    _topRollinator.set(.80);
                 }
                 if (_previousState == ClawState.PREP_PROCESSOR) {
                     _topRollinator.set(.3);
@@ -191,11 +200,16 @@ public class Claw extends SubsystemBase {
             case PREP_CLIMB:
                 _pivotinator.setControl(_request.withPosition(0));
                 _topRollinator.set(0);
-            break;
+                break;
             case EMERGENCY:
-            _pivotinator.setControl(_request.withPosition(.45));
-            _topRollinator.set(.5);
-            break;
+                _pivotinator.setControl(_request.withPosition(.45));
+                _topRollinator.set(.5);
+                break;
+            case PRAISE_BE_THE_ONE_TRUE_LORD:
+                // _pivotinator.setControl(_request.withPosition(.18));
+                _pivotinator.setControl(_request.withPosition(.25));
+                _topRollinator.set(-.5);
+                break;
             default:
                 _pivotinator.setControl(_request.withPosition(0));
                 _topRollinator.set(0);
@@ -293,6 +307,11 @@ public class Claw extends SubsystemBase {
     }
 
     public Boolean isReadytoShoot()
+    {
+        return (Math.abs(0 - _pivotinator.getPosition().getValueAsDouble()) < .05);
+    }
+
+    public Boolean isReadytoShootAuto()
     {
         return (Math.abs(0.05 - _pivotinator.getPosition().getValueAsDouble()) < .05);
     }

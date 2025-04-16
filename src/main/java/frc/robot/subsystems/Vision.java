@@ -30,6 +30,7 @@ public class Vision extends SubsystemBase{
     private Pose2d _limelightFourPose = new Pose2d();
 
     private PoseEstimate _limelightFourPoseEstimate = new PoseEstimate();
+    private PoseEstimate _limelightThreePoseEstimate = new PoseEstimate();
     private AprilTagFieldLayout _fieldLayout;
 
     private double coralPoseOffsetX = 0.5;
@@ -67,13 +68,15 @@ public class Vision extends SubsystemBase{
     public void periodic() {
         _limelightThreePose = LimelightHelpers.getBotPose2d("limelight-three");
         _limelightFourPose = LimelightHelpers.getBotPose2d("limelight-four");
-        if (DriverStation.isDisabled() && DriverStation.getAlliance().isPresent()){
-            if (DriverStation.getAlliance().get() == Alliance.Red){
-                LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kRedTagIDs);
-            } else {    
-                LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kBlueTagIDs);
-            }
-        }
+        // if (DriverStation.isDisabled() && DriverStation.getAlliance().isPresent()){
+        //     if (DriverStation.getAlliance().get() == Alliance.Red){
+        //         LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kRedTagIDs);
+        //         LimelightHelpers.SetFiducialIDFiltersOverride("limelight-three", FieldConstants.kRedTagIDs);
+        //     } else {    
+        //         LimelightHelpers.SetFiducialIDFiltersOverride("limelight-three", FieldConstants.kBlueTagIDs);
+        //         LimelightHelpers.SetFiducialIDFiltersOverride("limelight-four", FieldConstants.kBlueTagIDs);
+        //     }
+        // }
     }
 
     public Pose2d getLimelightThreePose() {
@@ -109,20 +112,15 @@ public class Vision extends SubsystemBase{
     {
         ArrayList<VisionMeasurement> visionMeasurements = new ArrayList<>();
 
-            // LimelightHelpers.SetRobotOrientation(
-            //     "limelight-three",
-            //     rotation.getDegrees(),
-            //     0, 
-            //     0, 
-            //     0, 
-            //     0,
-            //     0
-            // );
-
-            // PoseEstimate limelightPoseEstimate =
-            //     LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(
-            //         "limelight-three"
-            //     );
+            LimelightHelpers.SetRobotOrientation(
+                "limelight-three",
+                rotation.getDegrees(),
+                0, 
+                0, 
+                0, 
+                0,
+                0
+            );
 
             // if (limelightPoseEstimate != null && limelightPoseEstimate.tagCount > 0) {
             //     visionMeasurements.add(
@@ -148,12 +146,24 @@ public class Vision extends SubsystemBase{
                     "limelight-four"
                 );
 
+            PoseEstimate limelightThreePoseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(
+                "limelight-three"
+            ); 
+
             if (limelightFourPoseEstimate != null && limelightFourPoseEstimate.tagCount > 0) {
                 _limelightFourPoseEstimate = limelightFourPoseEstimate;
                 visionMeasurements.add(
                     new VisionMeasurement(
                         limelightFourPoseEstimate.pose,
                         limelightFourPoseEstimate.timestampSeconds
+                    )
+                );
+            } else if (limelightThreePoseEstimate != null && limelightThreePoseEstimate.tagCount > 0) {
+                _limelightThreePoseEstimate = limelightThreePoseEstimate;
+                visionMeasurements.add(
+                    new VisionMeasurement(
+                        limelightThreePoseEstimate.pose,
+                        limelightThreePoseEstimate.timestampSeconds
                     )
                 );
             }
