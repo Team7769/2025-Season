@@ -103,12 +103,12 @@ public class RobotContainer {
     _autoChooser = AutoBuilder.buildAutoChooser();
     _autoChooser.addOption("RCH Special", RCHSpecial());
     _autoChooser.addOption("RCH Safely Cheesy", right3CoralAlgae());
+    _autoChooser.addOption("RCH Safely Coraly", right3CoralPrep());
     _autoChooser.addOption("LGHP Special", LGHPSpecial());
     _autoChooser.addOption("LGHP Safely Cheesy", left3CoralAlgae());
+    _autoChooser.addOption("LGHP Safely Coraly", left3CoralPrep());
     _autoChooser.addOption( "MUFIC Special", getAutoMiddle());
     _autoChooser.addOption("Procesceor Special", processorAuto());
-    _autoChooser.addOption("Test Right", right3CoralPrep());
-    _autoChooser.addOption("Test Left", left3CoralPrep());
     SmartDashboard.putData("AutoChooser", _autoChooser);
     configureBindings();
   }
@@ -1443,7 +1443,7 @@ public class RobotContainer {
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
       _drivetrain.getPathCommand("Bottom Start to Coral TF").asProxy(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
-      waitForCoral(),
+      waitForCoral().withTimeout(1),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Top Coral to Reef 6 TF")),
       Commands.parallel(_drivetrain.getPathCommand("Bottom Coral to Reef 4 TF").asProxy(), Commands.waitSeconds(1).andThen(prepCoralL4())),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Left")),
@@ -1463,7 +1463,7 @@ public class RobotContainer {
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
       _drivetrain.getPathCommand("Bottom Reef 4 Right to Coral TF").asProxy(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
-      waitForCoral(),
+      waitForCoral().withTimeout(1),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Top Coral to Reef 6 TF")),
       Commands.parallel(_drivetrain.getPathCommand("Bottom Coral to Reef 4 Left TF").asProxy(), Commands.waitSeconds(1).andThen(prepCoralL4())),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Right")),
@@ -1511,7 +1511,7 @@ public class RobotContainer {
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
       _drivetrain.getPathCommand("Top Start to Coral TF").asProxy(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
-      waitForCoral(),
+      waitForCoral().withTimeout(1),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Top Coral to Reef 6 TF")),
       Commands.parallel(_drivetrain.getPathCommand("Top Coral to Reef 6 TF").asProxy(),Commands.waitSeconds(1).andThen(prepCoralL4())),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Left")),
@@ -1531,7 +1531,7 @@ public class RobotContainer {
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Run path to Coral Station")),
       _drivetrain.getPathCommand("Top Reef 6 Left to Coral TF").asProxy(),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Waiting for Coral")),
-      waitForCoral(),
+      waitForCoral().withTimeout(1),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Path Follow: Top Coral to Reef 6 TF")),
       Commands.parallel(_drivetrain.getPathCommand("Top Coral to Reef 6 Right TF").asProxy(),Commands.waitSeconds(1).andThen(prepCoralL4())),
       Commands.runOnce(() -> SmartDashboard.putString("Current Auto Step", "Target Reef 6 Right")),
